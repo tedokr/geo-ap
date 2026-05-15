@@ -1,16 +1,16 @@
-export const metadata = {
-  title: 'GEO App',
-  description: 'Generative Engine Optimization',
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function Home() {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <main style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: '#1B2A4A',
+      color: 'white',
+      fontFamily: 'sans-serif',
+      fontSize: '24px'
+    }}>
+      🚀 GEO App — Coming Soon
+    </main>
   )
 }
