@@ -39,16 +39,12 @@ function NavBar() {
             GEO<span style={{ color: COLORS.orange }}>.app</span>
           </span>
         </div>
-        <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           {[["Какво правим", "what"], ["Защо е важно", "why"], ["Проверка", "scan"], ["Цени", "pricing"]].map(([label, id]) => (
-            <a key={id} href={`#${id}`} style={{
-              color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500,
-            }}>{label}</a>
+            <a key={id} href={`#${id}`} style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{label}</a>
           ))}
-          <a href="#scan" style={{
-            background: COLORS.orange, color: COLORS.navy, padding: "10px 24px",
-            borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700,
-          }}>Безплатна проверка</a>
+          <a href="/login" style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>Влез</a>
+          <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Регистрация</a>
         </div>
       </div>
     </nav>
@@ -195,8 +191,8 @@ function SMESection() {
         <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "48px 64px", textAlign: "center" }}>
           <h3 style={{ color: COLORS.white, fontSize: 32, fontWeight: 800, marginBottom: 16 }}>Ти можеш да бъдеш изключението. 🚀</h3>
           <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 18, marginBottom: 32 }}>Докато конкурентите ти чакат, ти вече можеш да си готов.</p>
-          <a href="#scan" style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 18, fontWeight: 700, display: "inline-block" }}>
-            Провери домейна си безплатно →
+          <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 18, fontWeight: 700, display: "inline-block" }}>
+            Започни безплатно →
           </a>
         </div>
       </div>
@@ -239,10 +235,11 @@ function ScanSection() {
         {score !== null && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 48, border: `1px solid ${COLORS.lightGray}` }}>
             <div style={{ fontSize: 96, fontWeight: 900, color: score > 60 ? "#22c55e" : score > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>{score}%</div>
-            <div style={{ color: COLORS.textMuted, fontSize: 18, margin: "16px 0 32px" }}>GEO скор за <strong style={{ color: COLORS.navy }}>{url}</strong></div>
-            <div style={{ background: COLORS.navy, color: COLORS.white, padding: "20px 32px", borderRadius: 12, fontSize: 16, fontWeight: 600 }}>
-              🔒 Регистрирай се за пълен доклад с детайли и препоръки
-            </div>
+            <div style={{ color: COLORS.textMuted, fontSize: 18, margin: "16px 0 24px" }}>GEO скор за <strong style={{ color: COLORS.navy }}>{url}</strong></div>
+            <p style={{ color: COLORS.textMuted, fontSize: 15, marginBottom: 24 }}>Регистрирай се за пълен доклад с детайли по всеки показател и конкретни препоръки.</p>
+            <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
+              🔓 Виж пълния доклад →
+            </a>
           </div>
         )}
       </div>
@@ -255,9 +252,7 @@ function WhyMonthlySection() {
     <section id="whymonthly" style={{ padding: "100px 32px", background: COLORS.white }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center" }}>
         <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Защо всеки месец?</h2>
-        <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto 64px" }}>
-          Стратегията "на час по лъжичка" — само 2 стъпки на месец
-        </p>
+        <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto 64px" }}>Стратегията "на час по лъжичка" — само 2 стъпки на месец</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32, marginBottom: 64 }}>
           {[
             ["🎯", "Само 2 стъпки", "Никога не те претоварваме. Всеки месец получаваш точно 2 конкретни задачи — изпълними, ясни, ефективни."],
@@ -331,9 +326,9 @@ function PricingSection() {
                   <span style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.8)", fontSize: 14 }}>{f}</span>
                 </div>
               ))}
-              <button style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 16 }}>
+              <a href="/login" style={{ display: "block", marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 10, textDecoration: "none", fontWeight: 700, cursor: "pointer", fontSize: 16, textAlign: "center", boxSizing: "border-box" }}>
                 Започни с {plan.name}
-              </button>
+              </a>
             </div>
           ))}
         </div>
