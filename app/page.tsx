@@ -366,6 +366,39 @@ function WhyMonthlySection() {
 
 function PricingSection() {
   const [period, setPeriod] = useState<"monthly" | "yearly">("yearly");
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const priceIds = {
+    monthly: {
+      lite: process.env.NEXT_PUBLIC_STRIPE_LITE_MONTHLY || '',
+      smart: process.env.NEXT_PUBLIC_STRIPE_SMART_MONTHLY || '',
+      pro: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY || '',
+    },
+    yearly: {
+      lite: process.env.NEXT_PUBLIC_STRIPE_LITE_YEARLY || '',
+      smart: process.env.NEXT_PUBLIC_STRIPE_SMART_YEARLY || '',
+      pro: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY || '',
+    }
+  }
+
+  const handleCheckout = async (plan: string) => {
+    setLoading(plan)
+    const priceId = priceIds[period][plan as keyof typeof priceIds.monthly]
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId })
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else alert('Грешка при checkout. Опитай пак.')
+    } catch {
+      alert('Грешка при checkout. Опитай пак.')
+    }
+    setLoading(null)
+  }
+
   const prices = {
     monthly: ["€29.90", "€59.90", "€79.90"],
     yearly: ["€9.90", "€39.90", "€59.90"],
@@ -385,9 +418,9 @@ function PricingSection() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
           {[
-            { name: "LITE", price: currentPrices[0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "Базов одит", "Email напомняния", "3 месеца история"], recommended: false },
-            { name: "SMART", price: currentPrices[1], desc: "Знай точно какво да направиш", features: ["Всичко от LITE", "Step-by-step инструкции", "Готови файлове", "Адаптирано за платформата ти", "6 месеца история"], recommended: true },
-            { name: "PRO", price: currentPrices[2], desc: "Пълна картина + конкуренция", features: ["Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "ChatGPT/Gemini/Perplexity", "Неограничена история"], recommended: false },
+            { name: "LITE", key: "lite", price: currentPrices[0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "1-2 стъпки на месец", "Email напомняния", "3 месеца история"], recommended: false },
+            { name: "SMART", key: "smart", price: currentPrices[1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
+            { name: "PRO", key: "pro", price: currentPrices[2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
           ].map(plan => (
             <div key={plan.name} style={{ background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 40, position: "relative", textAlign: "left" }}>
               {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: COLORS.navy, color: COLORS.orange, padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" }}>⭐ ПРЕПОРЪЧАН</div>}
@@ -400,9 +433,12 @@ function PricingSection() {
                   <span style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.8)", fontSize: 14 }}>{f}</span>
                 </div>
               ))}
-              <a href="/login" style={{ display: "block", marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 10, textDecoration: "none", fontWeight: 700, cursor: "pointer", fontSize: 16, textAlign: "center", boxSizing: "border-box" }}>
-                Започни с {plan.name}
-              </a>
+              <button
+                onClick={() => handleCheckout(plan.key)}
+                disabled={loading === plan.key}
+                style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 16, opacity: loading === plan.key ? 0.7 : 1 }}>
+                {loading === plan.key ? "⏳ Зареждане..." : `Започни с ${plan.name}`}
+              </button>
             </div>
           ))}
         </div>
