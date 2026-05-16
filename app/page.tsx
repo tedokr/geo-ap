@@ -214,8 +214,13 @@ function ScanSection() {
     try {
       const res = await fetch(`/api/scan?domain=${encodeURIComponent(url)}`);
       const data = await res.json();
-      if (data.error) setError("Не можахме да сканираме домейна. Провери URL-а.");
-      else setResult(data);
+      if (data.error === 'rate_limit') {
+        setError(data.message);
+      } else if (data.error) {
+        setError("Не можахме да сканираме домейна. Провери URL-а.");
+      } else {
+        setResult(data);
+      }
     } catch {
       setError("Грешка при сканиране. Опитай пак.");
     }
@@ -224,9 +229,11 @@ function ScanSection() {
 
   return (
     <section id="scan" style={{ padding: "100px 32px", background: COLORS.offWhite }}>
-      <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+      <div style={{ maxWidth: 750, margin: "0 auto", textAlign: "center" }}>
         <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Безплатна GEO проверка</h2>
-        <p style={{ color: COLORS.textMuted, fontSize: 18, marginBottom: 48 }}>Въведи домейна си и виж колко е готов за AI търсачките</p>
+        <p style={{ color: COLORS.textMuted, fontSize: 18, marginBottom: 8 }}>Въведи домейна си и виж колко е готов за AI търсачките</p>
+        <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 40 }}>Проверяваме 11 критерия • До 3 безплатни проверки на ден</p>
+        
         <div style={{ display: "flex", gap: 12, marginBottom: 32 }}>
           <input
             value={url}
@@ -235,48 +242,79 @@ function ScanSection() {
             placeholder="example.com"
             style={{ flex: 1, padding: "16px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }}
           />
-          <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer", opacity: scanning ? 0.7 : 1 }}>
+          <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1, whiteSpace: "nowrap" }}>
             {scanning ? "⏳ Сканирам..." : "Анализирай"}
           </button>
         </div>
 
-        {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "16px", marginBottom: 24, color: "#991b1b" }}>{error}</div>
+        {scanning && (
+          <div style={{ color: COLORS.blue, fontSize: 15, marginBottom: 24, padding: "16px", background: COLORS.white, borderRadius: 10, border: `1px solid ${COLORS.lightGray}` }}>
+            🔍 Проверяваме SEO, robots.txt, llms.txt, sitemap, schema.org, social media, Reddit...
+          </div>
         )}
 
-        {scanning && (
-          <div style={{ color: COLORS.blue, fontSize: 16, marginBottom: 24 }}>
-            🔍 Проверяваме sitemap, robots.txt, llms.txt, schema.org, FAQs...
+        {error && (
+          <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "20px 24px", marginBottom: 24, color: "#991b1b", fontSize: 15 }}>
+            ⚠️ {error}
+            {error.includes('лимита') && (
+              <div style={{ marginTop: 12 }}>
+                <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700, display: "inline-block" }}>
+                  Регистрирай се за неограничени проверки →
+                </a>
+              </div>
+            )}
           </div>
         )}
 
         {result && (
-          <div style={{ background: COLORS.white, borderRadius: 20, padding: 48, border: `1px solid ${COLORS.lightGray}` }}>
-            <div style={{ fontSize: 96, fontWeight: 900, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>
-              {result.totalScore}%
-            </div>
-            <div style={{ color: COLORS.textMuted, fontSize: 18, margin: "16px 0 32px" }}>
-              GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong>
+          <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, textAlign: "left" }}>
+            
+            {/* Score */}
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
+              <div style={{ fontSize: 88, fontWeight: 900, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>
+                {result.totalScore}%
+              </div>
+              <div style={{ color: COLORS.textMuted, fontSize: 18, marginTop: 8 }}>
+                GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong>
+              </div>
+              <div style={{ display: "inline-block", marginTop: 12, padding: "6px 16px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 14, fontWeight: 600 }}>
+                {result.totalScore > 60 ? "✓ Добро AI присъствие" : result.totalScore > 35 ? "⚠ Нужни подобрения" : "✗ Слабо AI присъствие"}
+              </div>
             </div>
 
-            <div style={{ textAlign: "left", marginBottom: 32 }}>
+            {/* Results grid */}
+            <div style={{ marginBottom: 32 }}>
               {Object.values(result.results).map((r: any) => (
-                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: `1px solid ${COLORS.lightGray}` }}>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", flexShrink: 0 }} />
-                  <div style={{ flex: 1 }}>
+                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 0", borderBottom: `1px solid ${COLORS.lightGray}` }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", flexShrink: 0, background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444" }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{r.label}</div>
-                    <div style={{ color: COLORS.textMuted, fontSize: 13 }}>{r.message}</div>
+                    <div style={{ color: COLORS.textMuted, fontSize: 13, marginTop: 2 }}>{r.message}</div>
                   </div>
-                  <div style={{ fontWeight: 800, color: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", fontSize: 16 }}>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", flexShrink: 0 }}>
                     {r.score}%
                   </div>
                 </div>
               ))}
             </div>
 
-            <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
-              🔓 Виж пълния доклад с препоръки →
-            </a>
+            {/* CTA */}
+            <div style={{ background: COLORS.navy, borderRadius: 16, padding: "28px 32px", textAlign: "center" }}>
+              <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>
+                🔒 Регистрирай се за пълен доклад
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginBottom: 20 }}>
+                Получи детайлни препоръки, готови файлове и стъпка по стъпка инструкции
+              </div>
+              <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 36px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
+                Виж пълния доклад →
+              </a>
+              {result.remaining !== undefined && (
+                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginTop: 12 }}>
+                  Останали ти {result.remaining} безплатни проверки днес
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
