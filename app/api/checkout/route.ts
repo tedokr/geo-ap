@@ -1,48 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY!
-
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const { priceId, promoCode } = body
+  const { priceId } = body
+
+  if (!priceId) {
+    return NextResponse.json({ error: 'No price ID' }, { status: 400 })
+  }
+
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  
+  if (!secretKey) {
+    console.error('STRIPE_SECRET_KEY is missing!')
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+  }
+
+  console.log('Using key starting with:', secretKey.substring(0, 12))
+  console.log('Price ID:', priceId)
 
   try {
-    // Създай Checkout Session
-    const params: any = {
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: 'https://geo-ap.vercel.app/dashboard?success=true',
-      cancel_url: 'https://geo-ap.vercel.app/#pricing',
-      allow_promotion_codes: true,
-    }
-
-    if (promoCode) {
-      params.discounts = [{ promotion_code: promoCode }]
-      delete params.allow_promotion_codes
-    }
+    const params = new URLSearchParams()
+    params.append('mode', 'subscription')
+    params.append('payment_method_types[0]', 'card')
+    params.append('line_items[0][price]', priceId)
+    params.append('line_items[0][quantity]', '1')
+    params.append('success_url', 'https://geo-ap.vercel.app/dashboard?success=true')
+    params.append('cancel_url', 'https://geo-ap.vercel.app/#pricing')
+    params.append('allow_promotion_codes', 'true')
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${STRIPE_SECRET}`,
+        'Authorization': `Bearer ${secretKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        mode: params.mode,
-        'payment_method_types[0]': 'card',
-        'line_items[0][price]': priceId,
-        'line_items[0][quantity]': '1',
-        success_url: params.success_url,
-        cancel_url: params.cancel_url,
-        allow_promotion_codes: 'true',
-      })
+      body: params.toString()
     })
 
     const session = await response.json()
+    console.log('Stripe response status:', response.status)
 
-    if (session.error) {
-      return NextResponse.json({ error: session.error.message }, { status: 400 })
+    if (!response.ok) {
+      console.error('Stripe error:', session.error)
+      return NextResponse.json({ error: session.error?.message || 'Stripe error' }, { status: 400 })
     }
 
     return NextResponse.json({ url: session.url })
