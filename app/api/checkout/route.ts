@@ -4,19 +4,19 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const { priceId } = body
 
-  if (!priceId) {
-    return NextResponse.json({ error: 'No price ID' }, { status: 400 })
-  }
-
   const secretKey = process.env.STRIPE_SECRET_KEY
-  
+
+  console.log('STRIPE KEY EXISTS:', !!secretKey)
+  console.log('STRIPE KEY PREFIX:', secretKey?.substring(0, 15))
+  console.log('PRICE ID:', priceId)
+
   if (!secretKey) {
-    console.error('STRIPE_SECRET_KEY is missing!')
-    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+    return NextResponse.json({ error: 'Stripe key missing' }, { status: 500 })
   }
 
-  console.log('Using key starting with:', secretKey.substring(0, 12))
-  console.log('Price ID:', priceId)
+  if (!priceId) {
+    return NextResponse.json({ error: 'Price ID missing' }, { status: 400 })
+  }
 
   try {
     const params = new URLSearchParams()
@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
     })
 
     const session = await response.json()
-    console.log('Stripe response status:', response.status)
+    console.log('STRIPE STATUS:', response.status)
+    console.log('STRIPE ERROR:', session.error?.message)
 
     if (!response.ok) {
-      console.error('Stripe error:', session.error)
       return NextResponse.json({ error: session.error?.message || 'Stripe error' }, { status: 400 })
     }
 
@@ -50,4 +50,5 @@ export async function POST(request: NextRequest) {
     console.error('Checkout error:', error)
     return NextResponse.json({ error: 'Checkout failed' }, { status: 500 })
   }
+}
 }
