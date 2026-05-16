@@ -162,7 +162,7 @@ export default function Dashboard() {
                   </div>
                 ))}
               <a href="/onboarding" style={{ display: "inline-block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>
-                ✨ Генерирай AI fix за тези проблеми →
+                ✨ Генерирай fix за тези проблеми →
               </a>
             </div>
           </div>
