@@ -42,7 +42,7 @@ function NavBar() {
           </span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Какво правим", "what"], ["Защо е важно", "why"], ["МСП", "sme"], ["Проверка", "scan"], ["Цени", "pricing"], ["Защо всеки месец", "whymonthly"]].map(([label, id]) => (
+          {[["Какво правим", "what"], ["Защо е важно", "why"], ["МСП", "sme"], ["Защо всеки месец", "whymonthly"], ["Цени", "pricing"]].map(([label, id]) => (
             <a key={id} href={`#${id}`} style={{
               color: activeSection === id ? COLORS.orange : "rgba(255,255,255,0.8)",
               textDecoration: "none", fontSize: 14, fontWeight: 500,
@@ -51,7 +51,7 @@ function NavBar() {
               paddingBottom: 2,
             }}>{label}</a>
           ))}
-          <a href="/login" style={{
+          <a href="#scan" style={{
             background: COLORS.orange, color: COLORS.navy, padding: "10px 24px",
             borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700,
           }}>Безплатна проверка</a>
@@ -370,20 +370,42 @@ function ScanSection() {
 function WhyMonthlySection() {
   return (
     <section id="whymonthly" style={{ padding: "120px 32px", background: COLORS.white }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <SectionTitle tag="Защо всеки месец" title='Стратегията "на час по лъжичка"' subtitle="Само 2 стъпки на месец — никога не те претоварваме." />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32, marginBottom: 48 }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <SectionTitle tag="Защо всеки месец" title="GEO оптимизацията не е еднократна задача" subtitle="AI алгоритмите се променят постоянно — това което работи днес, може да не работи след 3 месеца." />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32, marginBottom: 64 }}>
           {[
-            ["🎯", "Само 1-2 стъпки", "Никога не те претоварваме. Всеки месец получаваш точно 1-2 конкретни задачи — изпълними, ясни, ефективни."],
-            ["📈", "Виждаш прогреса", "Всеки месец скорът ти расте. Виждаш конкретна разлика — не само обещания."],
-            ["🔄", "Постоянна оптимизация", "AI алгоритмите се менят. Ние следим промените и адаптираме стратегията ти автоматично."],
+            ["🔄", "Алгоритмите се менят", "ChatGPT, Gemini и Perplexity обновяват моделите си редовно. Всяко обновление може да промени как и кого препоръчват. Без постоянна оптимизация — изпадаш от резултатите."],
+            ["📈", "Конкуренцията расте", "Всеки месец все повече бизнеси се оптимизират за AI. Ако ти стоиш на едно място, конкурентите те изпреварват. Само постоянното подобрение гарантира видимост."],
+            ["🎯", "Резултатите се натрупват", "GEO оптимизацията работи като сложна лихва — всяка малка стъпка надгражда върху предишната. След 6 месеца разликата е огромна спрямо тези, които не правят нищо."],
           ].map(([icon, title, desc]) => (
-            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 16, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
-              <div style={{ fontSize: 36, marginBottom: 16 }}>{icon as string}</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>{title as string}</h3>
-              <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, margin: 0 }}>{desc as string}</p>
+            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}` }}>
+              <div style={{ width: 56, height: 56, borderRadius: 14, background: `linear-gradient(135deg, rgba(245,166,35,0.15), rgba(46,107,173,0.1))`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 20 }}>{icon as string}</div>
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>{title as string}</h3>
+              <p style={{ color: COLORS.textMuted, fontSize: 15, lineHeight: 1.7, margin: 0 }}>{desc as string}</p>
             </div>
           ))}
+        </div>
+        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "48px 56px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}>
+          <div>
+            <h3 style={{ fontSize: 28, fontWeight: 800, color: COLORS.white, margin: "0 0 16px" }}>Не е достатъчно да го направиш веднъж.</h3>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 28px" }}>
+              SEO отне години да стане стандарт. GEO се развива пред очите ни — и тези, които действат сега, ще имат огромно предимство след 12 месеца.
+            </p>
+            <a href="#pricing" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 36px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>Започни сега →</a>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              ["Месец 1", "Базова оптимизация — sitemap, robots.txt, schema"],
+              ["Месец 3", "AI видимостта се подобрява, първи резултати"],
+              ["Месец 6", "Стабилно присъствие в AI резултати"],
+              ["Месец 12", "Значително предимство пред конкурентите"],
+            ].map(([month, desc]) => (
+              <div key={month as string} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div style={{ background: COLORS.orange, color: COLORS.navy, padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>{month as string}</div>
+                <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, paddingTop: 4 }}>{desc as string}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -443,7 +465,7 @@ function PricingSection() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
           {[
-            { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "1-2 стъпки на месец", "Email напомняния", "3 месеца история"], recommended: false },
+            { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "Конкретни препоръки", "Email напомняния", "3 месеца история"], recommended: false },
             { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
             { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
           ].map(plan => (
@@ -466,7 +488,7 @@ function PricingSection() {
               <button
                 onClick={() => handleCheckout(plan.key)}
                 disabled={loading === plan.key}
-                style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "16px", borderRadius: 12, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 16, opacity: loading === plan.key ? 0.7 : 1, boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
+                style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "16px", borderRadius: 12, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 16, opacity: loading === plan.key ? 0.7 : 1 }}>
                 {loading === plan.key ? "⏳ Зареждане..." : `Започни с ${plan.name}`}
               </button>
             </div>
