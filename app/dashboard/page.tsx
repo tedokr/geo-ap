@@ -37,15 +37,12 @@ export default function Dashboard() {
   const [error, setError] = useState("")
   const [history, setHistory] = useState<any[]>([])
   const [plan, setPlan] = useState<string>('free')
-  const [userEmail, setUserEmail] = useState<string>('')
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    // Check for success param
     const params = new URLSearchParams(window.location.search)
     if (params.get('success') === 'true') setSuccess(true)
 
-    // Get user email from Supabase session
     const getSession = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
@@ -56,7 +53,6 @@ export default function Dashboard() {
         })
         const user = await res.json()
         if (user?.email) {
-          setUserEmail(user.email)
           const userPlan = await getUserPlan(user.email)
           setPlan(userPlan)
         }
@@ -77,7 +73,7 @@ export default function Dashboard() {
         setError(data.message || "Грешка при сканиране.")
       } else {
         setResult(data)
-        setHistory(prev => [data, ...prev].slice(0, 5))
+        setHistory((prev: any[]) => [data, ...prev].slice(0, 5))
       }
     } catch {
       setError("Грешка при сканиране. Опитай пак.")
@@ -87,7 +83,8 @@ export default function Dashboard() {
 
   const getTopIssues = (results: any) => {
     const issues = Object.values(results).filter((r: any) => r.status !== 'good')
-   const score = Object.values(results).reduce((sum: number, r: any) => sum + (r.score as number), 0) / Object.keys(results).length
+    const total = Object.values(results).reduce((sum: number, r: any) => sum + Number(r.score), 0)
+    const score = total / Object.keys(results).length
     const count = score < 50 ? 2 : 1
     return issues.slice(0, count)
   }
@@ -96,7 +93,6 @@ export default function Dashboard() {
     <div style={{ minHeight: "100vh", background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       
-      {/* Header */}
       <header style={{ background: COLORS.navy, padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
         <a href="/" style={{ textDecoration: "none" }}>
           <span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
@@ -114,18 +110,16 @@ export default function Dashboard() {
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 32px" }}>
 
-        {/* Success banner */}
         {success && (
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 16, padding: "20px 24px", marginBottom: 32, display: "flex", alignItems: "center", gap: 16 }}>
             <span style={{ fontSize: 32 }}>🎉</span>
             <div>
               <div style={{ fontWeight: 700, color: "#166534", fontSize: 18 }}>Плащането е успешно!</div>
-              <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл в {plan.toUpperCase()} плана! Вече имаш достъп до всички функции.</div>
+              <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл в {plan.toUpperCase()} плана!</div>
             </div>
           </div>
         )}
 
-        {/* Welcome */}
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
           <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
@@ -136,7 +130,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Upgrade banner for free */}
         {plan === 'free' && (
           <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
             <div>
@@ -150,7 +143,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Scanner */}
         <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
           <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, marginBottom: 24 }}>🔍 Провери домейн</h2>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
@@ -169,11 +161,8 @@ export default function Dashboard() {
           {error && <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 18px", color: "#991b1b", fontSize: 14 }}>⚠️ {error}</div>}
         </div>
 
-        {/* Results */}
         {result && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
-            
-            {/* Score */}
             <div style={{ textAlign: "center", marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
               <div style={{ fontSize: 88, fontWeight: 900, lineHeight: 1, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444" }}>
                 {result.totalScore}%
@@ -186,7 +175,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Детайли само за платени */}
             {plan === 'free' ? (
               <div style={{ textAlign: "center", padding: "32px", background: COLORS.offWhite, borderRadius: 16 }}>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>🔒</div>
@@ -198,7 +186,6 @@ export default function Dashboard() {
               </div>
             ) : (
               <div>
-                {/* Топ препоръки — 1 или 2 */}
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>
                   🎯 {result.totalScore < 50 ? 'Две стъпки за този месец' : 'Една стъпка за този месец'}
                 </h3>
@@ -217,8 +204,6 @@ export default function Dashboard() {
                     )}
                   </div>
                 ))}
-
-                {/* Останалите скрити */}
                 <div style={{ padding: "16px 24px", borderRadius: 12, border: `1px dashed ${COLORS.lightGray}`, background: COLORS.offWhite, textAlign: "center" }}>
                   <span style={{ color: COLORS.textMuted, fontSize: 14 }}>
                     🔒 Останалите {Object.values(result.results).filter((r: any) => r.status !== 'good').length - getTopIssues(result.results).length} проблема ще бъдат показани следващия месец
@@ -229,11 +214,10 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* History */}
         {history.length > 1 && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>📋 История</h2>
-            {history.map((h, i) => (
+            {history.map((h: any, i: number) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: i < history.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: h.totalScore > 60 ? "#f0fdf4" : h.totalScore > 35 ? "#fffbeb" : "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, color: h.totalScore > 60 ? "#166534" : h.totalScore > 35 ? "#92400e" : "#991b1b", flexShrink: 0 }}>
                   {h.totalScore}%
