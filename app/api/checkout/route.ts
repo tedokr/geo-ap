@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// v3
 export async function POST(request: NextRequest) {
   const body = await request.json()
   const { priceId } = body
