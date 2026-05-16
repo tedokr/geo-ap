@@ -11,6 +11,13 @@ const COLORS = {
   textMuted: "#5A6B84",
 }
 
+const DOMAIN_LIMITS: Record<string, number> = {
+  free: 0,
+  lite: 1,
+  smart: 3,
+  pro: 5,
+}
+
 async function getUserPlan(email: string): Promise<string> {
   try {
     const res = await fetch(
@@ -38,6 +45,7 @@ export default function Dashboard() {
   const [history, setHistory] = useState<any[]>([])
   const [plan, setPlan] = useState<string>('free')
   const [success, setSuccess] = useState(false)
+  const [scannedDomains, setScannedDomains] = useState<string[]>([])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -62,6 +70,17 @@ export default function Dashboard() {
 
   const handleScan = async () => {
     if (!url) return
+
+    // Домейн лимит
+    const limit = DOMAIN_LIMITS[plan]
+    const cleanDomain = url.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase()
+    const alreadyScanned = scannedDomains.includes(cleanDomain)
+
+    if (!alreadyScanned && scannedDomains.length >= limit) {
+      setError(`С ${plan.toUpperCase()} план можеш да сканираш максимум ${limit} домейн${limit > 1 ? 'а' : ''}. Upgrade за повече.`)
+      return
+    }
+
     setScanning(true)
     setResult(null)
     setError("")
@@ -73,6 +92,9 @@ export default function Dashboard() {
       } else {
         setResult(data)
         setHistory((prev: any[]) => [data, ...prev].slice(0, 5))
+        if (!alreadyScanned) {
+          setScannedDomains(prev => [...prev, cleanDomain])
+        }
       }
     } catch {
       setError("Грешка при сканиране. Опитай пак.")
@@ -121,18 +143,19 @@ export default function Dashboard() {
           <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
           <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
             {plan === 'free' && 'Безплатен план — виж общия скор на домейна си'}
-            {plan === 'lite' && 'LITE план — виж какво трябва да оправиш'}
-            {plan === 'smart' && 'SMART план — пълни инструкции и генератор на съдържание'}
-            {plan === 'pro' && 'PRO план — пълна картина с конкурентен анализ'}
+            {plan === 'lite' && `LITE план — 1 домейн`}
+            {plan === 'smart' && 'SMART план — до 3 домейна + генератор на съдържание'}
+            {plan === 'pro' && 'PRO план — до 5 домейна + пълна картина'}
           </p>
         </div>
 
+        {/* Upgrade/Free banner */}
         {plan === 'free' && (
           <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
             <div>
               <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 6 }}>⬆️ UPGRADE</div>
               <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
-              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>С LITE план получаваш 1-2 конкретни стъпки всеки месец</div>
+              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
             </div>
             <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap", flexShrink: 0 }}>
               Виж плановете →
@@ -140,8 +163,29 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Upgrade от LITE към SMART */}
+        {plan === 'lite' && (
+          <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "20px 28px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+            <div>
+              <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 4 }}>⭐ SMART ПЛАН</div>
+              <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
+            </div>
+            <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap", flexShrink: 0 }}>
+              Upgrade към SMART →
+            </a>
+          </div>
+        )}
+
+        {/* Scanner */}
         <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, marginBottom: 24 }}>🔍 Провери домейн</h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, margin: 0 }}>🔍 Провери домейн</h2>
+            {plan !== 'free' && (
+              <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>
+                {scannedDomains.length}/{DOMAIN_LIMITS[plan]} домейна
+              </span>
+            )}
+          </div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <input
               value={url}
@@ -155,9 +199,19 @@ export default function Dashboard() {
             </button>
           </div>
           {scanning && <div style={{ color: COLORS.blue, fontSize: 14, padding: "12px 16px", background: COLORS.offWhite, borderRadius: 8 }}>🔍 Проверяваме 11 критерия...</div>}
-          {error && <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 18px", color: "#991b1b", fontSize: 14 }}>⚠️ {error}</div>}
+          {error && (
+            <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 18px", color: "#991b1b", fontSize: 14 }}>
+              ⚠️ {error}
+              {error.includes('Upgrade') && (
+                <a href="/#pricing" style={{ display: "inline-block", marginLeft: 12, background: COLORS.orange, color: COLORS.navy, padding: "4px 16px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+                  Upgrade →
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* Results */}
         {result && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
             <div style={{ textAlign: "center", marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
@@ -184,7 +238,7 @@ export default function Dashboard() {
             ) : (
               <div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>
-                  🎯 {result.totalScore < 50 ? 'Две стъпки за този месец' : 'Една стъпка за този месец'}
+                  🎯 Препоръки за подобрение
                 </h3>
                 {getTopIssues(result.results, result.totalScore).map((r: any) => (
                   <div key={r.label} style={{ marginBottom: 16, padding: "20px 24px", borderRadius: 12, border: `2px solid ${COLORS.orange}`, background: "rgba(245,166,35,0.05)" }}>
@@ -201,11 +255,15 @@ export default function Dashboard() {
                     )}
                   </div>
                 ))}
-                <div style={{ padding: "16px 24px", borderRadius: 12, border: `1px dashed ${COLORS.lightGray}`, background: COLORS.offWhite, textAlign: "center" }}>
-                  <span style={{ color: COLORS.textMuted, fontSize: 14 }}>
-                    🔒 Останалите {Object.values(result.results).filter((r: any) => r.status !== 'good').length - getTopIssues(result.results, result.totalScore).length} проблема ще бъдат показани следващия месец
-                  </span>
-                </div>
+
+                {plan === 'lite' && (
+                  <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+                    <div style={{ color: COLORS.white, fontSize: 14 }}>Искаш стъпка по стъпка инструкции как да оправиш тези проблеми?</div>
+                    <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 20px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap", flexShrink: 0 }}>
+                      Upgrade към SMART →
+                    </a>
+                  </div>
+                )}
               </div>
             )}
           </div>
