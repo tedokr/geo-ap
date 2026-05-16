@@ -49,7 +49,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('success') === 'true') setSuccess(true)
+    if (params.get('success') === 'true') {
+      setSuccess(true)
+      setTimeout(() => window.location.reload(), 3000)
+    }
 
     const getSession = async () => {
       try {
@@ -71,7 +74,6 @@ export default function Dashboard() {
   const handleScan = async () => {
     if (!url) return
 
-    // Домейн лимит
     const limit = DOMAIN_LIMITS[plan]
     const cleanDomain = url.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase()
     const alreadyScanned = scannedDomains.includes(cleanDomain)
@@ -134,7 +136,7 @@ export default function Dashboard() {
             <span style={{ fontSize: 32 }}>🎉</span>
             <div>
               <div style={{ fontWeight: 700, color: "#166534", fontSize: 18 }}>Плащането е успешно!</div>
-              <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл в {plan.toUpperCase()} плана!</div>
+              <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл в {plan.toUpperCase()} плана! Зарежда се...</div>
             </div>
           </div>
         )}
@@ -143,13 +145,12 @@ export default function Dashboard() {
           <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
           <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
             {plan === 'free' && 'Безплатен план — виж общия скор на домейна си'}
-            {plan === 'lite' && `LITE план — 1 домейн`}
+            {plan === 'lite' && 'LITE план — 1 домейн'}
             {plan === 'smart' && 'SMART план — до 3 домейна + генератор на съдържание'}
             {plan === 'pro' && 'PRO план — до 5 домейна + пълна картина'}
           </p>
         </div>
 
-        {/* Upgrade/Free banner */}
         {plan === 'free' && (
           <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
             <div>
@@ -163,7 +164,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Upgrade от LITE към SMART */}
         {plan === 'lite' && (
           <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "20px 28px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
             <div>
@@ -176,7 +176,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Scanner */}
         <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, margin: 0 }}>🔍 Провери домейн</h2>
@@ -211,7 +210,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Results */}
         {result && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
             <div style={{ textAlign: "center", marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
