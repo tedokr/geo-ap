@@ -6,6 +6,7 @@ const COLORS = {
   blue: "#2E6BAD",
   lightBlue: "#4A90D9",
   orange: "#F5A623",
+  orangeHover: "#E8951A",
   white: "#FFFFFF",
   offWhite: "#F8FAFD",
   lightGray: "#E8EDF4",
@@ -15,6 +16,7 @@ const COLORS = {
 
 function NavBar() {
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", h);
@@ -39,15 +41,71 @@ function NavBar() {
             GEO<span style={{ color: COLORS.orange }}>.app</span>
           </span>
         </div>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          {[["Какво правим", "what"], ["Защо е важно", "why"], ["Проверка", "scan"], ["Цени", "pricing"]].map(([label, id]) => (
-            <a key={id} href={`#${id}`} style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{label}</a>
+        <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+          {[["Какво правим", "what"], ["Защо е важно", "why"], ["МСП", "sme"], ["Проверка", "scan"], ["Цени", "pricing"], ["Защо всеки месец", "whymonthly"]].map(([label, id]) => (
+            <a key={id} href={`#${id}`} style={{
+              color: activeSection === id ? COLORS.orange : "rgba(255,255,255,0.8)",
+              textDecoration: "none", fontSize: 14, fontWeight: 500,
+              transition: "color 0.2s",
+              borderBottom: activeSection === id ? `2px solid ${COLORS.orange}` : "2px solid transparent",
+              paddingBottom: 2,
+            }}>{label}</a>
           ))}
-          <a href="/login" style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>Влез</a>
-          <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Регистрация</a>
+          <a href="/login" style={{
+            background: COLORS.orange, color: COLORS.navy, padding: "10px 24px",
+            borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700,
+          }}>Безплатна проверка</a>
         </div>
       </div>
     </nav>
+  );
+}
+
+function MockScoreCard() {
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.06)", backdropFilter: "blur(20px)",
+      border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: 32,
+      boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+    }}>
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>AI Visibility Score</div>
+        <div style={{ position: "relative", width: 160, height: 160, margin: "0 auto" }}>
+          <svg viewBox="0 0 160 160" style={{ transform: "rotate(-90deg)" }}>
+            <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="12" />
+            <circle cx="80" cy="80" r="70" fill="none" stroke={COLORS.orange} strokeWidth="12"
+              strokeDasharray={`${0.42 * 2 * Math.PI * 70} ${2 * Math.PI * 70}`}
+              strokeLinecap="round" />
+          </svg>
+          <div style={{
+            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            fontSize: 44, fontWeight: 800, color: COLORS.white,
+          }}>42<span style={{ fontSize: 20, color: COLORS.orange }}>%</span></div>
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, position: "relative" }}>
+        {[1,2,3,4,5].map((i) => (
+          <div key={i} style={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            padding: "10px 16px", borderRadius: 10,
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            filter: "blur(6px)", userSelect: "none",
+          }}>
+            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.3)" }}>{"██████████".slice(0, 4 + i * 2)}</span>
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.2)" }}>? ? ?</span>
+          </div>
+        ))}
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: COLORS.orange,
+            background: "rgba(27,42,74,0.8)", padding: "8px 18px", borderRadius: 8,
+          }}>🔒 Детайли след регистрация</span>
+        </div>
+      </div>
+      <div style={{ marginTop: 20, textAlign: "center", fontSize: 13, color: "rgba(255,255,255,0.4)", fontStyle: "italic" }}>
+        Регистрирай се за пълен доклад →
+      </div>
+    </div>
   );
 }
 
@@ -59,70 +117,73 @@ function HeroSection() {
       minHeight: "100vh", background: `linear-gradient(165deg, ${COLORS.navy} 0%, #243B65 50%, ${COLORS.blue} 100%)`,
       display: "flex", alignItems: "center", position: "relative", overflow: "hidden",
     }}>
+      <div style={{ position: "absolute", top: "-20%", right: "-10%", width: 700, height: 700, borderRadius: "50%", background: `radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%)` }} />
+      <div style={{ position: "absolute", bottom: "-30%", left: "-15%", width: 600, height: 600, borderRadius: "50%", background: `radial-gradient(circle, rgba(46,107,173,0.2) 0%, transparent 70%)` }} />
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 32px 80px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative", zIndex: 2 }}>
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(40px)", transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 20, padding: "6px 16px", marginBottom: 24 }}>
-            <span style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600 }}>✨ Generative Engine Optimization</span>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 100, padding: "6px 16px", marginBottom: 24 }}>
+            <span style={{ fontSize: 12, color: COLORS.orange, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase" }}>AI Search Optimization Platform</span>
           </div>
-          <h1 style={{ fontSize: 52, fontWeight: 800, color: COLORS.white, lineHeight: 1.15, marginBottom: 24 }}>
-            Направи бизнеса си<br /><span style={{ color: COLORS.orange }}>видим за AI</span>
+          <h1 style={{ fontSize: 56, fontWeight: 800, color: COLORS.white, lineHeight: 1.1, letterSpacing: "-1.5px", margin: "0 0 24px" }}>
+            Направи бизнеса си{" "}
+            <span style={{ background: `linear-gradient(135deg, ${COLORS.orange}, #F7C948)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>видим за AI</span>
           </h1>
-          <p style={{ fontSize: 18, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, marginBottom: 40 }}>
-            Анализираме дигиталното ти присъствие и те правим откриваем от ChatGPT, Claude, Perplexity и Google AI Overviews.
+          <p style={{ fontSize: 19, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 40px", maxWidth: 500 }}>
+            ChatGPT, Gemini и Perplexity вече дават отговори, не просто резултати. GEO.app ти помага да бъдеш открит и препоръчан от AI търсачките.
           </p>
-          <div style={{ display: "flex", gap: 16, marginBottom: 48 }}>
-            <a href="#scan" style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
-              Провери домейна си →
-            </a>
-            <a href="#why" style={{ background: "rgba(255,255,255,0.1)", color: COLORS.white, padding: "16px 32px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 600, border: "1px solid rgba(255,255,255,0.2)" }}>
-              Научи повече
+          <div style={{ display: "flex", gap: 16 }}>
+            <a href="#scan" style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 4px 24px rgba(245,166,35,0.35)" }}>
+              Провери сайта си безплатно →
             </a>
           </div>
-          <div style={{ display: "flex", gap: 32 }}>
+          <div style={{ display: "flex", gap: 32, marginTop: 40 }}>
             {[["14", "AI показателя"], ["2 мин", "за анализ"], ["100%", "безплатно"]].map(([num, label]) => (
               <div key={label}>
-                <div style={{ color: COLORS.orange, fontSize: 28, fontWeight: 800 }}>{num}</div>
-                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>{label}</div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: COLORS.orange }}>{num}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
-        <div style={{ opacity: visible ? 1 : 0, transition: "all 1s 0.3s", background: "rgba(255,255,255,0.05)", borderRadius: 20, padding: 32, border: "1px solid rgba(255,255,255,0.1)" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 16 }}>GEO СКОР ПРЕГЛЕД</div>
-          {[["Sitemap.xml", 92, "#22c55e"], ["Schema.org", 78, "#22c55e"], ["robots.txt", 45, "#f59e0b"], ["llms.txt", 0, "#ef4444"], ["FAQs", 60, "#f59e0b"]].map(([label, val, color]) => (
-            <div key={label as string} style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ color: COLORS.white, fontSize: 14 }}>{label as string}</span>
-                <span style={{ color: color as string, fontSize: 14, fontWeight: 700 }}>{val}%</span>
-              </div>
-              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 4, height: 6 }}>
-                <div style={{ width: `${val}%`, height: 6, borderRadius: 4, background: color as string }} />
-              </div>
-            </div>
-          ))}
+        <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(60px)", transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s" }}>
+          <MockScoreCard />
         </div>
       </div>
     </section>
   );
 }
 
-function WhatSection() {
+function SectionTitle({ tag, title, subtitle, light = false }: { tag?: string, title: string, subtitle?: string, light?: boolean }) {
   return (
-    <section id="what" style={{ padding: "100px 32px", background: COLORS.white }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Какво правим</h2>
-        <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto 64px" }}>Четири стъпки към пълна AI видимост</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>
-          {[
-            ["🔍", "Анализираме AI видимостта", "Проверяваме 14 технически показателя за готовност към AI търсачки"],
-            ["📊", "Персонализиран отчет", "Получаваш детайлен доклад с точен скор и конкретни препоръки"],
-            ["📅", "Месечно проследяване", "Следим прогреса ти всеки месец и даваме по 2 нови стъпки"],
-            ["🚀", "От SEO към AEO", "Преминаваш от класическо SEO към Answer Engine Optimization"],
-          ].map(([icon, title, desc]) => (
-            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 16, padding: 32, textAlign: "left", border: `1px solid ${COLORS.lightGray}` }}>
-              <div style={{ fontSize: 36, marginBottom: 16 }}>{icon as string}</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>{title as string}</h3>
-              <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, margin: 0 }}>{desc as string}</p>
+    <div style={{ textAlign: "center", marginBottom: 64 }}>
+      {tag && (
+        <div style={{ display: "inline-flex", padding: "6px 18px", borderRadius: 100, marginBottom: 16, background: light ? "rgba(245,166,35,0.12)" : "rgba(46,107,173,0.1)", border: `1px solid ${light ? "rgba(245,166,35,0.25)" : "rgba(46,107,173,0.15)"}` }}>
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" as const, color: light ? COLORS.orange : COLORS.blue }}>{tag}</span>
+        </div>
+      )}
+      <h2 style={{ fontSize: 42, fontWeight: 800, color: light ? COLORS.white : COLORS.navy, letterSpacing: "-1px", margin: "0 0 16px", lineHeight: 1.2 }}>{title}</h2>
+      {subtitle && <p style={{ fontSize: 18, color: light ? "rgba(255,255,255,0.65)" : COLORS.textMuted, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>{subtitle}</p>}
+    </div>
+  );
+}
+
+function WhatSection() {
+  const cards = [
+    { icon: "🔍", title: "Анализираме AI видимостта", desc: "Сканираме сайта ви по 14 ключови показателя, за да определим колко лесно AI системите могат да ви открият и препоръчат." },
+    { icon: "📊", title: "Персонализиран отчет", desc: "Получавате доклад с конкретна стъпка за подобрение — ясна, приложима, адаптирана към вашия бизнес." },
+    { icon: "🔄", title: "Месечно проследяване", desc: "Всеки месец проверяваме прогреса ви и ви даваме следващата стъпка. Постепенно, без претоварване." },
+    { icon: "🚀", title: "От SEO към AEO", desc: "Извеждаме ви отвъд класическото SEO — в ерата на Answer Engine Optimization, където AI дава отговори, а не линкове." },
+  ];
+  return (
+    <section id="what" style={{ padding: "120px 32px", background: COLORS.offWhite }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <SectionTitle tag="Какво правим" title="GEO.app подобрява онлайн откриваемостта ви" subtitle="Преработваме дигиталното ви присъствие, така че да бъде лесно разбираемо за AI системи като ChatGPT, Gemini и други." />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
+          {cards.map((c, i) => (
+            <div key={i} style={{ background: COLORS.white, borderRadius: 16, padding: 32, border: "1px solid rgba(27,42,74,0.06)", boxShadow: "0 2px 16px rgba(27,42,74,0.04)" }}>
+              <div style={{ width: 56, height: 56, borderRadius: 14, background: `linear-gradient(135deg, rgba(245,166,35,0.12), rgba(46,107,173,0.08))`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, marginBottom: 20 }}>{c.icon}</div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: "0 0 12px" }}>{c.title}</h3>
+              <p style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.7, margin: 0 }}>{c.desc}</p>
             </div>
           ))}
         </div>
@@ -132,31 +193,39 @@ function WhatSection() {
 }
 
 function WhySection() {
+  const stats = [
+    { num: "9 млрд", label: "AI взаимодействия през 2025г.", color: COLORS.orange },
+    { num: "50%", label: "пазарен дял на AI търсачките днес", color: COLORS.lightBlue },
+    { num: "60%", label: "на търсенията ще са през AI до 2028г.", color: COLORS.orange },
+    { num: "90%", label: "от МСП не са готови за AI ерата", color: "#E74C3C" },
+  ];
   return (
-    <section id="why" style={{ padding: "100px 32px", background: COLORS.offWhite }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 64 }}>
-          <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Защо е важно</h2>
-          <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto" }}>Светът на търсенето се промени завинаги</p>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, marginBottom: 64 }}>
-          {[["9 млрд", "AI взаимодействия дневно"], ["50%", "пазарен дял на AI търсене"], ["60%", "до 2028г."], ["90%", "от МСП не са готови"]].map(([num, label]) => (
-            <div key={label as string} style={{ background: COLORS.white, borderRadius: 16, padding: 32, textAlign: "center", border: `1px solid ${COLORS.lightGray}` }}>
-              <div style={{ fontSize: 40, fontWeight: 900, color: COLORS.orange, marginBottom: 8 }}>{num as string}</div>
-              <div style={{ color: COLORS.textMuted, fontSize: 15 }}>{label as string}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
-          <div style={{ background: COLORS.white, borderRadius: 16, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
-            <div style={{ color: COLORS.textMuted, fontSize: 13, fontWeight: 600, marginBottom: 16 }}>🔵 GOOGLE ТЪРСЕНЕ</div>
-            <div style={{ color: COLORS.navy, fontSize: 16, fontWeight: 600, marginBottom: 12 }}>"добър ресторант в София"</div>
-            <div style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.8 }}>↓ 10 сини линка<br />↓ Потребителят избира кой да отвори<br />↓ Чете 3-4 сайта<br />↓ Взима решение</div>
+    <section id="why" style={{ padding: "120px 32px", background: `linear-gradient(170deg, ${COLORS.navy} 0%, #1E3558 100%)`, position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: `radial-gradient(circle at 20% 80%, rgba(245,166,35,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(46,107,173,0.08) 0%, transparent 50%)` }} />
+      <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 2 }}>
+        <SectionTitle light tag="Защо е важно" title="Онлайн търсенето се промени завинаги" subtitle="AI асистентите вече дават отговори, не просто резултати. Ако бизнесът ви не е оптимизиран за AI — просто не съществувате за милиони потребители." />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {stats.map((s, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 20, background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ fontSize: 36, fontWeight: 800, color: s.color, minWidth: 120 }}>{s.num}</div>
+                <div style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{s.label}</div>
+              </div>
+            ))}
           </div>
-          <div style={{ background: COLORS.navy, borderRadius: 16, padding: 32, border: `2px solid ${COLORS.orange}` }}>
-            <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 16 }}>✨ AI АСИСТЕНТ</div>
-            <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 600, marginBottom: 12 }}>"добър ресторант в София"</div>
-            <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.8 }}>↓ AI дава директен отговор<br />↓ Споменава 2-3 конкретни места<br />↓ <span style={{ color: COLORS.orange, fontWeight: 700 }}>Или те споменава — или не</span></div>
+          <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, padding: 40, border: "1px solid rgba(255,255,255,0.08)" }}>
+            <h3 style={{ fontSize: 24, fontWeight: 700, color: COLORS.white, margin: "0 0 20px" }}>Google vs AI: как се търси днес</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 20 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textMuted, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>Google търсене</div>
+                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>"best matcha latte Sofia" → 10 сини линка, реклами. Потребителят сам решава кой линк да натисне.</div>
+              </div>
+              <div style={{ textAlign: "center", fontSize: 24 }}>↓</div>
+              <div style={{ background: `linear-gradient(135deg, rgba(245,166,35,0.12), rgba(245,166,35,0.04))`, borderRadius: 12, padding: 20, border: `1px solid rgba(245,166,35,0.2)` }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.orange, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>AI асистент</div>
+                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>"where's the best matcha latte in Sofia?" → Конкретен отговор с препоръки. Или те споменава — или не. Няма среден вариант.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -165,35 +234,31 @@ function WhySection() {
 }
 
 function SMESection() {
+  const problems = [
+    { title: "Неструктурирана информация", desc: "Съдържанието не е организирано по начин, който AI моделите разбират — липсват schema markup, FAQ секции, структурирани данни.", icon: "📄" },
+    { title: "Липса на технически файлове", desc: "Няма llms.txt, robots.txt не е оптимизиран за AI ботове, sitemap.xml липсва или е невалиден.", icon: "⚙️" },
+    { title: "Нисък Domain Authority", desc: "Малките бизнеси нямат достатъчно авторитет в очите на AI системите, за да бъдат препоръчвани.", icon: "📉" },
+    { title: "Не знаят, че проблемът съществува", desc: "90% от МСП дори не осъзнават, че AI търсачките са нов канал — и че клиенти ги търсят там.", icon: "🔇" },
+  ];
   return (
-    <section style={{ padding: "100px 32px", background: COLORS.white }}>
+    <section id="sme" style={{ padding: "120px 32px", background: COLORS.offWhite }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 64 }}>
-          <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Защо МСП не са подготвени</h2>
-          <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto" }}>4 причини, поради които бизнесите са невидими за AI</p>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 32, marginBottom: 64 }}>
-          {[
-            ["❌", "Неструктурирана информация", "Бизнес информацията е разпръсната в различни формати и места — AI системите не могат да я разберат и използват."],
-            ["❌", "Липса на технически файлове", "Няма llms.txt, robots.txt не е оптимизиран за AI ботове, sitemap.xml липсва или е невалиден."],
-            ["❌", "Нисък Domain Authority", "Малките бизнеси нямат достатъчно авторитет в очите на AI системите, за да бъдат препоръчвани."],
-            ["❌", "Липса на осведоменост", "90% от МСП дори не знаят, че AI търсачките индексират по различен начин от Google."],
-          ].map(([icon, title, desc]) => (
-            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 16, padding: 32, border: `1px solid ${COLORS.lightGray}`, display: "flex", gap: 20 }}>
-              <div style={{ fontSize: 32, flexShrink: 0 }}>{icon as string}</div>
+        <SectionTitle tag="Проблемът" title="90% от МСП не са подготвени" subtitle="Повечето малки и средни предприятия са невидими за AI — информацията им е неструктурирана, неподредена и ненасочена." />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 48 }}>
+          {problems.map((p, i) => (
+            <div key={i} style={{ background: COLORS.white, borderRadius: 16, padding: 32, border: "1px solid rgba(27,42,74,0.06)", display: "flex", gap: 20, boxShadow: "0 2px 12px rgba(27,42,74,0.03)" }}>
+              <div style={{ width: 52, height: 52, borderRadius: 14, flexShrink: 0, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>{p.icon}</div>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>{title as string}</h3>
-                <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, margin: 0 }}>{desc as string}</p>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: "0 0 8px" }}>{p.title}</h3>
+                <p style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.7, margin: 0 }}>{p.desc}</p>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "48px 64px", textAlign: "center" }}>
-          <h3 style={{ color: COLORS.white, fontSize: 32, fontWeight: 800, marginBottom: 16 }}>Ти можеш да бъдеш изключението. 🚀</h3>
-          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 18, marginBottom: 32 }}>Докато конкурентите ти чакат, ти вече можеш да си готов.</p>
-          <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 18, fontWeight: 700, display: "inline-block" }}>
-            Започни безплатно →
-          </a>
+        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "48px 56px", textAlign: "center" }}>
+          <h3 style={{ fontSize: 28, fontWeight: 800, color: COLORS.white, margin: "0 0 12px" }}>Ти можеш да бъдеш изключението.</h3>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", margin: "0 0 28px" }}>Докато конкурентите ти не знаят за GEO — ти вече оптимизираш.</p>
+          <a href="#scan" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 36px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>Започни безплатно →</a>
         </div>
       </div>
     </section>
@@ -201,18 +266,18 @@ function SMESection() {
 }
 
 function ScanSection() {
-  const [url, setUrl] = useState("");
+  const [domain, setDomain] = useState("");
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
 
   const handleScan = async () => {
-    if (!url) return;
+    if (!domain) return;
     setScanning(true);
     setResult(null);
     setError("");
     try {
-      const res = await fetch(`/api/scan?domain=${encodeURIComponent(url)}`);
+      const res = await fetch(`/api/scan?domain=${encodeURIComponent(domain)}`);
       const data = await res.json();
       if (data.error === 'rate_limit') {
         setError(data.message);
@@ -228,136 +293,97 @@ function ScanSection() {
   };
 
   return (
-    <section id="scan" style={{ padding: "100px 32px", background: COLORS.offWhite }}>
-      <div style={{ maxWidth: 750, margin: "0 auto", textAlign: "center" }}>
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Безплатна GEO проверка</h2>
-        <p style={{ color: COLORS.textMuted, fontSize: 18, marginBottom: 8 }}>Въведи домейна си и виж колко е готов за AI търсачките</p>
-        <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 40 }}>Проверяваме 11 критерия • До 3 безплатни проверки на ден</p>
-        
-        <div style={{ display: "flex", gap: 12, marginBottom: 32 }}>
-          <input
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleScan()}
-            placeholder="example.com"
-            style={{ flex: 1, padding: "16px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }}
-          />
-          <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1, whiteSpace: "nowrap" }}>
-            {scanning ? "⏳ Сканирам..." : "Анализирай"}
-          </button>
-        </div>
-
-        {scanning && (
-          <div style={{ color: COLORS.blue, fontSize: 15, marginBottom: 24, padding: "16px", background: COLORS.white, borderRadius: 10, border: `1px solid ${COLORS.lightGray}` }}>
-            🔍 Проверяваме SEO, robots.txt, llms.txt, sitemap, schema.org, social media, Reddit...
+    <section id="scan" style={{ padding: "120px 32px", background: `linear-gradient(170deg, #F0F5FB 0%, ${COLORS.white} 100%)` }}>
+      <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+        <SectionTitle tag="Безплатна проверка" title="Провери AI видимостта си за 2 минути" subtitle="Въведи домейна си и виж колко е подготвен бизнесът ти за AI ерата." />
+        <div style={{ background: COLORS.white, borderRadius: 20, padding: 48, boxShadow: "0 8px 40px rgba(27,42,74,0.08)", border: "1px solid rgba(27,42,74,0.06)" }}>
+          <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+            <input
+              type="text" placeholder="yourbusiness.com" value={domain}
+              onChange={e => setDomain(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleScan()}
+              style={{ flex: 1, padding: "16px 20px", borderRadius: 12, fontSize: 16, border: `2px solid ${COLORS.lightGray}`, outline: "none" }}
+            />
+            <button onClick={handleScan} disabled={scanning} style={{
+              background: scanning ? COLORS.textMuted : COLORS.orange,
+              color: scanning ? COLORS.white : COLORS.navy,
+              padding: "16px 32px", borderRadius: 12, border: "none",
+              fontSize: 16, fontWeight: 700, cursor: scanning ? "wait" : "pointer",
+            }}>
+              {scanning ? "Анализирам..." : "Анализирай →"}
+            </button>
           </div>
-        )}
+          <p style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 0 }}>Без регистрация. Безплатен анализ. До 3 проверки на ден.</p>
 
-        {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "20px 24px", marginBottom: 24, color: "#991b1b", fontSize: 15 }}>
-            ⚠️ {error}
-            {error.includes('лимита') && (
-              <div style={{ marginTop: 12 }}>
-                <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700, display: "inline-block" }}>
-                  Регистрирай се за неограничени проверки →
-                </a>
+          {scanning && (
+            <div style={{ marginTop: 32 }}>
+              <div style={{ height: 6, borderRadius: 3, background: COLORS.lightGray, overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.orange})`, width: "60%" }} />
               </div>
-            )}
-          </div>
-        )}
-
-        {result && (
-          <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, textAlign: "left" }}>
-            
-            {/* Score */}
-            <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ fontSize: 88, fontWeight: 900, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>
-                {result.totalScore}%
-              </div>
-              <div style={{ color: COLORS.textMuted, fontSize: 18, marginTop: 8 }}>
-                GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong>
-              </div>
-              <div style={{ display: "inline-block", marginTop: 12, padding: "6px 16px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 14, fontWeight: 600 }}>
-                {result.totalScore > 60 ? "✓ Добро AI присъствие" : result.totalScore > 35 ? "⚠ Нужни подобрения" : "✗ Слабо AI присъствие"}
-              </div>
+              <p style={{ fontSize: 14, color: COLORS.textMuted, marginTop: 12 }}>Проверяваме sitemap, robots.txt, llms.txt, FAQ, structured data...</p>
             </div>
+          )}
 
-            {/* Results grid */}
-            <div style={{ marginBottom: 32 }}>
-              {Object.values(result.results).map((r: any) => (
-                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 0", borderBottom: `1px solid ${COLORS.lightGray}` }}>
-                  <div style={{ width: 10, height: 10, borderRadius: "50%", flexShrink: 0, background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444" }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{r.label}</div>
-                    <div style={{ color: COLORS.textMuted, fontSize: 13, marginTop: 2 }}>{r.message}</div>
-                  </div>
-                  <div style={{ fontWeight: 800, fontSize: 15, color: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", flexShrink: 0 }}>
-                    {r.score}%
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <div style={{ background: COLORS.navy, borderRadius: 16, padding: "28px 32px", textAlign: "center" }}>
-              <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>
-                🔒 Регистрирай се за пълен доклад
-              </div>
-              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginBottom: 20 }}>
-                Получи детайлни препоръки, готови файлове и стъпка по стъпка инструкции
-              </div>
-              <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 36px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
-                Виж пълния доклад →
-              </a>
-              {result.remaining !== undefined && (
-                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginTop: 12 }}>
-                  Останали ти {result.remaining} безплатни проверки днес
+          {error && (
+            <div style={{ marginTop: 24, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "16px 20px", color: "#991b1b", fontSize: 14 }}>
+              ⚠️ {error}
+              {error.includes('лимита') && (
+                <div style={{ marginTop: 12 }}>
+                  <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, display: "inline-block" }}>
+                    Регистрирай се за неограничени проверки →
+                  </a>
                 </div>
               )}
             </div>
-          </div>
-        )}
+          )}
+
+          {result && !scanning && (
+            <div style={{ marginTop: 32 }}>
+              <div style={{ position: "relative", width: 180, height: 180, margin: "0 auto 24px" }}>
+                <svg viewBox="0 0 180 180" style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx="90" cy="90" r="78" fill="none" stroke={COLORS.lightGray} strokeWidth="14" />
+                  <circle cx="90" cy="90" r="78" fill="none"
+                    stroke={result.totalScore > 60 ? "#4CAF50" : result.totalScore > 35 ? COLORS.orange : "#E74C3C"}
+                    strokeWidth="14"
+                    strokeDasharray={`${(result.totalScore / 100) * 2 * Math.PI * 78} ${2 * Math.PI * 78}`}
+                    strokeLinecap="round" />
+                </svg>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+                  <div style={{ fontSize: 48, fontWeight: 800, color: COLORS.navy }}>
+                    {result.totalScore}<span style={{ fontSize: 24, color: COLORS.textMuted }}>%</span>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: 16, color: COLORS.navy, fontWeight: 600, marginBottom: 8 }}>AI Visibility Score за {domain}</p>
+              <p style={{ fontSize: 14, color: COLORS.textMuted, marginBottom: 24 }}>Искаш да видиш какво точно да подобриш? Регистрирай се за детайлен доклад.</p>
+              <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, border: "none", padding: "14px 36px", borderRadius: 10, fontSize: 16, fontWeight: 700, textDecoration: "none", boxShadow: "0 4px 20px rgba(245,166,35,0.3)" }}>
+                Получи пълния доклад →
+              </a>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
 }
+
 function WhyMonthlySection() {
   return (
-    <section id="whymonthly" style={{ padding: "100px 32px", background: COLORS.white }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center" }}>
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.navy, marginBottom: 16 }}>Защо всеки месец?</h2>
-        <p style={{ color: COLORS.textMuted, fontSize: 18, maxWidth: 600, margin: "0 auto 64px" }}>Стратегията "на час по лъжичка" — само 2 стъпки на месец</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32, marginBottom: 64 }}>
+    <section id="whymonthly" style={{ padding: "120px 32px", background: COLORS.white }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <SectionTitle tag="Защо всеки месец" title='Стратегията "на час по лъжичка"' subtitle="Само 2 стъпки на месец — никога не те претоварваме." />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32, marginBottom: 48 }}>
           {[
-            ["🎯", "Само 2 стъпки", "Никога не те претоварваме. Всеки месец получаваш точно 2 конкретни задачи — изпълними, ясни, ефективни."],
+            ["🎯", "Само 1-2 стъпки", "Никога не те претоварваме. Всеки месец получаваш точно 1-2 конкретни задачи — изпълними, ясни, ефективни."],
             ["📈", "Виждаш прогреса", "Всеки месец скорът ти расте. Виждаш конкретна разлика — не само обещания."],
             ["🔄", "Постоянна оптимизация", "AI алгоритмите се менят. Ние следим промените и адаптираме стратегията ти автоматично."],
           ].map(([icon, title, desc]) => (
-            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 16, padding: 32, border: `1px solid ${COLORS.lightGray}`, textAlign: "left" }}>
+            <div key={title as string} style={{ background: COLORS.offWhite, borderRadius: 16, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
               <div style={{ fontSize: 36, marginBottom: 16 }}>{icon as string}</div>
               <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>{title as string}</h3>
               <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, margin: 0 }}>{desc as string}</p>
             </div>
           ))}
-        </div>
-        <div style={{ background: COLORS.offWhite, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, textAlign: "left" }}>
-          <h3 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, marginBottom: 24, textAlign: "center" }}>Какво получаваш всеки месец</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-            {[
-              ["✅", "Виждаш", "Текущ GEO скор + промяна спрямо миналия месец (↑/↓)"],
-              ["✅", "Получаваш", "Точно 2 конкретни препоръки стъпка по стъпка"],
-              ["✅", "Следиш", "Дали предишните стъпки са изпълнени"],
-              ["✅", "Опция", "Ако не можеш сам — ние го правим вместо теб"],
-            ].map(([icon, label, desc]) => (
-              <div key={label as string} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>{icon as string}</span>
-                <div>
-                  <div style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{label as string}</div>
-                  <div style={{ color: COLORS.textMuted, fontSize: 14 }}>{desc as string}</div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
@@ -403,40 +429,44 @@ function PricingSection() {
     monthly: ["€29.90", "€59.90", "€79.90"],
     yearly: ["€9.90", "€39.90", "€59.90"],
   };
-  const currentPrices = prices[period];
+
   return (
-    <section id="pricing" style={{ padding: "100px 32px", background: COLORS.navy }}>
+    <section id="pricing" style={{ padding: "120px 32px", background: `linear-gradient(170deg, ${COLORS.navy} 0%, #1E3558 100%)`, position: "relative" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: COLORS.white, marginBottom: 16 }}>Планове и цени</h2>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, marginBottom: 40 }}>Избери плана, който отговаря на нуждите ти</p>
-        <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: 4, marginBottom: 56 }}>
+        <SectionTitle light tag="Планове и цени" title="Избери своя план" subtitle="Започни безплатно, надгради когато си готов." />
+        <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.1)", borderRadius: 12, padding: 4, marginBottom: 56 }}>
           {(["yearly", "monthly"] as const).map(p => (
-            <button key={p} onClick={() => setPeriod(p)} style={{ padding: "10px 24px", borderRadius: 8, border: "none", fontWeight: 600, cursor: "pointer", background: period === p ? COLORS.orange : "transparent", color: period === p ? COLORS.navy : "rgba(255,255,255,0.7)", fontSize: 14 }}>
-              {p === "yearly" ? "Годишно (спести 67%)" : "Месечно"}
+            <button key={p} onClick={() => setPeriod(p)} style={{ padding: "10px 28px", borderRadius: 10, border: "none", fontWeight: 600, cursor: "pointer", background: period === p ? COLORS.orange : "transparent", color: period === p ? COLORS.navy : "rgba(255,255,255,0.7)", fontSize: 14, transition: "all 0.2s" }}>
+              {p === "yearly" ? "🔥 Годишно (спести 67%)" : "Месечно"}
             </button>
           ))}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
           {[
-            { name: "LITE", key: "lite", price: currentPrices[0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "1-2 стъпки на месец", "Email напомняния", "3 месеца история"], recommended: false },
-            { name: "SMART", key: "smart", price: currentPrices[1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
-            { name: "PRO", key: "pro", price: currentPrices[2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
+            { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "1-2 стъпки на месец", "Email напомняния", "3 месеца история"], recommended: false },
+            { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
+            { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
           ].map(plan => (
-            <div key={plan.name} style={{ background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 40, position: "relative", textAlign: "left" }}>
+            <div key={plan.name} style={{
+              background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)",
+              border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`,
+              borderRadius: 20, padding: 40, position: "relative", textAlign: "left",
+              boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none",
+            }}>
               {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: COLORS.navy, color: COLORS.orange, padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" }}>⭐ ПРЕПОРЪЧАН</div>}
               <div style={{ color: plan.recommended ? COLORS.navy : COLORS.white, fontSize: 22, fontWeight: 800, marginBottom: 8 }}>{plan.name}</div>
-              <div style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontSize: 42, fontWeight: 900, marginBottom: 4 }}>{plan.price}<span style={{ fontSize: 18 }}>/мес</span></div>
+              <div style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontSize: 48, fontWeight: 900, marginBottom: 4, letterSpacing: "-2px" }}>{plan.price}<span style={{ fontSize: 18, fontWeight: 600 }}>/мес</span></div>
               <div style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.6)", fontSize: 14, marginBottom: 32 }}>{plan.desc}</div>
               {plan.features.map(f => (
-                <div key={f} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                  <span style={{ color: plan.recommended ? COLORS.navy : COLORS.orange }}>✓</span>
-                  <span style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.8)", fontSize: 14 }}>{f}</span>
+                <div key={f} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <span style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontWeight: 700 }}>✓</span>
+                  <span style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.85)", fontSize: 14 }}>{f}</span>
                 </div>
               ))}
               <button
                 onClick={() => handleCheckout(plan.key)}
                 disabled={loading === plan.key}
-                style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 16, opacity: loading === plan.key ? 0.7 : 1 }}>
+                style={{ marginTop: 32, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "16px", borderRadius: 12, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 16, opacity: loading === plan.key ? 0.7 : 1, boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
                 {loading === plan.key ? "⏳ Зареждане..." : `Започни с ${plan.name}`}
               </button>
             </div>
@@ -459,10 +489,9 @@ export default function Home() {
       <ScanSection />
       <WhyMonthlySection />
       <PricingSection />
-      <footer style={{ background: "#0F1A2E", padding: "40px 32px", textAlign: "center" }}>
-        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
-          © 2026 GEO App · Privacy Policy · Terms of Service
-        </div>
+      <footer style={{ background: "#0F1A2E", padding: "48px 32px", textAlign: "center" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: COLORS.white, marginBottom: 16 }}>GEO<span style={{ color: COLORS.orange }}>.app</span></div>
+        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>© 2026 GEO App · Privacy Policy · Terms of Service</div>
       </footer>
     </>
   );
