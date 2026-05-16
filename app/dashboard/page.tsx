@@ -87,7 +87,7 @@ export default function Dashboard() {
 
   const getTopIssues = (results: any) => {
     const issues = Object.values(results).filter((r: any) => r.status !== 'good')
-    const score = Object.values(results).reduce((sum: number, r: any) => sum + r.score, 0) / Object.keys(results).length
+   const score = Object.values(results).reduce((sum: number, r: any) => sum + (r.score as number), 0) / Object.keys(results).length
     const count = score < 50 ? 2 : 1
     return issues.slice(0, count)
   }
