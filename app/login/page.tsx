@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const COLORS = {
   navy: "#1B2A4A",
@@ -11,56 +11,61 @@ const COLORS = {
   textMuted: "#5A6B84",
 }
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-async function signInWithGoogle() {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://geo-ap.vercel.app/dashboard')}`, {
-    headers: { apikey: SUPABASE_ANON_KEY }
-  })
-  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://geo-ap.vercel.app/dashboard')}`
-}
-
-async function signInWithEmail(email: string, password: string, isLogin: boolean) {
-  const endpoint = isLogin ? 'token?grant_type=password' : 'signup'
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY },
-    body: JSON.stringify({ email, password })
-  })
-  return res.json()
-}
-
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [message, setMessage] = useState('')
+
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true)
+    const redirectTo = encodeURIComponent('https://geo-ap.vercel.app/dashboard')
+    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=https://geo-ap.vercel.app/dashboard&scopes=email+profile`
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) return
     setLoading(true)
     setMessage('')
-    const data = await signInWithEmail(email, password, isLogin)
-    setLoading(false)
-    if (data.error) {
-      setMessage('❌ ' + data.error_description || data.error)
-    } else if (!isLogin) {
-      setMessage('📧 Провери имейла си за потвърждение!')
-    } else {
-      window.location.href = '/dashboard'
+    try {
+      const endpoint = isLogin ? 'token?grant_type=password' : 'signup'
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (data.error || data.error_description) {
+        setMessage('❌ ' + (data.error_description || data.error || 'Грешка'))
+      } else if (!isLogin) {
+        setMessage('📧 Провери имейла си за потвърждение!')
+      } else if (data.access_token) {
+        window.location.href = '/dashboard'
+      }
+    } catch {
+      setMessage('❌ Грешка. Опитай пак.')
     }
+    setLoading(false)
   }
 
   return (
     <div style={{ minHeight: '100vh', background: `linear-gradient(165deg, ${COLORS.navy} 0%, #243B65 50%, ${COLORS.blue} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
       <div style={{ background: COLORS.white, borderRadius: 24, padding: 48, width: '100%', maxWidth: 440, boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <a href="/" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
+            <span style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, fontFamily: "'Outfit', sans-serif" }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
           </a>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginTop: 24, marginBottom: 8 }}>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: COLORS.navy, marginTop: 24, marginBottom: 8, fontFamily: "'Outfit', sans-serif" }}>
             {isLogin ? 'Влез в акаунта си' : 'Създай акаунт'}
           </h1>
           <p style={{ color: COLORS.textMuted, fontSize: 15, margin: 0 }}>
@@ -71,10 +76,11 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Google бутон */}
+        {/* Google */}
         <button
-          onClick={signInWithGoogle}
-          style={{ width: '100%', background: COLORS.white, color: '#1f1f1f', padding: '14px', borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24 }}
+          onClick={handleGoogle}
+          disabled={googleLoading}
+          style={{ width: '100%', background: COLORS.white, color: '#1f1f1f', padding: '14px', borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24, opacity: googleLoading ? 0.7 : 1 }}
         >
           <svg width="20" height="20" viewBox="0 0 48 48">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -82,7 +88,7 @@ export default function LoginPage() {
             <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
-          Продължи с Google
+          {googleLoading ? 'Пренасочване...' : 'Продължи с Google'}
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
@@ -122,7 +128,8 @@ export default function LoginPage() {
 
         <button
           onClick={handleSubmit}
-          style={{ width: '100%', background: COLORS.orange, color: COLORS.navy, padding: '16px', borderRadius: 10, border: 'none', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
+          disabled={loading}
+          style={{ width: '100%', background: COLORS.orange, color: COLORS.navy, padding: '16px', borderRadius: 10, border: 'none', fontSize: 16, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, fontFamily: "'Outfit', sans-serif" }}
         >
           {loading ? '⏳ Зареждане...' : isLogin ? 'Влез' : 'Създай акаунт'}
         </button>
