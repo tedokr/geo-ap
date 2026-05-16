@@ -42,7 +42,6 @@ export default function Dashboard() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('success') === 'true') setSuccess(true)
-
     const getSession = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
@@ -81,11 +80,9 @@ export default function Dashboard() {
     setScanning(false)
   }
 
-  const getTopIssues = (results: any) => {
+  const getTopIssues = (results: any, totalScore: number) => {
     const issues = Object.values(results).filter((r: any) => r.status !== 'good')
-    const total = Object.values(results).reduce((sum: number, r: any) => sum + Number(r.score), 0)
-    const score = total / Object.keys(results).length
-    const count = score < 50 ? 2 : 1
+    const count = totalScore < 50 ? 2 : 1
     return issues.slice(0, count)
   }
 
@@ -189,7 +186,7 @@ export default function Dashboard() {
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>
                   🎯 {result.totalScore < 50 ? 'Две стъпки за този месец' : 'Една стъпка за този месец'}
                 </h3>
-                {getTopIssues(result.results).map((r: any) => (
+                {getTopIssues(result.results, result.totalScore).map((r: any) => (
                   <div key={r.label} style={{ marginBottom: 16, padding: "20px 24px", borderRadius: 12, border: `2px solid ${COLORS.orange}`, background: "rgba(245,166,35,0.05)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
                       <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
@@ -206,7 +203,7 @@ export default function Dashboard() {
                 ))}
                 <div style={{ padding: "16px 24px", borderRadius: 12, border: `1px dashed ${COLORS.lightGray}`, background: COLORS.offWhite, textAlign: "center" }}>
                   <span style={{ color: COLORS.textMuted, fontSize: 14 }}>
-                    🔒 Останалите {Object.values(result.results).filter((r: any) => r.status !== 'good').length - getTopIssues(result.results).length} проблема ще бъдат показани следващия месец
+                    🔒 Останалите {Object.values(result.results).filter((r: any) => r.status !== 'good').length - getTopIssues(result.results, result.totalScore).length} проблема ще бъдат показани следващия месец
                   </span>
                 </div>
               </div>
