@@ -42,15 +42,15 @@ export default function Dashboard() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('success') === 'true') setSuccess(true)
+
     const getSession = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
-          headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Authorization': `Bearer ${document.cookie.match(/sb-[^=]+=([^;]+)/)?.[1] || ''}`,
-          }
-        })
-        const user = await res.json()
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+        const { data: { user } } = await supabase.auth.getUser()
         if (user?.email) {
           const userPlan = await getUserPlan(user.email)
           setPlan(userPlan)
