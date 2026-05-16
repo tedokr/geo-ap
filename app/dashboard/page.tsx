@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const COLORS = {
   navy: "#1B2A4A",
@@ -48,7 +48,7 @@ export default function Dashboard() {
           <span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
         </a>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>Dashboard</span>
+          <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>✨ AI Генератор</a>
           <a href="/" style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, textDecoration: "none" }}>Изход</a>
         </div>
       </header>
@@ -59,6 +59,18 @@ export default function Dashboard() {
         <div style={{ marginBottom: 40 }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
           <p style={{ color: COLORS.textMuted, fontSize: 16 }}>Провери AI видимостта на твоя домейн</p>
+        </div>
+
+        {/* AI Generator Banner */}
+        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+          <div>
+            <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 6 }}>✨ SMART ФУНКЦИЯ</div>
+            <div style={{ color: COLORS.white, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>AI Генератор на съдържание</div>
+            <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>Генерирай FAQs, llms.txt, robots.txt, Schema.org и Blog идеи — персонализирано за твоя бизнес</div>
+          </div>
+          <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap", flexShrink: 0 }}>
+            Започни →
+          </a>
         </div>
 
         {/* Scanner */}
@@ -98,7 +110,6 @@ export default function Dashboard() {
         {result && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
             
-            {/* Score header */}
             <div style={{ display: "flex", alignItems: "center", gap: 32, marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
               <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444" }}>
@@ -117,7 +128,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Metrics */}
             <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Детайлни резултати</h3>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 32 }}>
               {Object.values(result.results).map((r: any) => (
@@ -130,16 +140,15 @@ export default function Dashboard() {
                     </div>
                     <div style={{ color: COLORS.textMuted, fontSize: 12, lineHeight: 1.4 }}>{r.message}</div>
                     <div style={{ marginTop: 8, height: 4, borderRadius: 2, background: COLORS.lightGray }}>
-                      <div style={{ width: `${r.score}%`, height: 4, borderRadius: 2, background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", transition: "width 1s ease" }} />
+                      <div style={{ width: `${r.score}%`, height: 4, borderRadius: 2, background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444" }} />
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Recommendations */}
             <div style={{ background: COLORS.offWhite, borderRadius: 16, padding: 28 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>🎯 Препоръки за подобрение</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>🎯 Топ препоръки</h3>
               {Object.values(result.results)
                 .filter((r: any) => r.status !== 'good')
                 .slice(0, 2)
@@ -152,9 +161,9 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ))}
-              <div style={{ color: COLORS.textMuted, fontSize: 13, marginTop: 8 }}>
-                💡 Upgrade към SMART план за детайлни инструкции как да поправиш всеки проблем
-              </div>
+              <a href="/onboarding" style={{ display: "inline-block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>
+                ✨ Генерирай AI fix за тези проблеми →
+              </a>
             </div>
           </div>
         )}
@@ -176,17 +185,6 @@ export default function Dashboard() {
             ))}
           </div>
         )}
-
-        {/* Upgrade banner */}
-        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "36px 40px", marginTop: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32 }}>
-          <div>
-            <div style={{ color: COLORS.white, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Upgrade към SMART план</div>
-            <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 15 }}>Получи стъпка по стъпка инструкции, готови файлове и месечно проследяване</div>
-          </div>
-          <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16, whiteSpace: "nowrap", flexShrink: 0 }}>
-            Виж плановете →
-          </a>
-        </div>
       </div>
     </div>
   )
