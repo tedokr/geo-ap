@@ -203,16 +203,23 @@ function SMESection() {
 function ScanSection() {
   const [url, setUrl] = useState("");
   const [scanning, setScanning] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState("");
 
-  const handleScan = () => {
+  const handleScan = async () => {
     if (!url) return;
     setScanning(true);
-    setScore(null);
-    setTimeout(() => {
-      setScore(Math.floor(Math.random() * 60) + 20);
-      setScanning(false);
-    }, 2500);
+    setResult(null);
+    setError("");
+    try {
+      const res = await fetch(`/api/scan?domain=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      if (data.error) setError("Не можахме да сканираме домейна. Провери URL-а.");
+      else setResult(data);
+    } catch {
+      setError("Грешка при сканиране. Опитай пак.");
+    }
+    setScanning(false);
   };
 
   return (
@@ -228,17 +235,47 @@ function ScanSection() {
             placeholder="example.com"
             style={{ flex: 1, padding: "16px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }}
           />
-          <button onClick={handleScan} style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
-            {scanning ? "⏳ Анализирам..." : "Анализирай"}
+          <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "16px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer", opacity: scanning ? 0.7 : 1 }}>
+            {scanning ? "⏳ Сканирам..." : "Анализирай"}
           </button>
         </div>
-        {score !== null && (
+
+        {error && (
+          <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "16px", marginBottom: 24, color: "#991b1b" }}>{error}</div>
+        )}
+
+        {scanning && (
+          <div style={{ color: COLORS.blue, fontSize: 16, marginBottom: 24 }}>
+            🔍 Проверяваме sitemap, robots.txt, llms.txt, schema.org, FAQs...
+          </div>
+        )}
+
+        {result && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 48, border: `1px solid ${COLORS.lightGray}` }}>
-            <div style={{ fontSize: 96, fontWeight: 900, color: score > 60 ? "#22c55e" : score > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>{score}%</div>
-            <div style={{ color: COLORS.textMuted, fontSize: 18, margin: "16px 0 24px" }}>GEO скор за <strong style={{ color: COLORS.navy }}>{url}</strong></div>
-            <p style={{ color: COLORS.textMuted, fontSize: 15, marginBottom: 24 }}>Регистрирай се за пълен доклад с детайли по всеки показател и конкретни препоръки.</p>
+            <div style={{ fontSize: 96, fontWeight: 900, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444", lineHeight: 1 }}>
+              {result.totalScore}%
+            </div>
+            <div style={{ color: COLORS.textMuted, fontSize: 18, margin: "16px 0 32px" }}>
+              GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong>
+            </div>
+
+            <div style={{ textAlign: "left", marginBottom: 32 }}>
+              {Object.values(result.results).map((r: any) => (
+                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: `1px solid ${COLORS.lightGray}` }}>
+                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{r.label}</div>
+                    <div style={{ color: COLORS.textMuted, fontSize: 13 }}>{r.message}</div>
+                  </div>
+                  <div style={{ fontWeight: 800, color: r.status === "good" ? "#22c55e" : r.status === "partial" ? "#f59e0b" : "#ef4444", fontSize: 16 }}>
+                    {r.score}%
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700 }}>
-              🔓 Виж пълния доклад →
+              🔓 Виж пълния доклад с препоръки →
             </a>
           </div>
         )}
@@ -246,7 +283,6 @@ function ScanSection() {
     </section>
   );
 }
-
 function WhyMonthlySection() {
   return (
     <section id="whymonthly" style={{ padding: "100px 32px", background: COLORS.white }}>
