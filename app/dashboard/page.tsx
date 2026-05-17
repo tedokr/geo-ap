@@ -203,7 +203,7 @@ export default function Dashboard() {
         </a>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {(plan === 'smart' || plan === 'pro') && (
-            <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Generator</a>
+            <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Генератор</a>
           )}
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, background: "rgba(255,255,255,0.1)", padding: "4px 12px", borderRadius: 20 }}>
             {planLabel[plan]}
@@ -212,10 +212,10 @@ export default function Dashboard() {
             onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')}
             style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600 }}
           >
-            Profil
+            Профил
           </button>
           <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 14, cursor: "pointer", padding: 0 }}>
-            Izhod
+            Изход
           </button>
         </div>
       </header>
@@ -225,8 +225,8 @@ export default function Dashboard() {
         {success && (
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 16, padding: "20px 24px", marginBottom: 32, display: "flex", alignItems: "center", gap: 16 }}>
             <div>
-              <div style={{ fontWeight: 700, color: "#166534", fontSize: 18 }}>Plashchaneto e uspeshno!</div>
-              <div style={{ color: "#166534", fontSize: 14 }}>Dobre doshal! Planat se aktivira avtomatichno.</div>
+              <div style={{ fontWeight: 700, color: "#166534", fontSize: 18 }}>Плащането е успешно!</div>
+              <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл! Планът се активира автоматично.</div>
             </div>
           </div>
         )}
@@ -234,39 +234,39 @@ export default function Dashboard() {
         {activeTab === 'profile' && (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
-              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Moyat profil</h1>
+              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Моят профил</h1>
               <button
                 onClick={() => setActiveTab('scan')}
                 style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "10px 20px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}
               >
-                Kam skaniraneto
+                Към сканирането
               </button>
             </div>
 
             <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Akаunt</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Акаунт</h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Imail</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Имейл</div>
                   <div style={{ fontSize: 15, color: COLORS.navy, fontWeight: 600, background: COLORS.offWhite, padding: "10px 16px", borderRadius: 8 }}>{userEmail || "—"}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Aktiven plan</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Активен план</div>
                   <div style={{ fontSize: 15, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 16px", borderRadius: 8 }}>{planLabel[plan]}</div>
                 </div>
               </div>
             </div>
 
             <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Smyana na parola</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Смяна на парола</h2>
               <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Nova parola</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Нова парола</div>
                   <input
                     type="password"
                     value={newPassword}
                     onChange={e => setNewPassword(e.target.value)}
-                    placeholder="Minimum 6 simvola"
+                    placeholder="Минимум 6 символа"
                     style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }}
                   />
                 </div>
@@ -275,28 +275,21 @@ export default function Dashboard() {
                   disabled={savingPassword}
                   style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1, whiteSpace: "nowrap" as const }}
                 >
-                  {savingPassword ? "Zapazva..." : "Smeni parolata"}
+                  {savingPassword ? "Запазва..." : "Смени паролата"}
                 </button>
               </div>
               {passwordMsg && (
-                <div style={{ marginTop: 12, fontSize: 14, color: passwordMsg.includes("uspeshno") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>
+                <div style={{ marginTop: 12, fontSize: 14, color: passwordMsg.includes("успешно") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>
               )}
             </div>
 
             {plan !== 'free' && (
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Metod na plashcane</h2>
-                <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Upravlyavay kartata si, spri ili promeni abonamentа direktno v Stripe.</p>
-                
-                 <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}
-                >
-                  Upravlyavay abonamentа v Stripe
-                </a>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
+                <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
+                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>Управлявай абонамента в Stripe</a>
                 <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>
-                  Stripe Billing Portal - smeni karta, spri ili upgrade-ni plana.
+                  Stripe Billing Portal — смени карта, спри или промени плана.
                 </div>
               </div>
             )}
@@ -304,15 +297,15 @@ export default function Dashboard() {
             {plan !== 'free' && (
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Moite domeini</h2>
+                  <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Моите домейни</h2>
                   <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>
-                    {lockedDomains.length}/{DOMAIN_LIMITS[plan]} izpolzvani
+                    {lockedDomains.length}/{DOMAIN_LIMITS[plan]} използвани
                   </span>
                 </div>
 
                 {lockedDomains.length === 0 ? (
                   <div style={{ color: COLORS.textMuted, fontSize: 14, textAlign: "center" as const, padding: "24px 0" }}>
-                    Vse oshte nyamash skanirani domeini.
+                    Все още нямаш сканирани домейни. Провери домейн от таба за сканиране.
                   </div>
                 ) : (
                   lockedDomains.map((d, idx) => (
@@ -320,7 +313,7 @@ export default function Dashboard() {
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", background: COLORS.offWhite }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{d.domain}</span>
-                          {d.answers && <span style={{ fontSize: 11, background: "#f0fdf4", color: "#166534", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>Profil popalnеn</span>}
+                          {d.answers && <span style={{ fontSize: 11, background: "#f0fdf4", color: "#166534", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>Профил попълнен</span>}
                         </div>
                         <button
                           onClick={() => {
@@ -329,14 +322,14 @@ export default function Dashboard() {
                           }}
                           style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}
                         >
-                          {editingDomainIdx === idx ? "Zatvori" : d.answers ? "Redaktiray" : "Popalni profil"}
+                          {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни профил"}
                         </button>
                       </div>
 
                       {editingDomainIdx === idx && (
                         <div style={{ padding: "20px 20px 24px", background: COLORS.white }}>
                           <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 16 }}>
-                            Tezi danni se izpolzват ot generatora za personalizarano sadarzhanie.
+                            Тези данни се използват от генератора за персонализирано съдържание.
                           </div>
                           {questionLabels.map((q, qi) => (
                             <div key={qi} style={{ marginBottom: 14 }}>
@@ -353,7 +346,7 @@ export default function Dashboard() {
                             onClick={() => handleSaveAnswers(idx)}
                             style={{ background: COLORS.navy, color: COLORS.white, padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 14, marginTop: 4 }}
                           >
-                            Zapazi
+                            Запази
                           </button>
                         </div>
                       )}
@@ -370,10 +363,10 @@ export default function Dashboard() {
             <div style={{ marginBottom: 32 }}>
               <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
               <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
-                {plan === 'free' && 'Bezplaten plan'}
-                {plan === 'lite' && 'LITE plan - 1 domein'}
-                {plan === 'smart' && 'SMART plan - do 3 domeina + generator'}
-                {plan === 'pro' && 'PRO plan - do 5 domeina + palena kartina'}
+                {plan === 'free' && 'Безплатен план — виж общия скор на домейна си'}
+                {plan === 'lite' && 'LITE план — 1 домейн'}
+                {plan === 'smart' && 'SMART план — до 3 домейна + генератор на съдържание'}
+                {plan === 'pro' && 'PRO план — до 5 домейна + пълна картина'}
               </p>
             </div>
 
@@ -381,8 +374,8 @@ export default function Dashboard() {
               <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
                 <div>
                   <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 6 }}>UPGRADE</div>
-                  <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Vizh tochno kakvo da opravish</div>
-                  <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>S LITE plan получаваш конкретни стъпки</div>
+                  <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
+                  <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
                 </div>
                 <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
                   Виж плановете
@@ -393,7 +386,7 @@ export default function Dashboard() {
             {plan === 'lite' && (
               <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "20px 28px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
                 <div>
-                  <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 4 }}>SMART PLAN</div>
+                  <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
                   <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
                 </div>
                 <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
@@ -446,7 +439,7 @@ export default function Dashboard() {
                     GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong>
                   </div>
                   <div style={{ display: "inline-block", marginTop: 12, padding: "6px 16px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 14, fontWeight: 600 }}>
-                    {result.totalScore > 60 ? "Dobro AI prisastvie" : result.totalScore > 35 ? "Nuzhni podobreniya" : "Slabo AI prisastvie"}
+                    {result.totalScore > 60 ? "Добро AI присъствие" : result.totalScore > 35 ? "Нужни подобрения" : "Слабо AI присъствие"}
                   </div>
                 </div>
 
@@ -478,7 +471,7 @@ export default function Dashboard() {
                     ))}
                     {plan === 'lite' && (
                       <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-                        <div style={{ color: COLORS.white, fontSize: 14 }}>Искаш стъпка по стъпка инструкции?</div>
+                        <div style={{ color: COLORS.white, fontSize: 14 }}>Искаш стъпка по стъпка инструкции как да оправиш тези проблеми?</div>
                         <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 20px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
                           Upgrade към SMART
                         </a>
