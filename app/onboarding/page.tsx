@@ -37,8 +37,9 @@ export default function Onboarding() {
     { id: 'metadesc', label: 'Meta Description' },
     { id: 'blog', label: 'Blog идеи' },
   ]
-  const visibleTabs = tabs.slice(0, 2)
-  const lockedTabs = tabs.slice(2)
+ const shuffled = [...tabs].sort(() => Math.random() - 0.5)
+const visibleTabs = shuffled.slice(0, 2)
+const lockedTabs: never[] = []
 
   const checkAndGenerate = async () => {
     setGenerating(true)
@@ -347,9 +348,6 @@ export default function Onboarding() {
                   {tab.label}
                 </button>
               ))}
-              {lockedTabs.map(tab => (
-                <div key={tab.id} style={{ padding: "10px 16px", borderRadius: 8, border: `2px solid ${COLORS.lightGray}`, background: COLORS.offWhite, color: COLORS.textMuted, fontSize: 13, cursor: "not-allowed", display: "flex", alignItems: "center", gap: 6 }}>
-                  {tab.label} — следващия месец
                 </div>
               ))}
             </div>
