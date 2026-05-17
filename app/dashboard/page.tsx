@@ -288,7 +288,7 @@ export default function Dashboard() {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Metod na plashcane</h2>
                 <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Upravlyavay kartata si, spri ili promeni abonamentа direktno v Stripe.</p>
                 
-                  href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW"
+                 <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}
