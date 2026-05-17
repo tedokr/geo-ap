@@ -61,7 +61,6 @@ export default function Dashboard() {
       setSuccess(true)
       window.history.replaceState({}, '', '/dashboard')
     }
-
     const init = async () => {
       try {
         const { createClient } = await import('@supabase/supabase-js')
@@ -74,7 +73,6 @@ export default function Dashboard() {
           setUserEmail(user.email)
           const userPlan = await fetchUserPlan(user.email)
           setPlan(userPlan)
-
           if (params.get('success') === 'true' && userPlan === 'free') {
             let attempts = 0
             planCheckInterval.current = setInterval(async () => {
@@ -87,14 +85,12 @@ export default function Dashboard() {
               if (attempts >= 10) clearInterval(planCheckInterval.current!)
             }, 3000)
           }
-
           const stored = localStorage.getItem(`geo_domains_${user.email}`)
           if (stored) setLockedDomains(JSON.parse(stored))
         }
       } catch {}
     }
     init()
-
     return () => { if (planCheckInterval.current) clearInterval(planCheckInterval.current) }
   }, [])
 
@@ -108,12 +104,10 @@ export default function Dashboard() {
     const limit = DOMAIN_LIMITS[plan]
     const cleanDomain = url.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase()
     const alreadyLocked = lockedDomains.find(d => d.domain === cleanDomain)
-
     if (!alreadyLocked && lockedDomains.length >= limit) {
       setError(`С ${plan.toUpperCase()} план можеш да добавиш максимум ${limit} домейн${limit > 1 ? 'а' : ''}. Upgrade за повече.`)
       return
     }
-
     setScanning(true)
     setResult(null)
     setError("")
@@ -193,6 +187,8 @@ export default function Dashboard() {
     "3 твои конкуренти",
   ]
 
+  const genLink = (domain: string) => "/onboarding?domain=" + encodeURIComponent(domain) + "&prefill=true"
+
   return (
     <div style={{ minHeight: "100vh", background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -235,10 +231,7 @@ export default function Dashboard() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
               <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Моят профил</h1>
-              <button
-                onClick={() => setActiveTab('scan')}
-                style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "10px 20px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}
-              >
+              <button onClick={() => setActiveTab('scan')} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "10px 20px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}>
                 Към сканирането
               </button>
             </div>
@@ -262,19 +255,9 @@ export default function Dashboard() {
               <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Нова парола</div>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={e => setNewPassword(e.target.value)}
-                    placeholder="Минимум 6 символа"
-                    style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }}
-                  />
+                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Минимум 6 символа" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }} />
                 </div>
-                <button
-                  onClick={handleChangePassword}
-                  disabled={savingPassword}
-                  style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1, whiteSpace: "nowrap" as const }}
-                >
+                <button onClick={handleChangePassword} disabled={savingPassword} style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1, whiteSpace: "nowrap" as const }}>
                   {savingPassword ? "Запазва..." : "Смени паролата"}
                 </button>
               </div>
@@ -288,9 +271,7 @@ export default function Dashboard() {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
                 <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
                 <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>Управлявай абонамента в Stripe</a>
-                <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>
-                  Stripe Billing Portal — смени карта, спри или промени плана.
-                </div>
+                <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>Stripe Billing Portal — смени карта, спри или промени плана.</div>
               </div>
             )}
 
@@ -298,9 +279,7 @@ export default function Dashboard() {
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                   <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Моите домейни</h2>
-                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>
-                    {lockedDomains.length}/{DOMAIN_LIMITS[plan]} използвани
-                  </span>
+                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} използвани</span>
                 </div>
 
                 {lockedDomains.length === 0 ? (
@@ -317,20 +296,9 @@ export default function Dashboard() {
                         </div>
                         <div style={{ display: "flex", gap: 8 }}>
                           {d.answers && (plan === 'smart' || plan === 'pro') && (
-  <a href={"/onboarding?domain=" + encodeURIComponent(d.domain) + "&prefill=true"} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13, textDecoration: "none" }}>Генерирай фикс</a>
-)}
-                              style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13, textDecoration: "none" }}
-                            >
-                              Генерирай фикс
-                            </a>
+                            <a href={genLink(d.domain)} style={{ background: COLORS.navy, color: COLORS.white, padding: "6px 16px", borderRadius: 8, fontWeight: 700, fontSize: 13, textDecoration: "none" }}>Генерирай фикс</a>
                           )}
-                          <button
-                            onClick={() => {
-                              setEditingDomainIdx(editingDomainIdx === idx ? null : idx)
-                              setEditAnswers(d.answers || {})
-                            }}
-                            style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}
-                          >
+                          <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>
                             {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни профил"}
                           </button>
                         </div>
@@ -338,26 +306,14 @@ export default function Dashboard() {
 
                       {editingDomainIdx === idx && (
                         <div style={{ padding: "20px 20px 24px", background: COLORS.white }}>
-                          <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 16 }}>
-                            Тези данни се използват от генератора за персонализирано съдържание.
-                          </div>
+                          <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 16 }}>Тези данни се използват от генератора за персонализирано съдържание.</div>
                           {questionLabels.map((q, qi) => (
                             <div key={qi} style={{ marginBottom: 14 }}>
                               <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, marginBottom: 6 }}>{q}</div>
-                              <input
-                                type="text"
-                                value={editAnswers[`q${qi}`] || ""}
-                                onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))}
-                                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }}
-                              />
+                              <input type="text" value={editAnswers[`q${qi}`] || ""} onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))} style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
                             </div>
                           ))}
-                          <button
-                            onClick={() => handleSaveAnswers(idx)}
-                            style={{ background: COLORS.navy, color: COLORS.white, padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 14, marginTop: 4 }}
-                          >
-                            Запази
-                          </button>
+                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 14, marginTop: 4 }}>Запази</button>
                         </div>
                       )}
                     </div>
@@ -387,9 +343,7 @@ export default function Dashboard() {
                   <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
                   <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
                 </div>
-                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
-                  Виж плановете
-                </a>
+                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Виж плановете</a>
               </div>
             )}
 
@@ -399,9 +353,7 @@ export default function Dashboard() {
                   <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
                   <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
                 </div>
-                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
-                  Upgrade към SMART
-                </a>
+                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Upgrade към SMART</a>
               </div>
             )}
 
@@ -409,19 +361,11 @@ export default function Dashboard() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Провери домейн</h2>
                 {plan !== 'free' && (
-                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>
-                    {lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна
-                  </span>
+                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>
                 )}
               </div>
               <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                <input
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleScan()}
-                  placeholder="example.com"
-                  style={{ flex: 1, padding: "14px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }}
-                />
+                <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()} placeholder="example.com" style={{ flex: 1, padding: "14px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }} />
                 <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1, whiteSpace: "nowrap" as const }}>
                   {scanning ? "Сканирам..." : "Анализирай"}
                 </button>
@@ -431,9 +375,7 @@ export default function Dashboard() {
                 <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 18px", color: "#991b1b", fontSize: 14 }}>
                   {error}
                   {error.includes('Upgrade') && (
-                    <a href="/#pricing" style={{ display: "inline-block", marginLeft: 12, background: COLORS.orange, color: COLORS.navy, padding: "4px 16px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-                      Upgrade
-                    </a>
+                    <a href="/#pricing" style={{ display: "inline-block", marginLeft: 12, background: COLORS.orange, color: COLORS.navy, padding: "4px 16px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>Upgrade</a>
                   )}
                 </div>
               )}
@@ -457,9 +399,7 @@ export default function Dashboard() {
                   <div style={{ textAlign: "center" as const, padding: "32px", background: COLORS.offWhite, borderRadius: 16 }}>
                     <div style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Детайлите са заключени</div>
                     <div style={{ color: COLORS.textMuted, fontSize: 15, marginBottom: 24 }}>Вземи LITE план за да видиш какво точно трябва да оправиш</div>
-                    <a href="/#pricing" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>
-                      Виж плановете
-                    </a>
+                    <a href="/#pricing" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>Виж плановете</a>
                   </div>
                 ) : (
                   <div>
@@ -473,18 +413,14 @@ export default function Dashboard() {
                         </div>
                         <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: plan === 'smart' || plan === 'pro' ? 12 : 0 }}>{r.message}</div>
                         {(plan === 'smart' || plan === 'pro') && (
-                          <a href="/onboarding" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, marginTop: 4 }}>
-                            Генерирай fix
-                          </a>
+                          <a href="/onboarding" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, marginTop: 4 }}>Генерирай fix</a>
                         )}
                       </div>
                     ))}
                     {plan === 'lite' && (
                       <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
                         <div style={{ color: COLORS.white, fontSize: 14 }}>Искаш стъпка по стъпка инструкции как да оправиш тези проблеми?</div>
-                        <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 20px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
-                          Upgrade към SMART
-                        </a>
+                        <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 20px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Upgrade към SMART</a>
                       </div>
                     )}
                   </div>
