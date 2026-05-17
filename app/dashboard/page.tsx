@@ -46,12 +46,32 @@ function formatResult(type: string, text: string) {
   return text.replace(/```json|```/g, '').trim()
 }
 
+function ScoreRing({ score }: { score: number }) {
+  const color = score > 60 ? "#22c55e" : score > 35 ? "#f59e0b" : "#ef4444"
+  const r = 28
+  const circ = 2 * Math.PI * r
+  const dash = (score / 100) * circ
+  return (
+    <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
+      <svg viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
+        <circle cx="36" cy="36" r={r} fill="none" stroke={COLORS.lightGray} strokeWidth="6" />
+        <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="6"
+          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
+      </svg>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" as const }}>
+        <span style={{ fontSize: 16, fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
+        <span style={{ fontSize: 9, color: COLORS.textMuted, fontWeight: 600 }}>%</span>
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const [url, setUrl] = useState("")
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState("")
-  const [history, setHistory] = useState<any[]>([])
+  const [scanHistory, setScanHistory] = useState<any[]>([])
   const [plan, setPlan] = useState<string>('free')
   const [success, setSuccess] = useState(false)
   const [userEmail, setUserEmail] = useState("")
@@ -65,6 +85,7 @@ export default function Dashboard() {
   const [domainGenerations, setDomainGenerations] = useState<Record<string, any[]>>({})
   const [viewingGeneration, setViewingGeneration] = useState<{domain: string, gen: any} | null>(null)
   const [viewingTab, setViewingTab] = useState('')
+  const [expandedDomain, setExpandedDomain] = useState<string | null>(null)
   const planCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
@@ -93,8 +114,6 @@ export default function Dashboard() {
           }
           const stored = localStorage.getItem(`geo_domains_${user.email}`)
           if (stored) setLockedDomains(JSON.parse(stored))
-
-          // Load generation history from Supabase
           const genRes = await fetch(
             `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/domain_generations?email=eq.${encodeURIComponent(user.email)}&select=domain,generated_at,month,year,content&order=generated_at.desc`,
             { headers: { 'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, 'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}` } }
@@ -136,7 +155,7 @@ export default function Dashboard() {
       if (data.error) { setError(data.message || "Грешка при сканиране.") }
       else {
         setResult(data)
-        setHistory((prev: any[]) => [data, ...prev].slice(0, 5))
+        setScanHistory((prev: any[]) => [data, ...prev].slice(0, 5))
         if (!alreadyLocked && userEmail) {
           const updated = [...lockedDomains, { domain: cleanDomain, answers: null }]
           saveLockedDomains(updated, userEmail)
@@ -183,7 +202,7 @@ export default function Dashboard() {
   const questionLabels = ["Име на бизнеса", "На каква платформа е сайтът? (WordPress, Webflow, Wix...)", "Опиши бизнеса си с 20 думи", "Където се намира бизнесът ти", "3 твои конкуренти"]
   const genLink = (domain: string) => "/onboarding?domain=" + encodeURIComponent(domain) + "&prefill=true"
 
-  // If viewing a past generation
+  // Viewing past generation
   if (viewingGeneration) {
     const content = viewingGeneration.gen.content || {}
     const tabs = allTabs.filter(t => content[t.id])
@@ -193,7 +212,7 @@ export default function Dashboard() {
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <header style={{ background: COLORS.navy, padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
           <a href="/" style={{ textDecoration: "none" }}><span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span></a>
-          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 20px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 14 }}>Назад към профила</button>
+          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 20px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 14 }}>Назад към Dashboard</button>
         </header>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 32px" }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>Генерирано съдържание</h1>
@@ -248,6 +267,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* PROFILE TAB */}
         {activeTab === 'profile' && (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
@@ -295,68 +315,29 @@ export default function Dashboard() {
             {plan !== 'free' && (
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Моите домейни</h2>
-                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} използвани</span>
+                  <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Бизнес профили</h2>
+                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>
                 </div>
-
                 {lockedDomains.length === 0 ? (
                   <div style={{ color: COLORS.textMuted, fontSize: 14, textAlign: "center" as const, padding: "24px 0" }}>Все още нямаш сканирани домейни.</div>
                 ) : (
                   lockedDomains.map((d, idx) => (
-                    <div key={d.domain} style={{ marginBottom: 20, border: `1px solid ${COLORS.lightGray}`, borderRadius: 14, overflow: "hidden" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", background: COLORS.offWhite }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 15 }}>{d.domain}</span>
-                          {d.answers && <span style={{ fontSize: 11, background: "#f0fdf4", color: "#166534", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>Профил попълнен</span>}
-                          {domainGenerations[d.domain]?.length > 0 && (
-                            <span style={{ fontSize: 11, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{domainGenerations[d.domain].length} генерации</span>
-                          )}
-                        </div>
-                        <div style={{ display: "flex", gap: 8 }}>
-                          {d.answers && (plan === 'smart' || plan === 'pro') && (
-                            <a href={genLink(d.domain)} style={{ background: COLORS.navy, color: COLORS.white, padding: "6px 16px", borderRadius: 8, fontWeight: 700, fontSize: 13, textDecoration: "none" }}>Генерирай фикс</a>
-                          )}
-                          <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>
-                            {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни профил"}
-                          </button>
-                        </div>
+                    <div key={d.domain} style={{ marginBottom: 12, border: `1px solid ${COLORS.lightGray}`, borderRadius: 12, overflow: "hidden" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: COLORS.offWhite }}>
+                        <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 14 }}>{d.domain}</span>
+                        <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "5px 14px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>
+                          {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни профил"}
+                        </button>
                       </div>
-
-                      {/* Generation history for this domain */}
-                      {domainGenerations[d.domain]?.length > 0 && (
-                        <div style={{ padding: "12px 20px", background: COLORS.white, borderTop: `1px solid ${COLORS.lightGray}` }}>
-                          <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 10, textTransform: "uppercase" as const, letterSpacing: 1 }}>История на генерациите</div>
-                          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
-                            {domainGenerations[d.domain].map((gen: any, gi: number) => (
-                              <div key={gi} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: COLORS.offWhite, borderRadius: 8 }}>
-                                <div style={{ fontSize: 13, color: COLORS.navy }}>
-                                  {new Date(gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                  <span style={{ color: COLORS.textMuted, marginLeft: 8 }}>
-                                    {gen.month}/{gen.year}
-                                  </span>
-                                </div>
-                                <button
-                                  onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }}
-                                  style={{ background: COLORS.blue, color: COLORS.white, border: "none", padding: "4px 14px", borderRadius: 6, fontWeight: 600, cursor: "pointer", fontSize: 12 }}
-                                >
-                                  Виж
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
                       {editingDomainIdx === idx && (
-                        <div style={{ padding: "20px 20px 24px", background: COLORS.white, borderTop: `1px solid ${COLORS.lightGray}` }}>
-                          <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 16 }}>Тези данни се използват от генератора за персонализирано съдържание.</div>
+                        <div style={{ padding: "16px 16px 20px", background: COLORS.white }}>
                           {questionLabels.map((q, qi) => (
-                            <div key={qi} style={{ marginBottom: 14 }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, marginBottom: 6 }}>{q}</div>
-                              <input type="text" value={editAnswers[`q${qi}`] || ""} onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))} style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+                            <div key={qi} style={{ marginBottom: 12 }}>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{q}</div>
+                              <input type="text" value={editAnswers[`q${qi}`] || ""} onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))} style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
                             </div>
                           ))}
-                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 14, marginTop: 4 }}>Запази</button>
+                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "9px 20px", borderRadius: 8, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 13, marginTop: 4 }}>Запази</button>
                         </div>
                       )}
                     </div>
@@ -367,6 +348,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* SCAN TAB */}
         {activeTab === 'scan' && (
           <>
             <div style={{ marginBottom: 32 }}>
@@ -400,6 +382,7 @@ export default function Dashboard() {
               </div>
             )}
 
+            {/* SCAN BOX */}
             <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Провери домейн</h2>
@@ -420,6 +403,7 @@ export default function Dashboard() {
               )}
             </div>
 
+            {/* SCAN RESULT */}
             {result && (
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
                 <div style={{ textAlign: "center" as const, marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
@@ -462,14 +446,87 @@ export default function Dashboard() {
               </div>
             )}
 
-            {history.length > 1 && (
+            {/* DOMAIN CARDS — fancy section */}
+            {plan !== 'free' && lockedDomains.length > 0 && (
+              <div style={{ marginBottom: 32 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Моите домейни</h2>
+                <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
+                  {lockedDomains.map((d) => {
+                    const gens = domainGenerations[d.domain] || []
+                    const lastGen = gens[0]
+                    const isExpanded = expandedDomain === d.domain
+                    return (
+                      <div key={d.domain} style={{ background: COLORS.white, borderRadius: 20, border: `1px solid ${COLORS.lightGray}`, overflow: "hidden", boxShadow: "0 2px 12px rgba(27,42,74,0.06)" }}>
+                        {/* Card header */}
+                        <div style={{ padding: "24px 28px", display: "flex", alignItems: "center", gap: 20 }}>
+                          {/* Domain icon */}
+                          <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <span style={{ fontSize: 20 }}>🌐</span>
+                          </div>
+                          {/* Domain info */}
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 800, color: COLORS.navy, fontSize: 17, marginBottom: 4 }}>{d.domain}</div>
+                            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" as const }}>
+                              {d.answers && <span style={{ fontSize: 11, background: "#f0fdf4", color: "#166534", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>Профил попълнен</span>}
+                              {gens.length > 0 && <span style={{ fontSize: 11, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{gens.length} {gens.length === 1 ? 'генерация' : 'генерации'}</span>}
+                              {lastGen && <span style={{ fontSize: 11, color: COLORS.textMuted }}>Последна: {new Date(lastGen.generated_at).toLocaleDateString('bg-BG')}</span>}
+                            </div>
+                          </div>
+                          {/* Actions */}
+                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            {(plan === 'smart' || plan === 'pro') && (
+                              <a href={genLink(d.domain)} style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 18px", borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" as const }}>
+                                {d.answers ? "Генерирай фикс" : "Настрой и генерирай"}
+                              </a>
+                            )}
+                            {gens.length > 0 && (
+                              <button onClick={() => setExpandedDomain(isExpanded ? null : d.domain)} style={{ background: COLORS.offWhite, color: COLORS.navy, border: `1px solid ${COLORS.lightGray}`, padding: "8px 18px", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 13, whiteSpace: "nowrap" as const }}>
+                                {isExpanded ? "Скрий историята" : "История"}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Generation history expanded */}
+                        {isExpanded && gens.length > 0 && (
+                          <div style={{ borderTop: `1px solid ${COLORS.lightGray}`, padding: "16px 28px 20px" }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 12 }}>История на генерациите</div>
+                            <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+                              {gens.map((gen: any, gi: number) => (
+                                <div key={gi} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: COLORS.offWhite, borderRadius: 10, border: `1px solid ${COLORS.lightGray}` }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: COLORS.orange, flexShrink: 0 }} />
+                                    <div>
+                                      <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.navy }}>
+                                        {new Date(gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                      </div>
+                                      <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+                                        {new Date(gen.generated_at).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} — {gen.month}/{gen.year}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "7px 18px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>
+                                    Виж файловете
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* SCAN HISTORY */}
+            {scanHistory.length > 1 && (
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>История на сканиранията</h2>
-                {history.map((h: any, i: number) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: i < history.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 10, background: h.totalScore > 60 ? "#f0fdf4" : h.totalScore > 35 ? "#fffbeb" : "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, color: h.totalScore > 60 ? "#166534" : h.totalScore > 35 ? "#92400e" : "#991b1b", flexShrink: 0 }}>
-                      {h.totalScore}%
-                    </div>
+                {scanHistory.map((h: any, i: number) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: i < scanHistory.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
+                    <ScoreRing score={h.totalScore} />
                     <div>
                       <div style={{ fontWeight: 600, color: COLORS.navy, fontSize: 15 }}>{h.domain}</div>
                       <div style={{ color: COLORS.textMuted, fontSize: 13 }}>{new Date(h.scannedAt).toLocaleString('bg-BG')}</div>
