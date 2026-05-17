@@ -324,7 +324,7 @@ export default function Onboarding() {
 
             <div style={{ background: "rgba(245,166,35,0.1)", border: `1px solid rgba(245,166,35,0.3)`, borderRadius: 12, padding: "16px 20px", marginBottom: 32 }}>
               <div style={{ fontWeight: 700, color: COLORS.navy, marginBottom: 4 }}>Готово за генерация!</div>
-              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Ще генерираме: FAQs, llms.txt, robots.txt, Schema.org, Meta descriptions и Blog идеи за {info.name} на {info.platform}</div>
+              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Ще генерираме персонализирано съдържание за {info.name} на {info.platform}</div>
             </div>
 
             {error && (
