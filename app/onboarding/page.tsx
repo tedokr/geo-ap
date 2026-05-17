@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const COLORS = {
   navy: "#1B2A4A",
@@ -26,10 +26,12 @@ export default function Onboarding() {
   })
   const [generating, setGenerating] = useState(false)
   const [generated, setGenerated] = useState<Record<string, string>>({})
-  const [activeTab, setActiveTab] = useState('faqs')
+  const [activeTab, setActiveTab] = useState('')
+  const [visibleTabs, setVisibleTabs] = useState<{id: string, label: string}[]>([])
   const [error, setError] = useState('')
+  const [prefillMode, setPrefillMode] = useState(false)
 
-  const tabs = [
+  const allTabs = [
     { id: 'faqs', label: 'FAQs' },
     { id: 'llms', label: 'llms.txt' },
     { id: 'robots', label: 'robots.txt' },
@@ -37,14 +39,51 @@ export default function Onboarding() {
     { id: 'metadesc', label: 'Meta Description' },
     { id: 'blog', label: 'Blog идеи' },
   ]
- const shuffled = [...tabs].sort(() => Math.random() - 0.5)
-const visibleTabs = shuffled.slice(0, 2)
-const lockedTabs: never[] = []
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const domainParam = params.get('domain')
+    const prefill = params.get('prefill') === 'true'
+
+    if (prefill && domainParam) {
+      setPrefillMode(true)
+      const tryLoad = async () => {
+        try {
+          const { createClient } = await import('@supabase/supabase-js')
+          const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+          )
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user?.email) {
+            const stored = localStorage.getItem(`geo_domains_${user.email}`)
+            if (stored) {
+              const domains = JSON.parse(stored)
+              const found = domains.find((d: any) => d.domain === domainParam)
+              if (found?.answers) {
+                const a = found.answers
+                setInfo({
+                  domain: domainParam,
+                  name: a.q0 || '',
+                  platform: a.q1 || '',
+                  description: a.q2 || '',
+                  location: a.q3 || '',
+                  competitors: a.q4 || '',
+                  social: a.q5 || '',
+                })
+                setStep(3)
+              }
+            }
+          }
+        } catch {}
+      }
+      tryLoad()
+    }
+  }, [])
 
   const checkAndGenerate = async () => {
     setGenerating(true)
     setError('')
-
     try {
       const { createClient } = await import('@supabase/supabase-js')
       const supabase = createClient(
@@ -69,7 +108,6 @@ const lockedTabs: never[] = []
       )
       const planData = await planRes.json()
       const userPlan = planData?.[0]?.plan || 'free'
-
       const domainLimits: Record<string, number> = { lite: 1, smart: 3, pro: 5 }
       const domainLimit = domainLimits[userPlan] || 0
 
@@ -98,7 +136,7 @@ const lockedTabs: never[] = []
       const generationsForThisDomain = domainsData.filter((d: any) => d.domain === cleanDomain).length
 
       if (!uniqueDomains.includes(cleanDomain) && uniqueDomains.length >= domainLimit) {
-        setError(`С ${userPlan.toUpperCase()} план можеш да генерираш за максимум ${domainLimit} домейна. Вече имаш: ${uniqueDomains.join(', ')}.`)
+        setError(`С ${userPlan.toUpperCase()} план можеш да генерираш за максимум ${domainLimit} домейна.`)
         setGenerating(false)
         return
       }
@@ -111,7 +149,6 @@ const lockedTabs: never[] = []
 
       const types = ['faqs', 'llms', 'robots', 'schema', 'metadesc', 'blog']
       const results: Record<string, string> = {}
-
       for (const type of types) {
         try {
           const genRes = await fetch('/api/generate', {
@@ -135,19 +172,16 @@ const lockedTabs: never[] = []
             'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: user.email,
-            domain: cleanDomain,
-            month: currentMonth,
-            year: currentYear,
-          })
+          body: JSON.stringify({ email: user.email, domain: cleanDomain, month: currentMonth, year: currentYear })
         }
       )
 
+      const shuffled = [...allTabs].sort(() => Math.random() - 0.5).slice(0, 2)
+      setVisibleTabs(shuffled)
+      setActiveTab(shuffled[0].id)
       setGenerated(results)
       setGenerating(false)
       setStep(4)
-
     } catch {
       setError('Грешка при генерация. Опитай пак.')
       setGenerating(false)
@@ -179,45 +213,45 @@ const lockedTabs: never[] = []
 
   const getInstructions = (type: string) => {
     const p = info.platform
-    const instructions: Record<string, Record<string, string>> = {
+    const instr: Record<string, Record<string, string>> = {
       faqs: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Влез в WordPress Admin\n   → yoursite.com/wp-admin\n\n2. Инсталирай Rank Math SEO\n   → Plugins → Add New → "Rank Math SEO"\n   → Install → Activate\n\n3. Отвори страницата за редакция\n   → Pages → намери страницата → Edit\n\n4. Добави FAQ блок\n   → Кликни "+" → търси "FAQ"\n   → Избери "Rank Math FAQ Block"\n   → Копирай въпросите и отговорите\n\n5. Публикувай → Update`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Влез в Webflow Designer\n\n2. Добави FAQ секция\n   → "+" → Section → вътре Div Block за всеки въпрос\n   → H3 за въпроса, Paragraph за отговора\n\n3. Добави Schema markup\n   → Page Settings → Custom Code → Head Code\n   → Постави Schema.org кода\n\n4. Publish`,
-        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Wix Editor → Add Elements → App Market\n   → Търси "FAQ" → инсталирай "Wix FAQ"\n\n2. Manage Questions → Add Question\n   → Копирай въпросите и отговорите\n\n3. Publish`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Отвори редактора на сайта\n2. Добави FAQ секция с въпросите и отговорите\n3. Постави Schema.org кода преди </head>\n4. Запази и публикувай`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Влез в WordPress Admin\n   yoursite.com/wp-admin\n\n2. Инсталирай Rank Math SEO\n   Plugins - Add New - Rank Math SEO - Install - Activate\n\n3. Pages - намери страницата - Edit\n\n4. Кликни + - търси FAQ - Rank Math FAQ Block\n   Копирай въпросите и отговорите\n\n5. Update`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Webflow Designer\n\n2. + - Section - Div Block за всеки въпрос\n   H3 за въпроса, Paragraph за отговора\n\n3. Page Settings - Custom Code - Head Code\n   Постави Schema.org кода\n\n4. Publish`,
+        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Add Elements - App Market - Wix FAQ - Install\n\n2. Manage Questions - Add Question\n   Копирай въпросите и отговорите\n\n3. Publish`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Отвори редактора\n2. Добави FAQ секция с въпросите\n3. Постави Schema.org кода преди </head>\n4. Запази и публикувай`
       },
       llms: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Копирай съдържанието → запази като "llms.txt"\n\n2. Plugins → Add New → "WP File Manager" → Activate\n\n3. WP File Manager → public_html → качи llms.txt\n\n4. Провери на yoursite.com/llms.txt`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Копирай и запази като "llms.txt"\n\n2. Designer → Assets → качи файла\n\n3. Провери на yoursite.com/llms.txt`,
-        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Editor → Dev Mode → Turn on Dev Mode\n2. "+" до Public → създай "llms.txt"\n3. Постави съдържанието\n4. Провери на yoursite.com/llms.txt`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Копирай съдържанието\n2. Запази като "llms.txt"\n3. Качи в root директорията (public_html)\n4. Провери на yoursite.com/llms.txt`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Копирай - запази като llms.txt\n2. Plugins - WP File Manager - Activate\n3. public_html - качи llms.txt\n4. Провери: yoursite.com/llms.txt`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Запази като llms.txt\n2. Designer - Assets - качи\n3. Провери: yoursite.com/llms.txt`,
+        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Dev Mode - Turn on\n2. + до Public - llms.txt\n3. Постави съдържанието\n4. Провери: yoursite.com/llms.txt`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Запази като llms.txt\n2. Качи в public_html\n3. Провери: yoursite.com/llms.txt`
       },
       robots: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Rank Math → General Settings → Edit robots.txt\n2. Замени съдържанието с новото\n3. Save Changes\n4. Провери на yoursite.com/robots.txt`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Project Settings → SEO → robots.txt\n2. Замени съдържанието\n3. Save → Publish\n4. Провери на yoursite.com/robots.txt`,
-        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Dashboard → Marketing & SEO → SEO Tools → robots.txt\n2. Edit → замени съдържанието\n3. Save\n4. Провери на yoursite.com/robots.txt`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Хостинг панел → File Manager → public_html\n2. Намери или създай robots.txt\n3. Замени съдържанието\n4. Провери на yoursite.com/robots.txt`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Rank Math - General Settings - Edit robots.txt\n2. Замени съдържанието\n3. Save Changes\n4. Провери: yoursite.com/robots.txt`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Project Settings - SEO - robots.txt\n2. Замени - Save - Publish\n3. Провери: yoursite.com/robots.txt`,
+        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Marketing SEO - SEO Tools - robots.txt\n2. Edit - замени - Save\n3. Провери: yoursite.com/robots.txt`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. File Manager - public_html - robots.txt\n2. Замени съдържанието\n3. Провери: yoursite.com/robots.txt`
       },
       schema: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Plugins → Add New → "Schema Pro" → Activate\n2. Schema Pro → Add New Schema\n3. Или: Appearance → Theme Editor → header.php\n   → Постави кода ПРЕДИ </head>`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Page Settings → Custom Code → Inside head tag\n2. Постави Schema кода\n3. Save → Publish\n4. Провери: search.google.com/test/rich-results`,
-        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Settings → Advanced → Custom Code\n2. Add Custom Code → постави кода → Head\n3. Apply → Publish`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Намери </head> в HTML файла\n2. Постави кода ПРЕДИ </head>\n3. Запази и качи\n4. Провери: search.google.com/test/rich-results`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Plugins - Schema Pro - Activate\n2. Schema Pro - Add New Schema\n3. Или: Theme Editor - header.php - преди </head>`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Page Settings - Custom Code - Inside head tag\n2. Постави кода - Save - Publish\n3. Провери: search.google.com/test/rich-results`,
+        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Settings - Advanced - Custom Code\n2. Add - постави кода - Head - Apply - Publish`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Намери </head>\n2. Постави кода ПРЕДИ </head>\n3. Провери: search.google.com/test/rich-results`
       },
       metadesc: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Pages → Edit страницата\n2. Rank Math SEO → Edit Snippet\n3. Description → постави избрания вариант (120-160 символа)\n4. Update`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Page Settings → SEO Settings → Meta Description\n2. Постави избрания вариант\n3. Publish`,
-        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Page Settings → SEO Basics → Page Description\n2. Постави избрания вариант\n3. Save → Publish`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. SEO Settings на платформата\n2. Meta Description → постави Вариант 1\n3. Запази`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Pages - Edit - Rank Math - Edit Snippet\n2. Description - постави вариант (120-160 символа)\n3. Update`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. Page Settings - SEO - Meta Description\n2. Постави вариант - Publish`,
+        Wix: `СТЪПКА ПО СТЪПКА ЗА WIX:\n\n1. Page Settings - SEO Basics - Page Description\n2. Постави вариант - Save - Publish`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. SEO Settings - Meta Description\n2. Постави Вариант 1 - Запази`
       },
       blog: {
-        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Posts → Add New Post\n2. Добави заглавието от горе\n3. Пиши по структурата с H2 за всяка секция\n4. Rank Math → Focus Keyword\n5. Publish`,
-        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. CMS → Blog Posts → New Blog Post\n2. Добави заглавието\n3. Rich Text → пиши по структурата\n4. SEO Settings → Meta Description\n5. Published → Publish`,
-        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. CMS/Blog → нов пост\n2. Заглавие от горе\n3. Структура: Въведение → 4 секции → Заключение\n4. Meta Description\n5. Публикувай`
+        WordPress: `СТЪПКА ПО СТЪПКА ЗА WORDPRESS:\n\n1. Posts - Add New Post\n2. Заглавие от горе\n3. H2 за всяка секция - параграфи\n4. Rank Math - Focus Keyword\n5. Publish`,
+        Webflow: `СТЪПКА ПО СТЪПКА ЗА WEBFLOW:\n\n1. CMS - Blog Posts - New\n2. Заглавие - Rich Text по структурата\n3. SEO - Meta Description - Published - Publish`,
+        default: `ОБЩА ИНСТРУКЦИЯ:\n\n1. Нов пост - заглавие от горе\n2. Структура: Въведение - 4 секции - Заключение\n3. Meta Description - Публикувай`
       }
     }
-    const typeInstructions = instructions[type] || {}
-    return typeInstructions[p] || typeInstructions['default'] || 'Следвай документацията на платформата си.'
+    const t = instr[type] || {}
+    return t[p] || t['default'] || 'Следвай документацията на платформата си.'
   }
 
   return (
@@ -233,7 +267,7 @@ const lockedTabs: never[] = []
 
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px 32px" }}>
 
-        {step < 4 && (
+        {!prefillMode && step < 4 && (
           <div style={{ marginBottom: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
               {['Бизнес информация', 'Платформа', 'Конкуренти'].map((s, i) => (
@@ -255,27 +289,22 @@ const lockedTabs: never[] = []
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}` }}>
             <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>Разкажи ни за бизнеса си</h1>
             <p style={{ color: COLORS.textMuted, marginBottom: 32 }}>Тази информация ще помогне да генерираме персонализирано съдържание</p>
-
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>Домейн на сайта</label>
               <input value={info.domain} onChange={e => setInfo({...info, domain: e.target.value})} placeholder="example.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }} />
             </div>
-
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>Име на бизнеса</label>
               <input value={info.name} onChange={e => setInfo({...info, name: e.target.value})} placeholder="Примерно: Пицария Романо" style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }} />
             </div>
-
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>Опиши бизнеса си с 20 думи</label>
-              <textarea value={info.description} onChange={e => setInfo({...info, description: e.target.value})} placeholder="Примерно: Автентична италианска пицария в центъра на София с 10 години опит..." rows={3} style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const, resize: "vertical" as const }} />
+              <textarea value={info.description} onChange={e => setInfo({...info, description: e.target.value})} placeholder="Примерно: Автентична италианска пицария в центъра на София..." rows={3} style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const, resize: "vertical" as const }} />
             </div>
-
             <div style={{ marginBottom: 32 }}>
               <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>Локация</label>
               <input value={info.location} onChange={e => setInfo({...info, location: e.target.value})} placeholder="Примерно: София, България" style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }} />
             </div>
-
             <button onClick={() => { if (info.name && info.description && info.location) setStep(2) }} style={{ width: "100%", background: COLORS.orange, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
               Следваща стъпка
             </button>
@@ -286,7 +315,6 @@ const lockedTabs: never[] = []
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}` }}>
             <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>На каква платформа е сайтът ти?</h1>
             <p style={{ color: COLORS.textMuted, marginBottom: 32 }}>Инструкциите ще бъдат адаптирани специално за твоята платформа</p>
-
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginBottom: 32 }}>
               {PLATFORMS.map(p => (
                 <button key={p} onClick={() => setInfo({...info, platform: p})} style={{ padding: "16px", borderRadius: 10, border: `2px solid ${info.platform === p ? COLORS.orange : COLORS.lightGray}`, background: info.platform === p ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 15, fontWeight: info.platform === p ? 700 : 400, cursor: "pointer", textAlign: "left" as const }}>
@@ -294,12 +322,10 @@ const lockedTabs: never[] = []
                 </button>
               ))}
             </div>
-
             <div style={{ marginBottom: 32 }}>
               <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>Социални мрежи и Google Maps (незадължително)</label>
               <textarea value={info.social} onChange={e => setInfo({...info, social: e.target.value})} placeholder="Facebook: https://facebook.com/..." rows={4} style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const, resize: "vertical" as const }} />
             </div>
-
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => setStep(1)} style={{ flex: 1, background: COLORS.lightGray, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 600, cursor: "pointer" }}>Назад</button>
               <button onClick={() => { if (info.platform) setStep(3) }} style={{ flex: 2, background: COLORS.orange, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>Следваща стъпка</button>
@@ -309,25 +335,37 @@ const lockedTabs: never[] = []
 
         {step === 3 && (
           <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}` }}>
-            <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>Кои са конкурентите ти?</h1>
-            <p style={{ color: COLORS.textMuted, marginBottom: 32 }}>Ще генерираме по-добро съдържание като знаем конкурентите ти</p>
-
-            <div style={{ marginBottom: 32 }}>
-              <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>3-5 конкурента (незадължително)</label>
-              <textarea value={info.competitors} onChange={e => setInfo({...info, competitors: e.target.value})} placeholder="Пицария Наполи - napoli.bg" rows={5} style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const, resize: "vertical" as const }} />
-            </div>
-
-            <div style={{ background: "rgba(245,166,35,0.1)", border: `1px solid rgba(245,166,35,0.3)`, borderRadius: 12, padding: "16px 20px", marginBottom: 32 }}>
+            <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>
+              {prefillMode ? `Генерирай фикс за ${info.domain}` : 'Кои са конкурентите ти?'}
+            </h1>
+            <p style={{ color: COLORS.textMuted, marginBottom: 32 }}>
+              {prefillMode ? 'Данните са заредени автоматично. Можеш да генерираш директно.' : 'Ще генерираме по-добро съдържание като знаем конкурентите ти'}
+            </p>
+            {!prefillMode && (
+              <div style={{ marginBottom: 32 }}>
+                <label style={{ display: "block", fontWeight: 600, color: COLORS.navy, marginBottom: 8 }}>3-5 конкурента (незадължително)</label>
+                <textarea value={info.competitors} onChange={e => setInfo({...info, competitors: e.target.value})} placeholder="Пицария Наполи - napoli.bg" rows={5} style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const, resize: "vertical" as const }} />
+              </div>
+            )}
+            {prefillMode && (
+              <div style={{ background: COLORS.offWhite, borderRadius: 12, padding: "16px 20px", marginBottom: 32 }}>
+                <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 8 }}>Заредени данни:</div>
+                <div style={{ fontSize: 14, color: COLORS.navy, fontWeight: 600 }}>{info.name} — {info.platform} — {info.location}</div>
+              </div>
+            )}
+            <div style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 12, padding: "16px 20px", marginBottom: 32 }}>
               <div style={{ fontWeight: 700, color: COLORS.navy, marginBottom: 4 }}>Готово за генерация!</div>
-              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Ще генерирам персонализирано съдържание за {info.name} на {info.platform}</div>
+              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Персонализирано SEO съдържание за {info.name} на {info.platform}</div>
             </div>
-
             {error && (
               <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px", marginBottom: 20, color: "#991b1b", fontSize: 14 }}>{error}</div>
             )}
-
             <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={() => setStep(2)} style={{ flex: 1, background: COLORS.lightGray, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 600, cursor: "pointer" }}>Назад</button>
+              {prefillMode ? (
+                <a href="/dashboard" style={{ flex: 1, background: COLORS.lightGray, color: COLORS.navy, padding: "16px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 600, textAlign: "center" as const, display: "block" }}>Назад</a>
+              ) : (
+                <button onClick={() => setStep(2)} style={{ flex: 1, background: COLORS.lightGray, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 600, cursor: "pointer" }}>Назад</button>
+              )}
               <button onClick={checkAndGenerate} disabled={generating} style={{ flex: 2, background: COLORS.orange, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: generating ? "not-allowed" : "pointer", opacity: generating ? 0.8 : 1 }}>
                 {generating ? "Генерирам съдържание..." : "Генерирай"}
               </button>
@@ -341,17 +379,13 @@ const lockedTabs: never[] = []
               <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>Готово! Съдържанието е генерирано</h1>
               <p style={{ color: COLORS.textMuted, fontSize: 16 }}>Всичко е персонализирано за {info.name} на {info.platform}</p>
             </div>
-
             <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" as const }}>
               {visibleTabs.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: "10px 16px", borderRadius: 8, border: `2px solid ${activeTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: activeTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: activeTab === tab.id ? 700 : 400, cursor: "pointer" }}>
                   {tab.label}
                 </button>
               ))}
-                </div>
-              ))}
             </div>
-
             <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 }}>
@@ -365,7 +399,6 @@ const lockedTabs: never[] = []
                 {formatResult(activeTab, generated[activeTab] || 'Зареждане...')}
               </pre>
             </div>
-
             <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: 32, marginBottom: 24 }}>
               <h3 style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 16 }}>
                 Как да го сложиш на {info.platform} — стъпка по стъпка
@@ -374,10 +407,9 @@ const lockedTabs: never[] = []
                 {getInstructions(activeTab)}
               </pre>
             </div>
-
             <div style={{ display: "flex", gap: 12 }}>
               <a href="/dashboard" style={{ flex: 1, background: COLORS.lightGray, color: COLORS.navy, padding: "16px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 600, textAlign: "center" as const, display: "block" }}>Dashboard</a>
-              <button onClick={() => { setStep(1); setGenerated({}); setInfo({ name: '', platform: '', description: '', location: '', competitors: '', social: '', domain: '' }) }} style={{ flex: 1, background: COLORS.orange, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>Генерирай отново</button>
+              <button onClick={() => { setStep(1); setGenerated({}); setVisibleTabs([]); setActiveTab(''); setPrefillMode(false); setInfo({ name: '', platform: '', description: '', location: '', competitors: '', social: '', domain: '' }) }} style={{ flex: 1, background: COLORS.orange, color: COLORS.navy, padding: "16px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>Генерирай отново</button>
             </div>
           </div>
         )}
