@@ -295,7 +295,7 @@ export default function Dashboard() {
                   rel="noopener noreferrer"
                   style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}
                 >
-                  💳 Управлявай абонамента в Stripe →
+                  Управлявай абонамента в Stripe →
                 </a>
                 <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>
                   Ще се отвори Stripe Billing Portal — там можеш да смениш карта, да спреш или upgrade-неш плана.
