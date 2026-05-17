@@ -318,7 +318,7 @@ export default function Dashboard() {
                         <div style={{ display: "flex", gap: 8 }}>
                           {d.answers && (plan === 'smart' || plan === 'pro') && (
                             
-                              href={`/onboarding?domain=${encodeURIComponent(d.domain)}&prefill=true`}
+                        href={"/onboarding?domain=" + encodeURIComponent(d.domain) + "&prefill=true"}
                               style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13, textDecoration: "none" }}
                             >
                               Генерирай фикс
