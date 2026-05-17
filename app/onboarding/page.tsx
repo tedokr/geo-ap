@@ -29,6 +29,17 @@ export default function Onboarding() {
   const [activeTab, setActiveTab] = useState('faqs')
   const [error, setError] = useState('')
 
+  const tabs = [
+    { id: 'faqs', label: 'FAQs' },
+    { id: 'llms', label: 'llms.txt' },
+    { id: 'robots', label: 'robots.txt' },
+    { id: 'schema', label: 'Schema.org' },
+    { id: 'metadesc', label: 'Meta Description' },
+    { id: 'blog', label: 'Blog идеи' },
+  ]
+  const visibleTabs = tabs.slice(0, 2)
+  const lockedTabs = tabs.slice(2)
+
   const checkAndGenerate = async () => {
     setGenerating(true)
     setError('')
@@ -46,7 +57,6 @@ export default function Onboarding() {
         return
       }
 
-      // Get user plan
       const planRes = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/user_plans?email=eq.${encodeURIComponent(user.email)}&select=plan`,
         {
@@ -59,7 +69,6 @@ export default function Onboarding() {
       const planData = await planRes.json()
       const userPlan = planData?.[0]?.plan || 'free'
 
-      // Domain limits per plan
       const domainLimits: Record<string, number> = { lite: 1, smart: 3, pro: 5 }
       const domainLimit = domainLimits[userPlan] || 0
 
@@ -74,7 +83,6 @@ export default function Onboarding() {
       const currentYear = now.getFullYear()
       const cleanDomain = info.domain.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase() || info.name.toLowerCase().replace(/\s/g, '')
 
-      // Check how many unique domains this user has generated for this month
       const domainsRes = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/domain_generations?email=eq.${encodeURIComponent(user.email)}&month=eq.${currentMonth}&year=eq.${currentYear}&select=domain`,
         {
@@ -88,22 +96,18 @@ export default function Onboarding() {
       const uniqueDomains = [...new Set(domainsData.map((d: any) => d.domain))]
       const generationsForThisDomain = domainsData.filter((d: any) => d.domain === cleanDomain).length
 
-      // Check if new domain exceeds plan limit
       if (!uniqueDomains.includes(cleanDomain) && uniqueDomains.length >= domainLimit) {
         setError(`С ${userPlan.toUpperCase()} план можеш да генерираш за максимум ${domainLimit} домейна. Вече имаш: ${uniqueDomains.join(', ')}.`)
         setGenerating(false)
         return
       }
 
-      // Check generations per domain this month (1 if score > 50, 2 if score <= 50)
-      // We allow max 2 per domain per month
       if (generationsForThisDomain >= 2) {
         setError(`Достигна лимита за ${cleanDomain} този месец. Следващата генерация е от 1-ви на следващия месец.`)
         setGenerating(false)
         return
       }
 
-      // Generate all content
       const types = ['faqs', 'llms', 'robots', 'schema', 'metadesc', 'blog']
       const results: Record<string, string> = {}
 
@@ -121,7 +125,6 @@ export default function Onboarding() {
         }
       }
 
-      // Save generation record
       await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/domain_generations`,
         {
@@ -149,15 +152,6 @@ export default function Onboarding() {
       setGenerating(false)
     }
   }
-
-  const tabs = [
-    { id: 'faqs', label: 'FAQs' },
-    { id: 'llms', label: 'llms.txt' },
-    { id: 'robots', label: 'robots.txt' },
-    { id: 'schema', label: 'Schema.org' },
-    { id: 'metadesc', label: 'Meta Description' },
-    { id: 'blog', label: 'Blog идеи' },
-  ]
 
   const formatResult = (type: string, text: string) => {
     if (!text) return ''
@@ -324,7 +318,7 @@ export default function Onboarding() {
 
             <div style={{ background: "rgba(245,166,35,0.1)", border: `1px solid rgba(245,166,35,0.3)`, borderRadius: 12, padding: "16px 20px", marginBottom: 32 }}>
               <div style={{ fontWeight: 700, color: COLORS.navy, marginBottom: 4 }}>Готово за генерация!</div>
-              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Ще генерираме персонализирано съдържание за {info.name} на {info.platform}</div>
+              <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Ще генерирам персонализирано съдържание за {info.name} на {info.platform}</div>
             </div>
 
             {error && (
@@ -348,17 +342,22 @@ export default function Onboarding() {
             </div>
 
             <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" as const }}>
-              {tabs.map(tab => (
+              {visibleTabs.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: "10px 16px", borderRadius: 8, border: `2px solid ${activeTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: activeTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: activeTab === tab.id ? 700 : 400, cursor: "pointer" }}>
                   {tab.label}
                 </button>
+              ))}
+              {lockedTabs.map(tab => (
+                <div key={tab.id} style={{ padding: "10px 16px", borderRadius: 8, border: `2px solid ${COLORS.lightGray}`, background: COLORS.offWhite, color: COLORS.textMuted, fontSize: 13, cursor: "not-allowed", display: "flex", alignItems: "center", gap: 6 }}>
+                  {tab.label} — следващия месец
+                </div>
               ))}
             </div>
 
             <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 }}>
-                  {tabs.find(t => t.id === activeTab)?.label}
+                  {visibleTabs.find(t => t.id === activeTab)?.label}
                 </h2>
                 <button onClick={() => navigator.clipboard.writeText(formatResult(activeTab, generated[activeTab] || ''))} style={{ background: COLORS.navy, color: COLORS.white, padding: "8px 20px", borderRadius: 8, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   Копирай
