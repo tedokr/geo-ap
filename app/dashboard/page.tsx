@@ -290,7 +290,7 @@ export default function Dashboard() {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане & Абонамент</h2>
                 <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
                 
-                  href="https://billing.stripe.com/p/login/test_00000000"
+                  href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}
