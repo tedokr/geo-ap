@@ -51,10 +51,15 @@ function NavBar() {
               paddingBottom: 2,
             }}>{label}</a>
           ))}
-          <a href="#scan" style={{
-            background: COLORS.orange, color: COLORS.navy, padding: "10px 24px",
-            borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700,
-          }}>Безплатна проверка</a>
+          <a href="/login" style={{
+  color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500,
+  border: "1px solid rgba(255,255,255,0.25)", padding: "8px 20px", borderRadius: 8,
+  transition: "all 0.2s",
+}}>Вход</a>
+<a href="#scan" style={{
+  background: COLORS.orange, color: COLORS.navy, padding: "10px 24px",
+  borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700,
+}}>Безплатна проверка</a>
         </div>
       </div>
     </nav>
