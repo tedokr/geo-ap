@@ -287,7 +287,7 @@ export default function Dashboard() {
               <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
                 <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
-                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>Управлявай абонамента в Stripe</a>
+                <a href="https://billing.stripe.com/p/login/test_3cI5kDaVEfcl74ZcSz24000" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>Управлявай абонамента в Stripe</a>
                 <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>
                   Stripe Billing Portal — смени карта, спри или промени плана.
                 </div>
