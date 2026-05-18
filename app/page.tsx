@@ -511,9 +511,14 @@ function PricingSection() {
   }
 
   const prices = { monthly: ["€29.90", "€59.90", "€79.90"], yearly: ["€9.90", "€39.90", "€59.90"] };
+  const plans = [
+    { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "Конкретни препоръки", "Email напомняния", "3 месеца история"], recommended: false },
+    { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
+    { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
+  ];
 
   return (
-    <section id="pricing" style={{ padding: "80px 24px", background: `linear-gradient(170deg, #1B2A4A 0%, #1E3558 100%)`, position: "relative" }}>
+    <section id="pricing" style={{ padding: "80px 24px", background: "linear-gradient(170deg, #1B2A4A 0%, #1E3558 100%)", position: "relative" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
         <SectionTitle light tag="Планове и цени" title="Избери своя план" subtitle="Започни безплатно, надгради когато си готов." />
         <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.1)", borderRadius: 12, padding: 4, marginBottom: 40 }}>
@@ -523,15 +528,12 @@ function PricingSection() {
             </button>
           ))}
         </div>
-
-        <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 32 }}>
-          {[
-            { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "Конкретни препоръки", "Email напомняния", "3 месеца история"], recommended: false },
-            { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
-            { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
-          ].map(plan => (
-            <div key={plan.name} style={{ background: plan.recommended ? "#F5A623" : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? "#F5A623" : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 32, position: "relative", textAlign: "left" as const, boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none" }}>
-              {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#1B2A4A", color: "#F5A623", padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>ПРЕПОРЪЧАН</div>}
+        <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          {plans.map(plan => (
+            <div key={plan.name} style={{ background: plan.recommended ? "#F5A623" : "rgba(255,255,255,0.05)", border: "2px solid " + (plan.recommended ? "#F5A623" : "rgba(255,255,255,0.1)"), borderRadius: 20, padding: 32, position: "relative", textAlign: "left" as const, boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none", display: "flex", flexDirection: "column" as const }}>
+              {plan.recommended && (
+                <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#1B2A4A", color: "#F5A623", padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>ПРЕПОРЪЧАН</div>
+              )}
               <div style={{ color: plan.recommended ? "#1B2A4A" : "#FFFFFF", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{plan.name}</div>
               <div style={{ color: plan.recommended ? "#1B2A4A" : "#F5A623", fontSize: 44, fontWeight: 900, marginBottom: 4, letterSpacing: "-2px" }}>{plan.price}<span style={{ fontSize: 16, fontWeight: 600 }}>/мес</span></div>
               <div style={{ color: plan.recommended ? "#1B2A4A" : "rgba(255,255,255,0.6)", fontSize: 14, marginBottom: 24 }}>{plan.desc}</div>
@@ -541,48 +543,37 @@ function PricingSection() {
                   <span style={{ color: plan.recommended ? "#1B2A4A" : "rgba(255,255,255,0.85)", fontSize: 14 }}>{f}</span>
                 </div>
               ))}
-              <button
-                onClick={() => handleCheckout(plan.key)}
-                disabled={loading === plan.key || !agreed}
-                style={{ marginTop: 24, width: "100%", background: plan.recommended ? "#1B2A4A" : "#F5A623", color: plan.recommended ? "#FFFFFF" : "#1B2A4A", padding: "14px", borderRadius: 12, border: "none", fontWeight: 700, cursor: !agreed ? "not-allowed" : loading === plan.key ? "not-allowed" : "pointer", fontSize: 15, opacity: !agreed || loading === plan.key ? 0.5 : 1, transition: "all 0.2s" }}>
-                {loading === plan.key ? "Зареждане..." : `Започни с ${plan.name}`}
-              </button>
+              <div style={{ marginTop: "auto", paddingTop: 24 }}>
+                <button
+                  onClick={() => handleCheckout(plan.key)}
+                  disabled={loading === plan.key || !agreed}
+                  style={{ width: "100%", background: plan.recommended ? "#1B2A4A" : "#F5A623", color: plan.recommended ? "#FFFFFF" : "#1B2A4A", padding: "14px", borderRadius: 12, border: "none", fontWeight: 700, cursor: !agreed || loading === plan.key ? "not-allowed" : "pointer", fontSize: 15, opacity: !agreed || loading === plan.key ? 0.5 : 1, transition: "all 0.2s", marginBottom: 12 }}>
+                  {loading === plan.key ? "Зареждане..." : "Започни с " + plan.name}
+                </button>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    id={"agree-" + plan.key}
+                    checked={agreed}
+                    onChange={e => setAgreed(e.target.checked)}
+                    style={{ width: 13, height: 13, marginTop: 2, cursor: "pointer", accentColor: plan.recommended ? "#1B2A4A" : "#F5A623", flexShrink: 0 }}
+                  />
+                  <label htmlFor={"agree-" + plan.key} style={{ fontSize: 11, color: plan.recommended ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.45)", lineHeight: 1.5, textAlign: "left" as const, cursor: "pointer" }}>
+                    I agree to the{" "}
+                    <a href="/terms" target="_blank" style={{ color: plan.recommended ? "#1B2A4A" : "#F5A623", textDecoration: "underline" }}>Terms</a>
+                    {" & "}
+                    <a href="/privacy" target="_blank" style={{ color: plan.recommended ? "#1B2A4A" : "#F5A623", textDecoration: "underline" }}>Privacy Policy</a>
+                    . Services start immediately. EU withdrawal right waived.
+                  </label>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-
-<div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 16 }}>
-          {[
-            { key: "lite" },
-            { key: "smart" },
-            { key: "pro" },
-          ].map(plan => (
-            <div key={plan.key} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "12px 4px" }}>
-              <input
-                type="checkbox"
-                id={`agree-${plan.key}`}
-                checked={agreed}
-                onChange={e => setAgreed(e.target.checked)}
-                style={{ width: 14, height: 14, marginTop: 2, cursor: "pointer", accentColor: "#F5A623", flexShrink: 0 }}
-              />
-              <label htmlFor={`agree-${plan.key}`} style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", lineHeight: 1.5, textAlign: "left" as const, cursor: "pointer" }}>
-                I agree to the{" "}
-                <a href="/terms" target="_blank" style={{ color: "#F5A623" }}>Terms</a>
-                {" "}&amp;{" "}
-                <a href="/privacy" target="_blank" style={{ color: "#F5A623" }}>Privacy Policy</a>
-                . Services begin immediately. EU withdrawal right waived.
-              </label>
-            </div>
-          ))}
-        </div>
-
-        {!agreed && (
-          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 8, textAlign: "center" as const }}>
-            Accept the Terms above to enable payment.
-          </p>
-        )}
       </div>
     </section>
+  );
+}
   );
 }
   );
