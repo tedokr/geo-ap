@@ -55,8 +55,7 @@ function ScoreRing({ score }: { score: number }) {
     <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
       <svg viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
         <circle cx="36" cy="36" r={r} fill="none" stroke={COLORS.lightGray} strokeWidth="6" />
-        <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="6"
-          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
+        <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="6" strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" as const }}>
         <span style={{ fontSize: 16, fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
@@ -202,7 +201,6 @@ export default function Dashboard() {
   const questionLabels = ["Име на бизнеса", "На каква платформа е сайтът? (WordPress, Webflow, Wix...)", "Опиши бизнеса си с 20 думи", "Където се намира бизнесът ти", "3 твои конкуренти"]
   const genLink = (domain: string) => "/onboarding?domain=" + encodeURIComponent(domain) + "&prefill=true"
 
-  // Viewing past generation
   if (viewingGeneration) {
     const content = viewingGeneration.gen.content || {}
     const tabs = allTabs.filter(t => content[t.id])
@@ -210,29 +208,29 @@ export default function Dashboard() {
     return (
       <div style={{ minHeight: '100vh', background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <header style={{ background: COLORS.navy, padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+        <header style={{ background: COLORS.navy, padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
           <a href="/" style={{ textDecoration: "none" }}><span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span></a>
-          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 20px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 14 }}>Назад към Dashboard</button>
+          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Назад</button>
         </header>
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 32px" }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>Генерирано съдържание</h1>
-          <p style={{ color: COLORS.textMuted, marginBottom: 32, fontSize: 15 }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px 16px" }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>Генерирано съдържание</h1>
+          <p style={{ color: COLORS.textMuted, marginBottom: 24, fontSize: 14 }}>
             {viewingGeneration.domain} — {new Date(viewingGeneration.gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
-          <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" as const }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" as const }}>
             {tabs.map(tab => (
-              <button key={tab.id} onClick={() => setViewingTab(tab.id)} style={{ padding: "10px 16px", borderRadius: 8, border: `2px solid ${currentTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: currentTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: currentTab === tab.id ? 700 : 400, cursor: "pointer" }}>
+              <button key={tab.id} onClick={() => setViewingTab(tab.id)} style={{ padding: "8px 14px", borderRadius: 8, border: `2px solid ${currentTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: currentTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: currentTab === tab.id ? 700 : 400, cursor: "pointer" }}>
                 {tab.label}
               </button>
             ))}
           </div>
           {currentTab && (
-            <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{tabs.find(t => t.id === currentTab)?.label}</h2>
-                <button onClick={() => navigator.clipboard.writeText(formatResult(currentTab, content[currentTab] || ''))} style={{ background: COLORS.navy, color: COLORS.white, padding: "8px 20px", borderRadius: 8, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Копирай</button>
+            <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{tabs.find(t => t.id === currentTab)?.label}</h2>
+                <button onClick={() => navigator.clipboard.writeText(formatResult(currentTab, content[currentTab] || ''))} style={{ background: COLORS.navy, color: COLORS.white, padding: "6px 16px", borderRadius: 8, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Копирай</button>
               </div>
-              <pre style={{ background: COLORS.offWhite, borderRadius: 10, padding: 20, fontSize: 13, lineHeight: 1.6, overflow: "auto", whiteSpace: "pre-wrap" as const, wordBreak: "break-word" as const, color: COLORS.navy, maxHeight: 500, border: `1px solid ${COLORS.lightGray}` }}>
+              <pre style={{ background: COLORS.offWhite, borderRadius: 10, padding: 16, fontSize: 12, lineHeight: 1.6, overflow: "auto", whiteSpace: "pre-wrap" as const, wordBreak: "break-word" as const, color: COLORS.navy, maxHeight: 500, border: `1px solid ${COLORS.lightGray}` }}>
                 {formatResult(currentTab, content[currentTab] || '')}
               </pre>
             </div>
@@ -246,98 +244,105 @@ export default function Dashboard() {
     <div style={{ minHeight: "100vh", background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-      <header style={{ background: COLORS.navy, padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-        <a href="/" style={{ textDecoration: "none" }}><span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span></a>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      {/* HEADER */}
+      <header style={{ background: COLORS.navy, padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+        <a href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
+          <span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
+        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {(plan === 'smart' || plan === 'pro') && (
-            <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Генератор</a>
+            <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>Генератор</a>
           )}
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, background: "rgba(255,255,255,0.1)", padding: "4px 12px", borderRadius: 20 }}>{planLabel[plan]}</div>
-          <button onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')} style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600 }}>Профил</button>
-          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 14, cursor: "pointer", padding: 0 }}>Изход</button>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: 20, whiteSpace: "nowrap" as const }}>{planLabel[plan]}</div>
+          <button onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')} style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" as const }}>Профил</button>
+          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" as const }}>Изход</button>
         </div>
       </header>
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 32px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 16px" }}>
 
         {success && (
-          <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 16, padding: "20px 24px", marginBottom: 32 }}>
-            <div style={{ fontWeight: 700, color: "#166534", fontSize: 18 }}>Плащането е успешно!</div>
-            <div style={{ color: "#166534", fontSize: 14 }}>Добре дошъл! Планът се активира автоматично.</div>
+          <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, color: "#166534", fontSize: 16 }}>Плащането е успешно!</div>
+            <div style={{ color: "#166534", fontSize: 13 }}>Добре дошъл! Планът се активира автоматично.</div>
           </div>
         )}
 
         {/* PROFILE TAB */}
         {activeTab === 'profile' && (
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
-              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Моят профил</h1>
-              <button onClick={() => setActiveTab('scan')} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "10px 20px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}>Към сканирането</button>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" as const }}>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Моят профил</h1>
+              <button onClick={() => setActiveTab('scan')} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Към сканирането</button>
             </div>
 
-            <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Акаунт</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            {/* Account */}
+            <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Акаунт</h2>
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Имейл</div>
-                  <div style={{ fontSize: 15, color: COLORS.navy, fontWeight: 600, background: COLORS.offWhite, padding: "10px 16px", borderRadius: 8 }}>{userEmail || "—"}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>Имейл</div>
+                  <div style={{ fontSize: 14, color: COLORS.navy, fontWeight: 600, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{userEmail || "—"}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase" as const, letterSpacing: 1 }}>Активен план</div>
-                  <div style={{ fontSize: 15, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 16px", borderRadius: 8 }}>{planLabel[plan]}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>Активен план</div>
+                  <div style={{ fontSize: 14, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{planLabel[plan]}</div>
                 </div>
               </div>
             </div>
 
-            <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Смяна на парола</h2>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Нова парола</div>
-                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Минимум 6 символа" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 15, outline: "none", boxSizing: "border-box" as const }} />
+            {/* Password */}
+            <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Смяна на парола</h2>
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Нова парола</div>
+                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Минимум 6 символа" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
                 </div>
-                <button onClick={handleChangePassword} disabled={savingPassword} style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1, whiteSpace: "nowrap" as const }}>
+                <button onClick={handleChangePassword} disabled={savingPassword} style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1 }}>
                   {savingPassword ? "Запазва..." : "Смени паролата"}
                 </button>
               </div>
-              {passwordMsg && <div style={{ marginTop: 12, fontSize: 14, color: passwordMsg.includes("успешно") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>}
+              {passwordMsg && <div style={{ marginTop: 10, fontSize: 13, color: passwordMsg.includes("успешно") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>}
             </div>
 
+            {/* Stripe */}
             {plan !== 'free' && (
-              <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
-                <p style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
-                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: COLORS.navy, color: COLORS.white, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>Управлявай абонамента в Stripe</a>
-                <div style={{ marginTop: 12, fontSize: 12, color: COLORS.textMuted }}>Stripe Billing Portal — смени карта, спри или промени плана.</div>
+              <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
+                <p style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: 16 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
+                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "block", background: COLORS.navy, color: COLORS.white, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Управлявай абонамента в Stripe</a>
+                <div style={{ marginTop: 10, fontSize: 11, color: COLORS.textMuted }}>Stripe Billing Portal — смени карта, спри или промени плана.</div>
               </div>
             )}
 
+            {/* Business profiles */}
             {plan !== 'free' && (
-              <div style={{ background: COLORS.white, borderRadius: 20, padding: 36, border: `1px solid ${COLORS.lightGray}` }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Бизнес профили</h2>
-                  <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>
+              <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Бизнес профили</h2>
+                  <span style={{ fontSize: 12, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 10px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]}</span>
                 </div>
                 {lockedDomains.length === 0 ? (
-                  <div style={{ color: COLORS.textMuted, fontSize: 14, textAlign: "center" as const, padding: "24px 0" }}>Все още нямаш сканирани домейни.</div>
+                  <div style={{ color: COLORS.textMuted, fontSize: 13, textAlign: "center" as const, padding: "20px 0" }}>Все още нямаш сканирани домейни.</div>
                 ) : (
                   lockedDomains.map((d, idx) => (
-                    <div key={d.domain} style={{ marginBottom: 12, border: `1px solid ${COLORS.lightGray}`, borderRadius: 12, overflow: "hidden" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: COLORS.offWhite }}>
+                    <div key={d.domain} style={{ marginBottom: 10, border: `1px solid ${COLORS.lightGray}`, borderRadius: 12, overflow: "hidden" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: COLORS.offWhite }}>
                         <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 14 }}>{d.domain}</span>
-                        <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "5px 14px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>
-                          {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни профил"}
+                        <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "5px 12px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>
+                          {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни"}
                         </button>
                       </div>
                       {editingDomainIdx === idx && (
-                        <div style={{ padding: "16px 16px 20px", background: COLORS.white }}>
+                        <div style={{ padding: "14px", background: COLORS.white }}>
                           {questionLabels.map((q, qi) => (
                             <div key={qi} style={{ marginBottom: 12 }}>
                               <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{q}</div>
                               <input type="text" value={editAnswers[`q${qi}`] || ""} onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))} style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
                             </div>
                           ))}
-                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "9px 20px", borderRadius: 8, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 13, marginTop: 4 }}>Запази</button>
+                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "9px 20px", borderRadius: 8, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Запази</button>
                         </div>
                       )}
                     </div>
@@ -351,9 +356,9 @@ export default function Dashboard() {
         {/* SCAN TAB */}
         {activeTab === 'scan' && (
           <>
-            <div style={{ marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>GEO Dashboard</h1>
-              <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
+            <div style={{ marginBottom: 24 }}>
+              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 6 }}>GEO Dashboard</h1>
+              <p style={{ color: COLORS.textMuted, fontSize: 15 }}>
                 {plan === 'free' && 'Безплатен план — виж общия скор на домейна си'}
                 {plan === 'lite' && 'LITE план — 1 домейн'}
                 {plan === 'smart' && 'SMART план — до 3 домейна + генератор на съдържание'}
@@ -362,83 +367,79 @@ export default function Dashboard() {
             </div>
 
             {plan === 'free' && (
-              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 32px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
-                <div>
-                  <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 6 }}>UPGRADE</div>
-                  <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
-                  <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
-                </div>
-                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Виж плановете</a>
+              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 6 }}>UPGRADE</div>
+                <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
+                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginBottom: 16 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
+                <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Виж плановете</a>
               </div>
             )}
 
             {plan === 'lite' && (
-              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "20px 28px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
-                <div>
-                  <div style={{ color: COLORS.orange, fontSize: 13, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
-                  <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
-                </div>
-                <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Upgrade към SMART</a>
+              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
+                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
+                <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към SMART</a>
               </div>
             )}
 
             {/* SCAN BOX */}
-            <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-                <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Провери домейн</h2>
-                {plan !== 'free' && <span style={{ fontSize: 13, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 12px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>}
+            <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Провери домейн</h2>
+                {plan !== 'free' && <span style={{ fontSize: 12, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 10px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>}
               </div>
-              <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()} placeholder="example.com" style={{ flex: 1, padding: "14px 20px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none" }} />
-                <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1, whiteSpace: "nowrap" as const }}>
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 12 }}>
+                <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()} placeholder="example.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none", boxSizing: "border-box" as const }} />
+                <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1 }}>
                   {scanning ? "Сканирам..." : "Анализирай"}
                 </button>
               </div>
-              {scanning && <div style={{ color: COLORS.blue, fontSize: 14, padding: "12px 16px", background: COLORS.offWhite, borderRadius: 8 }}>Проверяваме 11 критерия...</div>}
+              {scanning && <div style={{ color: COLORS.blue, fontSize: 13, padding: "10px 14px", background: COLORS.offWhite, borderRadius: 8 }}>Проверяваме 11 критерия...</div>}
               {error && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 18px", color: "#991b1b", fontSize: 14 }}>
+                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "12px 14px", color: "#991b1b", fontSize: 13 }}>
                   {error}
-                  {error.includes('Upgrade') && <a href="/#pricing" style={{ display: "inline-block", marginLeft: 12, background: COLORS.orange, color: COLORS.navy, padding: "4px 16px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>Upgrade</a>}
+                  {error.includes('Upgrade') && <a href="/#pricing" style={{ display: "block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const }}>Upgrade</a>}
                 </div>
               )}
             </div>
 
             {/* SCAN RESULT */}
             {result && (
-              <div style={{ background: COLORS.white, borderRadius: 20, padding: 40, border: `1px solid ${COLORS.lightGray}`, marginBottom: 32 }}>
-                <div style={{ textAlign: "center" as const, marginBottom: 40, paddingBottom: 32, borderBottom: `1px solid ${COLORS.lightGray}` }}>
-                  <div style={{ fontSize: 88, fontWeight: 900, lineHeight: 1, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444" }}>{result.totalScore}%</div>
-                  <div style={{ color: COLORS.textMuted, fontSize: 18, marginTop: 8 }}>GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong></div>
-                  <div style={{ display: "inline-block", marginTop: 12, padding: "6px 16px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 14, fontWeight: 600 }}>
+              <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
+                <div style={{ textAlign: "center" as const, marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${COLORS.lightGray}` }}>
+                  <div style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444" }}>{result.totalScore}%</div>
+                  <div style={{ color: COLORS.textMuted, fontSize: 15, marginTop: 8 }}>GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong></div>
+                  <div style={{ display: "inline-block", marginTop: 10, padding: "6px 14px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 13, fontWeight: 600 }}>
                     {result.totalScore > 60 ? "Добро AI присъствие" : result.totalScore > 35 ? "Нужни подобрения" : "Слабо AI присъствие"}
                   </div>
                 </div>
                 {plan === 'free' ? (
-                  <div style={{ textAlign: "center" as const, padding: "32px", background: COLORS.offWhite, borderRadius: 16 }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Детайлите са заключени</div>
-                    <div style={{ color: COLORS.textMuted, fontSize: 15, marginBottom: 24 }}>Вземи LITE план за да видиш какво точно трябва да оправиш</div>
-                    <a href="/#pricing" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "14px 32px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>Виж плановете</a>
+                  <div style={{ textAlign: "center" as const, padding: "24px", background: COLORS.offWhite, borderRadius: 14 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Детайлите са заключени</div>
+                    <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Вземи LITE план за да видиш какво точно трябва да оправиш</div>
+                    <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15 }}>Виж плановете</a>
                   </div>
                 ) : (
                   <div>
-                    <h3 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Препоръки за подобрение</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 14 }}>Препоръки за подобрение</h3>
                     {getTopIssues(result.results, result.totalScore).map((r: any) => (
-                      <div key={r.label} style={{ marginBottom: 16, padding: "20px 24px", borderRadius: 12, border: `2px solid ${COLORS.orange}`, background: "rgba(245,166,35,0.05)" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-                          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
-                          <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 16 }}>{r.label}</span>
-                          <span style={{ fontWeight: 800, color: "#ef4444", fontSize: 14 }}>{r.score}%</span>
+                      <div key={r.label} style={{ marginBottom: 14, padding: "16px", borderRadius: 12, border: `2px solid ${COLORS.orange}`, background: "rgba(245,166,35,0.05)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
+                          <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 14 }}>{r.label}</span>
+                          <span style={{ fontWeight: 800, color: "#ef4444", fontSize: 13 }}>{r.score}%</span>
                         </div>
-                        <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: plan === 'smart' || plan === 'pro' ? 12 : 0 }}>{r.message}</div>
+                        <div style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: plan === 'smart' || plan === 'pro' ? 10 : 0 }}>{r.message}</div>
                         {(plan === 'smart' || plan === 'pro') && (
-                          <a href="/onboarding" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, marginTop: 4 }}>Генерирай fix</a>
+                          <a href="/onboarding" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const, marginTop: 4 }}>Генерирай fix</a>
                         )}
                       </div>
                     ))}
                     {plan === 'lite' && (
-                      <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-                        <div style={{ color: COLORS.white, fontSize: 14 }}>Искаш стъпка по стъпка инструкции?</div>
-                        <a href="/#pricing" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 20px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" as const, flexShrink: 0 }}>Upgrade към SMART</a>
+                      <div style={{ marginTop: 16, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 14, padding: "16px" }}>
+                        <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 10 }}>Искаш стъпка по стъпка инструкции?</div>
+                        <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "10px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>Upgrade към SMART</a>
                       </div>
                     )}
                   </div>
@@ -446,71 +447,53 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* DOMAIN CARDS — fancy section */}
+            {/* DOMAIN CARDS */}
             {plan !== 'free' && lockedDomains.length > 0 && (
-              <div style={{ marginBottom: 32 }}>
-                <h2 style={{ fontSize: 22, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>Моите домейни</h2>
-                <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
+              <div style={{ marginBottom: 24 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Моите домейни</h2>
+                <div style={{ display: "flex", flexDirection: "column" as const, gap: 14 }}>
                   {lockedDomains.map((d) => {
                     const gens = domainGenerations[d.domain] || []
                     const lastGen = gens[0]
                     const isExpanded = expandedDomain === d.domain
                     return (
-                      <div key={d.domain} style={{ background: COLORS.white, borderRadius: 20, border: `1px solid ${COLORS.lightGray}`, overflow: "hidden", boxShadow: "0 2px 12px rgba(27,42,74,0.06)" }}>
-                        {/* Card header */}
-                        <div style={{ padding: "24px 28px", display: "flex", alignItems: "center", gap: 20 }}>
-                          {/* Domain icon */}
-                          <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <span style={{ fontSize: 20 }}>🌐</span>
-                          </div>
-                          {/* Domain info */}
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 800, color: COLORS.navy, fontSize: 17, marginBottom: 4 }}>{d.domain}</div>
-                            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" as const }}>
-                              {d.answers && <span style={{ fontSize: 11, background: "#f0fdf4", color: "#166534", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>Профил попълнен</span>}
-                              {gens.length > 0 && <span style={{ fontSize: 11, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{gens.length} {gens.length === 1 ? 'генерация' : 'генерации'}</span>}
-                              {lastGen && <span style={{ fontSize: 11, color: COLORS.textMuted }}>Последна: {new Date(lastGen.generated_at).toLocaleDateString('bg-BG')}</span>}
+                      <div key={d.domain} style={{ background: COLORS.white, borderRadius: 16, border: `1px solid ${COLORS.lightGray}`, overflow: "hidden", boxShadow: "0 2px 12px rgba(27,42,74,0.06)" }}>
+                        <div style={{ padding: "16px", display: "flex", alignItems: "center", gap: 14 }}>
+                          <div style={{ width: 44, height: 44, borderRadius: 10, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>🌐</div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 800, color: COLORS.navy, fontSize: 15, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{d.domain}</div>
+                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const }}>
+                              {d.answers && <span style={{ fontSize: 10, background: "#f0fdf4", color: "#166534", padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>Профил попълнен</span>}
+                              {gens.length > 0 && <span style={{ fontSize: 10, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>{gens.length} генерации</span>}
+                              {lastGen && <span style={{ fontSize: 10, color: COLORS.textMuted }}>Последна: {new Date(lastGen.generated_at).toLocaleDateString('bg-BG')}</span>}
                             </div>
-                          </div>
-                          {/* Actions */}
-                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            {(plan === 'smart' || plan === 'pro') && (
-                              <a href={genLink(d.domain)} style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 18px", borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" as const }}>
-                                {d.answers ? "Генерирай фикс" : "Настрой и генерирай"}
-                              </a>
-                            )}
-                            {gens.length > 0 && (
-                              <button onClick={() => setExpandedDomain(isExpanded ? null : d.domain)} style={{ background: COLORS.offWhite, color: COLORS.navy, border: `1px solid ${COLORS.lightGray}`, padding: "8px 18px", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 13, whiteSpace: "nowrap" as const }}>
-                                {isExpanded ? "Скрий историята" : "История"}
-                              </button>
-                            )}
                           </div>
                         </div>
+                        <div style={{ padding: "0 16px 16px", display: "flex", gap: 8 }}>
+                          {(plan === 'smart' || plan === 'pro') && (
+                            <a href={genLink(d.domain)} style={{ flex: 1, background: COLORS.orange, color: COLORS.navy, padding: "9px", borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: "none", textAlign: "center" as const, display: "block" }}>
+                              {d.answers ? "Генерирай фикс" : "Настрой и генерирай"}
+                            </a>
+                          )}
+                          {gens.length > 0 && (
+                            <button onClick={() => setExpandedDomain(isExpanded ? null : d.domain)} style={{ flex: 1, background: COLORS.offWhite, color: COLORS.navy, border: `1px solid ${COLORS.lightGray}`, padding: "9px", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 13 }}>
+                              {isExpanded ? "Скрий" : "История"}
+                            </button>
+                          )}
+                        </div>
 
-                        {/* Generation history expanded */}
                         {isExpanded && gens.length > 0 && (
-                          <div style={{ borderTop: `1px solid ${COLORS.lightGray}`, padding: "16px 28px 20px" }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 12 }}>История на генерациите</div>
-                            <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
-                              {gens.map((gen: any, gi: number) => (
-                                <div key={gi} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: COLORS.offWhite, borderRadius: 10, border: `1px solid ${COLORS.lightGray}` }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: COLORS.orange, flexShrink: 0 }} />
-                                    <div>
-                                      <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.navy }}>
-                                        {new Date(gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                      </div>
-                                      <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-                                        {new Date(gen.generated_at).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} — {gen.month}/{gen.year}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <button onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "7px 18px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>
-                                    Виж файловете
-                                  </button>
+                          <div style={{ borderTop: `1px solid ${COLORS.lightGray}`, padding: "14px 16px" }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 10 }}>История</div>
+                            {gens.map((gen: any, gi: number) => (
+                              <div key={gi} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: COLORS.offWhite, borderRadius: 10, marginBottom: 8 }}>
+                                <div>
+                                  <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy }}>{new Date(gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                                  <div style={{ fontSize: 11, color: COLORS.textMuted }}>{new Date(gen.generated_at).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}</div>
                                 </div>
-                              ))}
-                            </div>
+                                <button onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 14px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Виж</button>
+                              </div>
+                            ))}
                           </div>
                         )}
                       </div>
@@ -522,14 +505,14 @@ export default function Dashboard() {
 
             {/* SCAN HISTORY */}
             {scanHistory.length > 1 && (
-              <div style={{ background: COLORS.white, borderRadius: 20, padding: 32, border: `1px solid ${COLORS.lightGray}` }}>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 20 }}>История на сканиранията</h2>
+              <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>История на сканиранията</h2>
                 {scanHistory.map((h: any, i: number) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: i < scanHistory.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderBottom: i < scanHistory.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
                     <ScoreRing score={h.totalScore} />
                     <div>
-                      <div style={{ fontWeight: 600, color: COLORS.navy, fontSize: 15 }}>{h.domain}</div>
-                      <div style={{ color: COLORS.textMuted, fontSize: 13 }}>{new Date(h.scannedAt).toLocaleString('bg-BG')}</div>
+                      <div style={{ fontWeight: 600, color: COLORS.navy, fontSize: 14 }}>{h.domain}</div>
+                      <div style={{ color: COLORS.textMuted, fontSize: 12 }}>{new Date(h.scannedAt).toLocaleString('bg-BG')}</div>
                     </div>
                   </div>
                 ))}
