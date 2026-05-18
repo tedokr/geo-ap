@@ -584,7 +584,14 @@ export default function Home() {
       <PricingSection />
       <footer style={{ background: "#0F1A2E", padding: "40px 24px", textAlign: "center" }}>
         <div style={{ fontSize: 22, fontWeight: 800, color: COLORS.white, marginBottom: 12 }}>GEO<span style={{ color: COLORS.orange }}>.app</span></div>
-        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>© 2026 GEO App · Privacy Policy · Terms of Service</div>
+       <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
+  © 2026 GEO App &nbsp;·&nbsp;
+  <a href="/privacy" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Privacy Policy</a>
+  &nbsp;·&nbsp;
+  <a href="/terms" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Terms of Service</a>
+  &nbsp;·&nbsp;
+  <a href="/imprint" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Imprint</a>
+</div>
       </footer>
     </>
   );
