@@ -33,13 +33,10 @@ function NavBar() {
       borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, zIndex: 101 }}>
           <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg, ${COLORS.orange}, #F7C948)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: COLORS.navy }}>G</div>
           <span style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, letterSpacing: "-0.5px" }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
         </div>
-
-        {/* Desktop nav */}
         <div className="desktop-nav" style={{ display: "flex", gap: 28, alignItems: "center" }}>
           {[["Какво правим", "what"], ["Защо е важно", "why"], ["МСП", "sme"], ["Защо всеки месец", "whymonthly"], ["Цени", "pricing"]].map(([label, id]) => (
             <a key={id} href={`#${id}`} style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{label}</a>
@@ -47,22 +44,14 @@ function NavBar() {
           <a href="/login" style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500, border: "1px solid rgba(255,255,255,0.25)", padding: "8px 20px", borderRadius: 8 }}>Вход</a>
           <a href="#scan" style={{ background: COLORS.orange, color: COLORS.navy, padding: "10px 24px", borderRadius: 8, textDecoration: "none", fontSize: 14, fontWeight: 700 }}>Безплатна проверка</a>
         </div>
-
-        {/* Mobile hamburger */}
-        <button
-          className="mobile-menu-btn"
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: 8, zIndex: 101 }}
-        >
+        <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)} style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: 8, zIndex: 101 }}>
           <div style={{ width: 24, height: 2, background: COLORS.white, marginBottom: 5, transition: "all 0.3s", transform: menuOpen ? "rotate(45deg) translate(5px, 5px)" : "none" }} />
           <div style={{ width: 24, height: 2, background: COLORS.white, marginBottom: 5, transition: "all 0.3s", opacity: menuOpen ? 0 : 1 }} />
           <div style={{ width: 24, height: 2, background: COLORS.white, transition: "all 0.3s", transform: menuOpen ? "rotate(-45deg) translate(5px, -5px)" : "none" }} />
         </button>
       </div>
-
-      {/* Mobile menu dropdown */}
       {menuOpen && (
-        <div className="mobile-menu" style={{ background: "rgba(27,42,74,0.98)", padding: "16px 24px 32px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div style={{ background: "rgba(27,42,74,0.98)", padding: "16px 24px 32px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           {[["Какво правим", "what"], ["Защо е важно", "why"], ["МСП", "sme"], ["Защо всеки месец", "whymonthly"], ["Цени", "pricing"]].map(([label, id]) => (
             <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)} style={{ display: "block", color: "rgba(255,255,255,0.85)", textDecoration: "none", fontSize: 18, fontWeight: 500, padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>{label}</a>
           ))}
@@ -256,57 +245,208 @@ function SMESection() {
   );
 }
 
-import { NextRequest, NextResponse } from 'next/server'
+function ScanSection() {
+  const [domain, setDomain] = useState("");
+  const [noWebsite, setNoWebsite] = useState(false);
+  const [googleMaps, setGoogleMaps] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [businessDesc, setBusinessDesc] = useState("");
+  const [scanning, setScanning] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState("");
+  const [showWebsiteOffer, setShowWebsiteOffer] = useState(false);
+  const [offerName, setOfferName] = useState("");
+  const [offerEmail, setOfferEmail] = useState("");
+  const [offerSent, setOfferSent] = useState(false);
+  const [sendingOffer, setSendingOffer] = useState(false);
 
-const client = new Anthropic()
+  const handleScan = async () => {
+    if (!noWebsite && !domain) return;
+    if (noWebsite && !googleMaps && !facebook && !instagram) {
+      setError("Добави поне един профил — Google Maps, Facebook или Instagram.");
+      return;
+    }
+    setScanning(true); setResult(null); setError("");
+    if (noWebsite) {
+      try {
+        const res = await fetch('/api/scan-social', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ googleMaps, facebook, instagram, businessDesc })
+        });
+        const data = await res.json();
+        if (data.error) setError(data.message || "Грешка при анализ.");
+        else { setResult(data); setShowWebsiteOffer(true); }
+      } catch { setError("Грешка при анализ. Опитай пак."); }
+    } else {
+      try {
+        const res = await fetch(`/api/scan?domain=${encodeURIComponent(domain)}`);
+        const data = await res.json();
+        if (data.error === 'rate_limit') setError(data.message);
+        else if (data.error) setError("Не можахме да сканираме домейна. Провери URL-а.");
+        else setResult(data);
+      } catch { setError("Грешка при сканиране. Опитай пак."); }
+    }
+    setScanning(false);
+  };
 
-export async function POST(req: NextRequest) {
-  try {
-    const { googleMaps, facebook, instagram, businessDesc } = await req.json()
+  const handleSendOffer = async () => {
+    if (!offerEmail) return;
+    setSendingOffer(true);
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/website_requests`, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: offerName, email: offerEmail, business_description: businessDesc, google_maps: googleMaps, facebook, instagram })
+      });
+      setOfferSent(true);
+    } catch { setOfferSent(true); }
+    setSendingOffer(false);
+  };
 
-    const hasGoogle = !!googleMaps?.trim()
-    const hasFacebook = !!facebook?.trim()
-    const hasInstagram = !!instagram?.trim()
-    const profileCount = [hasGoogle, hasFacebook, hasInstagram].filter(Boolean).length
+  return (
+    <section id="scan" style={{ padding: "80px 24px", background: `linear-gradient(170deg, #F0F5FB 0%, ${COLORS.white} 100%)` }}>
+      <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+        <SectionTitle tag="Безплатна проверка" title="Провери AI видимостта си за 2 минути" subtitle="Въведи домейна си и виж колко е подготвен бизнесът ти за AI ерата." />
+        <div style={{ background: COLORS.white, borderRadius: 20, padding: "32px 24px", boxShadow: "0 8px 40px rgba(27,42,74,0.08)", border: "1px solid rgba(27,42,74,0.06)" }}>
 
-    const prompt = `Ти си AI видимост експерт. Анализирай онлайн присъствието на този бизнес БЕЗ уебсайт и дай скор от 0 до 100.
+          {!noWebsite ? (
+            <div className="scan-row" style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+              <input type="text" placeholder="yourbusiness.com" value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()}
+                style={{ flex: 1, padding: "14px 16px", borderRadius: 12, fontSize: 16, border: `2px solid ${COLORS.lightGray}`, outline: "none", minWidth: 0 }} />
+              <button onClick={handleScan} disabled={scanning} style={{ background: scanning ? COLORS.textMuted : COLORS.orange, color: scanning ? COLORS.white : COLORS.navy, padding: "14px 24px", borderRadius: 12, border: "none", fontSize: 15, fontWeight: 700, cursor: scanning ? "wait" : "pointer", whiteSpace: "nowrap" as const }}>
+                {scanning ? "Анализирам..." : "Анализирай"}
+              </button>
+            </div>
+          ) : (
+            <div style={{ marginBottom: 16, textAlign: "left" as const }}>
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, display: "block", marginBottom: 6 }}>Опиши бизнеса си</label>
+                <input value={businessDesc} onChange={e => setBusinessDesc(e.target.value)} placeholder="Примерно: Италианска пицария в центъра на София"
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, display: "block", marginBottom: 6 }}>Google Maps линк</label>
+                <input value={googleMaps} onChange={e => setGoogleMaps(e.target.value)} placeholder="https://maps.google.com/..."
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, display: "block", marginBottom: 6 }}>Facebook страница</label>
+                <input value={facebook} onChange={e => setFacebook(e.target.value)} placeholder="https://facebook.com/..."
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy, display: "block", marginBottom: 6 }}>Instagram профил</label>
+                <input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="https://instagram.com/..."
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+              </div>
+              <button onClick={handleScan} disabled={scanning} style={{ width: "100%", background: scanning ? COLORS.textMuted : COLORS.orange, color: scanning ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 12, border: "none", fontSize: 15, fontWeight: 700, cursor: scanning ? "wait" : "pointer" }}>
+                {scanning ? "Анализирам..." : "Анализирай присъствието си"}
+              </button>
+            </div>
+          )}
 
-Бизнес описание: ${businessDesc || 'Не е предоставено'}
-Google Maps: ${googleMaps || 'Няма'}
-Facebook: ${facebook || 'Няма'}
-Instagram: ${instagram || 'Няма'}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, justifyContent: "center" }}>
+            <input type="checkbox" id="noWebsite" checked={noWebsite} onChange={e => { setNoWebsite(e.target.checked); setResult(null); setError(""); setShowWebsiteOffer(false); }}
+              style={{ width: 18, height: 18, cursor: "pointer", accentColor: COLORS.orange }} />
+            <label htmlFor="noWebsite" style={{ fontSize: 14, color: COLORS.textMuted, cursor: "pointer", fontWeight: 500 }}>Нямам уебсайт</label>
+          </div>
 
-Правила за скориране:
-- Без уебсайт максималният скор е 25%
-- Всеки профил добавя точки (Google Maps е най-важен за AI = +10, Facebook = +5, Instagram = +5)
-- Без описание на бизнеса = -5 точки
-- Базов скор без нищо = 5
+          <p style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 0 }}>Без регистрация. Безплатен анализ. До 3 проверки на ден.</p>
 
-Върни САМО JSON без никакъв текст преди или след него:
-{
-  "totalScore": <число 0-25>,
-  "feedback": "<2-3 изречения на български защо скорът е нисък и защо уебсайтът е критично важен за AI видимост>"
-}`
+          {scanning && (
+            <div style={{ marginTop: 24 }}>
+              <div style={{ height: 6, borderRadius: 3, background: COLORS.lightGray, overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.orange})`, width: "60%" }} />
+              </div>
+              <p style={{ fontSize: 14, color: COLORS.textMuted, marginTop: 12 }}>
+                {noWebsite ? "Анализираме онлайн присъствието ти..." : "Проверяваме sitemap, robots.txt, llms.txt, FAQ, structured data..."}
+              </p>
+            </div>
+          )}
 
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 300,
-      messages: [{ role: 'user', content: prompt }]
-    })
+          {error && (
+            <div style={{ marginTop: 20, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "16px 20px", color: "#991b1b", fontSize: 14 }}>
+              {error}
+              {error.includes('лимита') && (
+                <div style={{ marginTop: 12 }}>
+                  <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, display: "inline-block" }}>Регистрирай се за неограничени проверки</a>
+                </div>
+              )}
+            </div>
+          )}
 
-    const text = message.content[0].type === 'text' ? message.content[0].text : ''
-    const clean = text.replace(/```json|```/g, '').trim()
-    const data = JSON.parse(clean)
+          {result && !scanning && (
+            <div style={{ marginTop: 32 }}>
+              <div style={{ position: "relative", width: 160, height: 160, margin: "0 auto 20px" }}>
+                <svg viewBox="0 0 180 180" style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx="90" cy="90" r="78" fill="none" stroke={COLORS.lightGray} strokeWidth="14" />
+                  <circle cx="90" cy="90" r="78" fill="none"
+                    stroke={result.totalScore > 60 ? "#4CAF50" : result.totalScore > 35 ? COLORS.orange : "#E74C3C"}
+                    strokeWidth="14"
+                    strokeDasharray={`${(result.totalScore / 100) * 2 * Math.PI * 78} ${2 * Math.PI * 78}`}
+                    strokeLinecap="round" />
+                </svg>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+                  <div style={{ fontSize: 44, fontWeight: 800, color: COLORS.navy }}>{result.totalScore}<span style={{ fontSize: 22, color: COLORS.textMuted }}>%</span></div>
+                </div>
+              </div>
 
-    return NextResponse.json({
-      totalScore: Math.min(25, Math.max(0, data.totalScore)),
-      feedback: data.feedback,
-      noWebsite: true,
-      profileCount,
-    })
-  } catch (e) {
-    return NextResponse.json({ error: true, message: 'Грешка при анализ.' })
-  }
+              <p style={{ fontSize: 16, color: COLORS.navy, fontWeight: 600, marginBottom: 8 }}>
+                AI Visibility Score {noWebsite ? "за онлайн присъствието ти" : `за ${domain}`}
+              </p>
+
+              {noWebsite && result.feedback && (
+                <div style={{ marginBottom: 20, padding: "14px 18px", background: "#fef2f2", borderRadius: 12, border: "1px solid #fca5a5", fontSize: 14, color: "#991b1b", textAlign: "left" as const }}>
+                  {result.feedback}
+                </div>
+              )}
+
+              {noWebsite && showWebsiteOffer && (
+                <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 20, padding: "28px 24px", marginBottom: 20, textAlign: "left" as const }}>
+                  <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 700, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>Защо имаш нужда от уебсайт?</div>
+                  <h3 style={{ color: COLORS.white, fontSize: 20, fontWeight: 800, margin: "0 0 12px" }}>AI системите не могат да те намерят без уебсайт</h3>
+                  <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.7, margin: "0 0 20px" }}>
+                    ChatGPT, Gemini и Perplexity индексират уебсайтове. Без сайт — просто не съществуваш за AI търсачките. Скорът ти никога няма да надхвърли 25% без уебсайт.
+                  </p>
+                  {!offerSent ? (
+                    <div>
+                      <div style={{ color: COLORS.orange, fontSize: 14, fontWeight: 700, marginBottom: 12 }}>Искаш оферта за уебсайт? Пиши ни:</div>
+                      <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
+                        <input value={offerName} onChange={e => setOfferName(e.target.value)} placeholder="Твоето име"
+                          style={{ padding: "12px 14px", borderRadius: 10, border: "none", fontSize: 14, outline: "none" }} />
+                        <input value={offerEmail} onChange={e => setOfferEmail(e.target.value)} placeholder="Имейл за връзка *"
+                          style={{ padding: "12px 14px", borderRadius: 10, border: "none", fontSize: 14, outline: "none" }} />
+                        <button onClick={handleSendOffer} disabled={sendingOffer || !offerEmail}
+                          style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontWeight: 700, fontSize: 15, cursor: sendingOffer || !offerEmail ? "not-allowed" : "pointer", opacity: sendingOffer || !offerEmail ? 0.7 : 1 }}>
+                          {sendingOffer ? "Изпращам..." : "Искам оферта за уебсайт"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 12, padding: "20px", textAlign: "center" as const }}>
+                      <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
+                      <div style={{ color: COLORS.white, fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Получихме заявката ти!</div>
+                      <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 14 }}>Ще се свържем с теб до 24 часа с оферта.</div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, border: "none", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 700, textDecoration: "none", boxShadow: "0 4px 20px rgba(245,166,35,0.3)" }}>
+                {noWebsite ? "Регистрирай се и следи прогреса си" : "Получи пълния доклад"}
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function WhyMonthlySection() {
@@ -387,7 +527,7 @@ function PricingSection() {
             { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
             { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
           ].map(plan => (
-            <div key={plan.name} style={{ background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 32, position: "relative", textAlign: "left", boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none" }}>
+            <div key={plan.name} style={{ background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 32, position: "relative", textAlign: "left" as const, boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none" }}>
               {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: COLORS.navy, color: COLORS.orange, padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>ПРЕПОРЪЧАН</div>}
               <div style={{ color: plan.recommended ? COLORS.navy : COLORS.white, fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{plan.name}</div>
               <div style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontSize: 44, fontWeight: 900, marginBottom: 4, letterSpacing: "-2px" }}>{plan.price}<span style={{ fontSize: 16, fontWeight: 600 }}>/мес</span></div>
