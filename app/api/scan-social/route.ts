@@ -22,7 +22,7 @@ Instagram: ${instagram || 'Няма'}
 - Без описание = -3
 - Базов скор = 5
 
-Върни САМО валиден JSON:
+Върни САМО валиден JSON без никакъв друг текст:
 {"totalScore": <число 0-25>, "feedback": "<2-3 изречения на български защо скорът е нисък и защо уебсайтът е критично важен>"}`
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
