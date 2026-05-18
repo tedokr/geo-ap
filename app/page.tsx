@@ -551,31 +551,40 @@ function PricingSection() {
           ))}
         </div>
 
-        {/* Terms checkbox */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, justifyContent: "center", maxWidth: 600, margin: "0 auto" }}>
-          <input
-            type="checkbox"
-            id="agreeTerms"
-            checked={agreed}
-            onChange={e => setAgreed(e.target.checked)}
-            style={{ width: 18, height: 18, marginTop: 2, cursor: "pointer", accentColor: "#F5A623", flexShrink: 0 }}
-          />
-          <label htmlFor="agreeTerms" style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, textAlign: "left" as const, cursor: "pointer" }}>
-            I have read and agree to the{" "}
-            <a href="/terms" target="_blank" style={{ color: "#F5A623", textDecoration: "underline" }}>Terms of Service</a>
-            {" "}and{" "}
-            <a href="/privacy" target="_blank" style={{ color: "#F5A623", textDecoration: "underline" }}>Privacy Policy</a>
-            . I acknowledge that the Services will begin immediately upon payment and I expressly waive my right of withdrawal under EU consumer law. I understand that all AI-generated content is provided without guarantee of specific outcomes.
-          </label>
+<div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 16 }}>
+          {[
+            { key: "lite" },
+            { key: "smart" },
+            { key: "pro" },
+          ].map(plan => (
+            <div key={plan.key} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "12px 4px" }}>
+              <input
+                type="checkbox"
+                id={`agree-${plan.key}`}
+                checked={agreed}
+                onChange={e => setAgreed(e.target.checked)}
+                style={{ width: 14, height: 14, marginTop: 2, cursor: "pointer", accentColor: "#F5A623", flexShrink: 0 }}
+              />
+              <label htmlFor={`agree-${plan.key}`} style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", lineHeight: 1.5, textAlign: "left" as const, cursor: "pointer" }}>
+                I agree to the{" "}
+                <a href="/terms" target="_blank" style={{ color: "#F5A623" }}>Terms</a>
+                {" "}&amp;{" "}
+                <a href="/privacy" target="_blank" style={{ color: "#F5A623" }}>Privacy Policy</a>
+                . Services begin immediately. EU withdrawal right waived.
+              </label>
+            </div>
+          ))}
         </div>
 
         {!agreed && (
-          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginTop: 12 }}>
-            Please accept the Terms of Service to proceed with payment.
+          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 8, textAlign: "center" as const }}>
+            Accept the Terms above to enable payment.
           </p>
         )}
       </div>
     </section>
+  );
+}
   );
 }
 
