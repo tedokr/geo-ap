@@ -490,6 +490,7 @@ function WhyMonthlySection() {
 function PricingSection() {
   const [period, setPeriod] = useState<"monthly" | "yearly">("yearly");
   const [loading, setLoading] = useState<string | null>(null);
+  const [agreed, setAgreed] = useState(false);
 
   const priceIds = {
     monthly: { lite: process.env.NEXT_PUBLIC_STRIPE_LITE_MONTHLY || '', smart: process.env.NEXT_PUBLIC_STRIPE_SMART_MONTHLY || '', pro: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY || '' },
@@ -497,6 +498,7 @@ function PricingSection() {
   }
 
   const handleCheckout = async (plan: string) => {
+    if (!agreed) return;
     setLoading(plan)
     const priceId = priceIds[period][plan as keyof typeof priceIds.monthly]
     try {
@@ -511,39 +513,67 @@ function PricingSection() {
   const prices = { monthly: ["€29.90", "€59.90", "€79.90"], yearly: ["€9.90", "€39.90", "€59.90"] };
 
   return (
-    <section id="pricing" style={{ padding: "80px 24px", background: `linear-gradient(170deg, ${COLORS.navy} 0%, #1E3558 100%)`, position: "relative" }}>
+    <section id="pricing" style={{ padding: "80px 24px", background: `linear-gradient(170deg, #1B2A4A 0%, #1E3558 100%)`, position: "relative" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
         <SectionTitle light tag="Планове и цени" title="Избери своя план" subtitle="Започни безплатно, надгради когато си готов." />
         <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.1)", borderRadius: 12, padding: 4, marginBottom: 40 }}>
           {(["yearly", "monthly"] as const).map(p => (
-            <button key={p} onClick={() => setPeriod(p)} style={{ padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 600, cursor: "pointer", background: period === p ? COLORS.orange : "transparent", color: period === p ? COLORS.navy : "rgba(255,255,255,0.7)", fontSize: 14, transition: "all 0.2s" }}>
+            <button key={p} onClick={() => setPeriod(p)} style={{ padding: "10px 24px", borderRadius: 10, border: "none", fontWeight: 600, cursor: "pointer", background: period === p ? "#F5A623" : "transparent", color: period === p ? "#1B2A4A" : "rgba(255,255,255,0.7)", fontSize: 14, transition: "all 0.2s" }}>
               {p === "yearly" ? "Годишно (спести 67%)" : "Месечно"}
             </button>
           ))}
         </div>
-        <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+
+        <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 32 }}>
           {[
             { name: "LITE", key: "lite", price: prices[period][0], desc: "Разбери къде стоиш", features: ["1 домейн", "Месечно сканиране", "Конкретни препоръки", "Email напомняния", "3 месеца история"], recommended: false },
             { name: "SMART", key: "smart", price: prices[period][1], desc: "Знай точно какво да направиш", features: ["3 домейна", "Всичко от LITE", "Step-by-step инструкции", "Генератор на съдържание", "6 месеца история"], recommended: true },
             { name: "PRO", key: "pro", price: prices[period][2], desc: "Пълна картина + конкуренция", features: ["5 домейна", "Всичко от SMART", "Сравнение с конкуренти", "AI Mention Check", "Неограничена история"], recommended: false },
           ].map(plan => (
-            <div key={plan.name} style={{ background: plan.recommended ? COLORS.orange : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? COLORS.orange : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 32, position: "relative", textAlign: "left" as const, boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none" }}>
-              {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: COLORS.navy, color: COLORS.orange, padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>ПРЕПОРЪЧАН</div>}
-              <div style={{ color: plan.recommended ? COLORS.navy : COLORS.white, fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{plan.name}</div>
-              <div style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontSize: 44, fontWeight: 900, marginBottom: 4, letterSpacing: "-2px" }}>{plan.price}<span style={{ fontSize: 16, fontWeight: 600 }}>/мес</span></div>
-              <div style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.6)", fontSize: 14, marginBottom: 24 }}>{plan.desc}</div>
+            <div key={plan.name} style={{ background: plan.recommended ? "#F5A623" : "rgba(255,255,255,0.05)", border: `2px solid ${plan.recommended ? "#F5A623" : "rgba(255,255,255,0.1)"}`, borderRadius: 20, padding: 32, position: "relative", textAlign: "left" as const, boxShadow: plan.recommended ? "0 24px 64px rgba(245,166,35,0.25)" : "none" }}>
+              {plan.recommended && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#1B2A4A", color: "#F5A623", padding: "6px 20px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>ПРЕПОРЪЧАН</div>}
+              <div style={{ color: plan.recommended ? "#1B2A4A" : "#FFFFFF", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{plan.name}</div>
+              <div style={{ color: plan.recommended ? "#1B2A4A" : "#F5A623", fontSize: 44, fontWeight: 900, marginBottom: 4, letterSpacing: "-2px" }}>{plan.price}<span style={{ fontSize: 16, fontWeight: 600 }}>/мес</span></div>
+              <div style={{ color: plan.recommended ? "#1B2A4A" : "rgba(255,255,255,0.6)", fontSize: 14, marginBottom: 24 }}>{plan.desc}</div>
               {plan.features.map(f => (
                 <div key={f} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                  <span style={{ color: plan.recommended ? COLORS.navy : COLORS.orange, fontWeight: 700 }}>✓</span>
-                  <span style={{ color: plan.recommended ? COLORS.navy : "rgba(255,255,255,0.85)", fontSize: 14 }}>{f}</span>
+                  <span style={{ color: plan.recommended ? "#1B2A4A" : "#F5A623", fontWeight: 700 }}>✓</span>
+                  <span style={{ color: plan.recommended ? "#1B2A4A" : "rgba(255,255,255,0.85)", fontSize: 14 }}>{f}</span>
                 </div>
               ))}
-              <button onClick={() => handleCheckout(plan.key)} disabled={loading === plan.key} style={{ marginTop: 24, width: "100%", background: plan.recommended ? COLORS.navy : COLORS.orange, color: plan.recommended ? COLORS.white : COLORS.navy, padding: "14px", borderRadius: 12, border: "none", fontWeight: 700, cursor: loading === plan.key ? "not-allowed" : "pointer", fontSize: 15, opacity: loading === plan.key ? 0.7 : 1 }}>
+              <button
+                onClick={() => handleCheckout(plan.key)}
+                disabled={loading === plan.key || !agreed}
+                style={{ marginTop: 24, width: "100%", background: plan.recommended ? "#1B2A4A" : "#F5A623", color: plan.recommended ? "#FFFFFF" : "#1B2A4A", padding: "14px", borderRadius: 12, border: "none", fontWeight: 700, cursor: !agreed ? "not-allowed" : loading === plan.key ? "not-allowed" : "pointer", fontSize: 15, opacity: !agreed || loading === plan.key ? 0.5 : 1, transition: "all 0.2s" }}>
                 {loading === plan.key ? "Зареждане..." : `Започни с ${plan.name}`}
               </button>
             </div>
           ))}
         </div>
+
+        {/* Terms checkbox */}
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, justifyContent: "center", maxWidth: 600, margin: "0 auto" }}>
+          <input
+            type="checkbox"
+            id="agreeTerms"
+            checked={agreed}
+            onChange={e => setAgreed(e.target.checked)}
+            style={{ width: 18, height: 18, marginTop: 2, cursor: "pointer", accentColor: "#F5A623", flexShrink: 0 }}
+          />
+          <label htmlFor="agreeTerms" style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, textAlign: "left" as const, cursor: "pointer" }}>
+            I have read and agree to the{" "}
+            <a href="/terms" target="_blank" style={{ color: "#F5A623", textDecoration: "underline" }}>Terms of Service</a>
+            {" "}and{" "}
+            <a href="/privacy" target="_blank" style={{ color: "#F5A623", textDecoration: "underline" }}>Privacy Policy</a>
+            . I acknowledge that the Services will begin immediately upon payment and I expressly waive my right of withdrawal under EU consumer law. I understand that all AI-generated content is provided without guarantee of specific outcomes.
+          </label>
+        </div>
+
+        {!agreed && (
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginTop: 12 }}>
+            Please accept the Terms of Service to proceed with payment.
+          </p>
+        )}
       </div>
     </section>
   );
