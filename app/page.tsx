@@ -574,10 +574,6 @@ function PricingSection() {
     </section>
   );
 }
-  );
-}
-  );
-}
 
 export default function Home() {
   return (
