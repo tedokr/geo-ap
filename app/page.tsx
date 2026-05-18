@@ -256,76 +256,58 @@ function SMESection() {
   );
 }
 
-function ScanSection() {
-  const [domain, setDomain] = useState("");
-  const [scanning, setScanning] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState("");
+import { NextRequest, NextResponse } from 'next/server'
+import Anthropic from '@anthropic-ai/sdk'
 
-  const handleScan = async () => {
-    if (!domain) return;
-    setScanning(true); setResult(null); setError("");
-    try {
-      const res = await fetch(`/api/scan?domain=${encodeURIComponent(domain)}`);
-      const data = await res.json();
-      if (data.error === 'rate_limit') setError(data.message);
-      else if (data.error) setError("Не можахме да сканираме домейна. Провери URL-а.");
-      else setResult(data);
-    } catch { setError("Грешка при сканиране. Опитай пак."); }
-    setScanning(false);
-  };
+const client = new Anthropic()
 
-  return (
-    <section id="scan" style={{ padding: "80px 24px", background: `linear-gradient(170deg, #F0F5FB 0%, ${COLORS.white} 100%)` }}>
-      <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-        <SectionTitle tag="Безплатна проверка" title="Провери AI видимостта си за 2 минути" subtitle="Въведи домейна си и виж колко е подготвен бизнесът ти за AI ерата." />
-        <div style={{ background: COLORS.white, borderRadius: 20, padding: "32px 24px", boxShadow: "0 8px 40px rgba(27,42,74,0.08)", border: "1px solid rgba(27,42,74,0.06)" }}>
-          <div className="scan-row" style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-            <input type="text" placeholder="yourbusiness.com" value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()}
-              style={{ flex: 1, padding: "14px 16px", borderRadius: 12, fontSize: 16, border: `2px solid ${COLORS.lightGray}`, outline: "none", minWidth: 0 }} />
-            <button onClick={handleScan} disabled={scanning} style={{ background: scanning ? COLORS.textMuted : COLORS.orange, color: scanning ? COLORS.white : COLORS.navy, padding: "14px 24px", borderRadius: 12, border: "none", fontSize: 15, fontWeight: 700, cursor: scanning ? "wait" : "pointer", whiteSpace: "nowrap" as const }}>
-              {scanning ? "Анализирам..." : "Анализирай"}
-            </button>
-          </div>
-          <p style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 0 }}>Без регистрация. Безплатен анализ. До 3 проверки на ден.</p>
-          {scanning && (
-            <div style={{ marginTop: 24 }}>
-              <div style={{ height: 6, borderRadius: 3, background: COLORS.lightGray, overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.orange})`, width: "60%" }} />
-              </div>
-              <p style={{ fontSize: 14, color: COLORS.textMuted, marginTop: 12 }}>Проверяваме sitemap, robots.txt, llms.txt, FAQ, structured data...</p>
-            </div>
-          )}
-          {error && (
-            <div style={{ marginTop: 20, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "16px 20px", color: "#991b1b", fontSize: 14 }}>
-              {error}
-              {error.includes('лимита') && (
-                <div style={{ marginTop: 12 }}>
-                  <a href="/login" style={{ background: COLORS.orange, color: COLORS.navy, padding: "8px 20px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, display: "inline-block" }}>Регистрирай се за неограничени проверки</a>
-                </div>
-              )}
-            </div>
-          )}
-          {result && !scanning && (
-            <div style={{ marginTop: 32 }}>
-              <div style={{ position: "relative", width: 160, height: 160, margin: "0 auto 20px" }}>
-                <svg viewBox="0 0 180 180" style={{ transform: "rotate(-90deg)" }}>
-                  <circle cx="90" cy="90" r="78" fill="none" stroke={COLORS.lightGray} strokeWidth="14" />
-                  <circle cx="90" cy="90" r="78" fill="none" stroke={result.totalScore > 60 ? "#4CAF50" : result.totalScore > 35 ? COLORS.orange : "#E74C3C"} strokeWidth="14" strokeDasharray={`${(result.totalScore / 100) * 2 * Math.PI * 78} ${2 * Math.PI * 78}`} strokeLinecap="round" />
-                </svg>
-                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-                  <div style={{ fontSize: 44, fontWeight: 800, color: COLORS.navy }}>{result.totalScore}<span style={{ fontSize: 22, color: COLORS.textMuted }}>%</span></div>
-                </div>
-              </div>
-              <p style={{ fontSize: 16, color: COLORS.navy, fontWeight: 600, marginBottom: 8 }}>AI Visibility Score за {domain}</p>
-              <p style={{ fontSize: 14, color: COLORS.textMuted, marginBottom: 24 }}>Искаш да видиш какво точно да подобриш? Регистрирай се за детайлен доклад.</p>
-              <a href="/login" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, border: "none", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 700, textDecoration: "none", boxShadow: "0 4px 20px rgba(245,166,35,0.3)" }}>Получи пълния доклад</a>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+export async function POST(req: NextRequest) {
+  try {
+    const { googleMaps, facebook, instagram, businessDesc } = await req.json()
+
+    const hasGoogle = !!googleMaps?.trim()
+    const hasFacebook = !!facebook?.trim()
+    const hasInstagram = !!instagram?.trim()
+    const profileCount = [hasGoogle, hasFacebook, hasInstagram].filter(Boolean).length
+
+    const prompt = `Ти си AI видимост експерт. Анализирай онлайн присъствието на този бизнес БЕЗ уебсайт и дай скор от 0 до 100.
+
+Бизнес описание: ${businessDesc || 'Не е предоставено'}
+Google Maps: ${googleMaps || 'Няма'}
+Facebook: ${facebook || 'Няма'}
+Instagram: ${instagram || 'Няма'}
+
+Правила за скориране:
+- Без уебсайт максималният скор е 25%
+- Всеки профил добавя точки (Google Maps е най-важен за AI = +10, Facebook = +5, Instagram = +5)
+- Без описание на бизнеса = -5 точки
+- Базов скор без нищо = 5
+
+Върни САМО JSON без никакъв текст преди или след него:
+{
+  "totalScore": <число 0-25>,
+  "feedback": "<2-3 изречения на български защо скорът е нисък и защо уебсайтът е критично важен за AI видимост>"
+}`
+
+    const message = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: prompt }]
+    })
+
+    const text = message.content[0].type === 'text' ? message.content[0].text : ''
+    const clean = text.replace(/```json|```/g, '').trim()
+    const data = JSON.parse(clean)
+
+    return NextResponse.json({
+      totalScore: Math.min(25, Math.max(0, data.totalScore)),
+      feedback: data.feedback,
+      noWebsite: true,
+      profileCount,
+    })
+  } catch (e) {
+    return NextResponse.json({ error: true, message: 'Грешка при анализ.' })
+  }
 }
 
 function WhyMonthlySection() {
