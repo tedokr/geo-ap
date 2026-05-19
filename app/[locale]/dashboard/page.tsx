@@ -74,13 +74,11 @@ const T = {
     manage_stripe: 'Manage subscription in Stripe', business_profiles: 'Business profiles',
     no_domains: 'No scanned domains yet.', close: 'Close', edit: 'Edit', fill: 'Fill in', save: 'Save',
     dashboard_title: 'GEO Dashboard',
-    sub_free: 'Free plan — see your domain score',
-    sub_lite: 'LITE plan — 1 domain',
+    sub_free: 'Free plan — see your domain score', sub_lite: 'LITE plan — 1 domain',
     sub_smart: 'SMART plan — up to 3 domains + content generator',
-    sub_pro: 'PRO plan — up to 5 domains + full picture',
+    sub_pro: 'PRO plan — up to 5 domains + AI mention check + competitor analysis',
     upgrade_tag: 'UPGRADE', upgrade_title: 'See exactly what to fix',
-    upgrade_desc: 'With LITE plan you get specific improvement steps',
-    see_plans: 'See plans',
+    upgrade_desc: 'With LITE plan you get specific improvement steps', see_plans: 'See plans',
     smart_tag: 'SMART PLAN', smart_title: 'Want step-by-step instructions + ready files?', upgrade_smart: 'Upgrade to SMART',
     pro_tag: 'PRO PLAN', pro_title: '5 domains · AI mention check · Priority support',
     pro_desc: 'See everything included in Pro before upgrading.', upgrade_pro: 'Upgrade to PRO',
@@ -96,8 +94,31 @@ const T = {
     good: 'Good AI presence', needs_work: 'Needs improvement', weak: 'Weak AI presence',
     planLabel: { free: 'Free', lite: 'LITE', smart: 'SMART', pro: 'PRO' },
     questionLabels: ['Business name', 'Platform (WordPress, Webflow, Wix...)', 'Describe your business in 20 words', 'Where is your business located', '3 of your competitors'],
-    password_error: 'Password must be at least 6 characters.',
-    gens: 'generations',
+    password_error: 'Password must be at least 6 characters.', gens: 'generations',
+    // PRO features
+    pro_tools: 'PRO Tools',
+    ai_mention_title: 'AI Mention Check',
+    ai_mention_desc: 'Check if Claude mentions your business when asked about your category',
+    ai_mention_category: 'Business category',
+    ai_mention_category_ph: 'e.g. Italian restaurant, web design agency, dental clinic',
+    ai_mention_location_ph: 'e.g. Sofia, Bulgaria',
+    ai_mention_domain: 'Your domain',
+    ai_mention_name: 'Your business name',
+    ai_mention_check: 'Check AI mentions',
+    ai_mention_checking: 'Checking...',
+    ai_mentioned: '🎉 Your business IS mentioned by AI!',
+    ai_not_mentioned: '😔 Your business is NOT mentioned by AI',
+    ai_position: 'Position in AI response',
+    ai_full_response: 'Full AI response',
+    ai_query: 'Query used',
+    competitor_title: 'Competitor Analysis',
+    competitor_desc: 'Compare your GEO score against your competitors',
+    competitor_domain_ph: 'Your domain (e.g. mybusiness.com)',
+    competitor_run: 'Run analysis',
+    competitor_running: 'Scanning competitors...',
+    competitor_your: 'You',
+    competitor_score: 'GEO Score',
+    competitor_criteria: 'Criteria comparison',
   },
   bg: {
     generator: 'Генератор', upgrade: '⬆ Upgrade', profile: 'Профил', logout: 'Изход',
@@ -110,13 +131,11 @@ const T = {
     manage_stripe: 'Управлявай абонамента в Stripe', business_profiles: 'Бизнес профили',
     no_domains: 'Все още нямаш сканирани домейни.', close: 'Затвори', edit: 'Редактирай', fill: 'Попълни', save: 'Запази',
     dashboard_title: 'GEO Dashboard',
-    sub_free: 'Безплатен план — виж общия скор на домейна си',
-    sub_lite: 'LITE план — 1 домейн',
+    sub_free: 'Безплатен план — виж общия скор на домейна си', sub_lite: 'LITE план — 1 домейн',
     sub_smart: 'SMART план — до 3 домейна + генератор на съдържание',
-    sub_pro: 'PRO план — до 5 домейна + пълна картина',
+    sub_pro: 'PRO план — до 5 домейна + AI mention check + анализ на конкуренцията',
     upgrade_tag: 'UPGRADE', upgrade_title: 'Виж точно какво да оправиш',
-    upgrade_desc: 'С LITE план получаваш конкретни стъпки за подобрение',
-    see_plans: 'Виж плановете',
+    upgrade_desc: 'С LITE план получаваш конкретни стъпки за подобрение', see_plans: 'Виж плановете',
     smart_tag: 'SMART ПЛАН', smart_title: 'Искаш стъпка по стъпка инструкции + готови файлове?', upgrade_smart: 'Upgrade към SMART',
     pro_tag: 'PRO ПЛАН', pro_title: '5 домейна · AI mention check · Priority support',
     pro_desc: 'Разгледай всичко включено в Pro преди да надградиш.', upgrade_pro: 'Upgrade към PRO',
@@ -132,8 +151,31 @@ const T = {
     good: 'Добро AI присъствие', needs_work: 'Нужни подобрения', weak: 'Слабо AI присъствие',
     planLabel: { free: 'Безплатен', lite: 'LITE', smart: 'SMART', pro: 'PRO' },
     questionLabels: ['Име на бизнеса', 'На каква платформа е сайтът? (WordPress, Webflow, Wix...)', 'Опиши бизнеса си с 20 думи', 'Където се намира бизнесът ти', '3 твои конкуренти'],
-    password_error: 'Паролата трябва да е поне 6 символа.',
-    gens: 'генерации',
+    password_error: 'Паролата трябва да е поне 6 символа.', gens: 'генерации',
+    // PRO features
+    pro_tools: 'PRO Инструменти',
+    ai_mention_title: 'AI Mention Check',
+    ai_mention_desc: 'Провери дали Claude те споменава при запитване за твоята категория',
+    ai_mention_category: 'Категория на бизнеса',
+    ai_mention_category_ph: 'напр. италиански ресторант, уеб агенция, зъболекарска клиника',
+    ai_mention_location_ph: 'напр. София, България',
+    ai_mention_domain: 'Твоят домейн',
+    ai_mention_name: 'Име на бизнеса',
+    ai_mention_check: 'Провери AI споменавания',
+    ai_mention_checking: 'Проверявам...',
+    ai_mentioned: '🎉 Твоят бизнес СЕ споменава от AI!',
+    ai_not_mentioned: '😔 Твоят бизнес НЕ се споменава от AI',
+    ai_position: 'Позиция в AI отговора',
+    ai_full_response: 'Пълен AI отговор',
+    ai_query: 'Използван запрос',
+    competitor_title: 'Анализ на конкуренцията',
+    competitor_desc: 'Сравни GEO скора си с конкурентите си',
+    competitor_domain_ph: 'Твоят домейн (напр. mybusiness.com)',
+    competitor_run: 'Стартирай анализа',
+    competitor_running: 'Сканирам конкурентите...',
+    competitor_your: 'Ти',
+    competitor_score: 'GEO Скор',
+    competitor_criteria: 'Сравнение по критерии',
   }
 }
 
@@ -159,6 +201,19 @@ export default function Dashboard() {
   const [viewingTab, setViewingTab] = useState('')
   const [expandedDomain, setExpandedDomain] = useState<string | null>(null)
   const planCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // PRO state
+  const [mentionDomain, setMentionDomain] = useState("")
+  const [mentionName, setMentionName] = useState("")
+  const [mentionCategory, setMentionCategory] = useState("")
+  const [mentionLocation, setMentionLocation] = useState("")
+  const [mentionLoading, setMentionLoading] = useState(false)
+  const [mentionResult, setMentionResult] = useState<any>(null)
+  const [showFullResponse, setShowFullResponse] = useState(false)
+
+  const [competitorDomain, setCompetitorDomain] = useState("")
+  const [competitorLoading, setCompetitorLoading] = useState(false)
+  const [competitorResult, setCompetitorResult] = useState<any>(null)
 
   useEffect(() => {
     setLocale(getLocaleFromPath())
@@ -186,7 +241,18 @@ export default function Dashboard() {
             }, 3000)
           }
           const stored = localStorage.getItem(`geo_domains_${user.email}`)
-          if (stored) setLockedDomains(JSON.parse(stored))
+          if (stored) {
+            const parsed = JSON.parse(stored)
+            setLockedDomains(parsed)
+            // Pre-fill PRO fields from first domain with answers
+            const firstWithAnswers = parsed.find((d: any) => d.answers)
+            if (firstWithAnswers?.answers) {
+              setMentionDomain(firstWithAnswers.domain)
+              setCompetitorDomain(firstWithAnswers.domain)
+              setMentionName(firstWithAnswers.answers.q0 || '')
+              setMentionLocation(firstWithAnswers.answers.q3 || '')
+            }
+          }
           const genRes = await fetch(
             `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/domain_generations?email=eq.${encodeURIComponent(user.email)}&select=domain,generated_at,month,year,content&order=generated_at.desc`,
             { headers: { 'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, 'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}` } }
@@ -235,6 +301,47 @@ export default function Dashboard() {
       }
     } catch { setError("Error. Try again.") }
     setScanning(false)
+  }
+
+  const handleAiMentionCheck = async () => {
+    if (!mentionCategory || !mentionLocation) return
+    setMentionLoading(true); setMentionResult(null)
+    try {
+      const res = await fetch('/api/ai-mention', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: mentionDomain, businessName: mentionName, businessCategory: mentionCategory, location: mentionLocation })
+      })
+      const data = await res.json()
+      setMentionResult(data)
+    } catch { setMentionResult({ error: true }) }
+    setMentionLoading(false)
+  }
+
+  const handleCompetitorScan = async () => {
+    if (!competitorDomain) return
+    // Find competitors from locked domain answers
+    const domainData = lockedDomains.find(d => d.domain === competitorDomain || competitorDomain.includes(d.domain))
+    const competitorList = domainData?.answers?.q4
+      ? domainData.answers.q4.split('\n').filter((c: string) => c.trim()).slice(0, 3)
+      : []
+
+    if (competitorList.length === 0) {
+      setCompetitorResult({ error: 'no_competitors', message: locale === 'en' ? 'Please fill in competitors in your business profile first.' : 'Моля попълни конкурентите в бизнес профила си.' })
+      return
+    }
+
+    setCompetitorLoading(true); setCompetitorResult(null)
+    try {
+      const res = await fetch('/api/competitor-scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mainDomain: competitorDomain, competitors: competitorList })
+      })
+      const data = await res.json()
+      setCompetitorResult(data)
+    } catch { setCompetitorResult({ error: true }) }
+    setCompetitorLoading(false)
   }
 
   const getTopIssues = (results: any, totalScore: number) => {
@@ -420,10 +527,8 @@ export default function Dashboard() {
             <div style={{ marginBottom: 24 }}>
               <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 6 }}>{t.dashboard_title}</h1>
               <p style={{ color: COLORS.textMuted, fontSize: 15 }}>
-                {plan === 'free' && t.sub_free}
-                {plan === 'lite' && t.sub_lite}
-                {plan === 'smart' && t.sub_smart}
-                {plan === 'pro' && t.sub_pro}
+                {plan === 'free' && t.sub_free}{plan === 'lite' && t.sub_lite}
+                {plan === 'smart' && t.sub_smart}{plan === 'pro' && t.sub_pro}
               </p>
             </div>
 
@@ -451,6 +556,7 @@ export default function Dashboard() {
               </div>
             )}
 
+            {/* SCAN BOX */}
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{t.check_domain}</h2>
@@ -471,6 +577,7 @@ export default function Dashboard() {
               )}
             </div>
 
+            {/* SCAN RESULT */}
             {result && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
                 <div style={{ textAlign: "center" as const, marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${COLORS.lightGray}` }}>
@@ -513,6 +620,7 @@ export default function Dashboard() {
               </div>
             )}
 
+            {/* DOMAIN CARDS */}
             {plan !== 'free' && lockedDomains.length > 0 && (
               <div style={{ marginBottom: 24 }}>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.my_domains}</h2>
@@ -567,6 +675,159 @@ export default function Dashboard() {
               </div>
             )}
 
+            {/* PRO TOOLS */}
+            {plan === 'pro' && (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{t.pro_tools}</h2>
+                  <span style={{ background: COLORS.orange, color: COLORS.navy, fontSize: 11, fontWeight: 800, padding: "3px 10px", borderRadius: 20 }}>PRO</span>
+                </div>
+
+                {/* AI MENTION CHECK */}
+                <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 4 }}>🤖 {t.ai_mention_title}</h3>
+                  <p style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: 20 }}>{t.ai_mention_desc}</p>
+                  <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 16 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{t.ai_mention_domain}</div>
+                        <input value={mentionDomain} onChange={e => setMentionDomain(e.target.value)} placeholder="mybusiness.com" style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{t.ai_mention_name}</div>
+                        <input value={mentionName} onChange={e => setMentionName(e.target.value)} placeholder="My Business Name" style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
+                      </div>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{t.ai_mention_category}</div>
+                        <input value={mentionCategory} onChange={e => setMentionCategory(e.target.value)} placeholder={t.ai_mention_category_ph} style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>Location</div>
+                        <input value={mentionLocation} onChange={e => setMentionLocation(e.target.value)} placeholder={t.ai_mention_location_ph} style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
+                      </div>
+                    </div>
+                  </div>
+                  <button onClick={handleAiMentionCheck} disabled={mentionLoading || !mentionCategory || !mentionLocation} style={{ width: "100%", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, border: "none", fontWeight: 700, fontSize: 14, cursor: mentionLoading || !mentionCategory || !mentionLocation ? "not-allowed" : "pointer", opacity: mentionLoading || !mentionCategory || !mentionLocation ? 0.6 : 1, fontFamily: "'Outfit', sans-serif" }}>
+                    {mentionLoading ? t.ai_mention_checking : t.ai_mention_check}
+                  </button>
+
+                  {mentionResult && !mentionResult.error && (
+                    <div style={{ marginTop: 20 }}>
+                      <div style={{ padding: "16px 20px", borderRadius: 12, background: mentionResult.isMentioned ? "#f0fdf4" : "#fef2f2", border: `1px solid ${mentionResult.isMentioned ? "#86efac" : "#fca5a5"}`, marginBottom: 12 }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: mentionResult.isMentioned ? "#166534" : "#991b1b" }}>
+                          {mentionResult.isMentioned ? t.ai_mentioned : t.ai_not_mentioned}
+                        </div>
+                        {mentionResult.position && (
+                          <div style={{ fontSize: 13, color: mentionResult.isMentioned ? "#166534" : "#991b1b", marginTop: 4 }}>
+                            {t.ai_position}: #{mentionResult.position}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 8 }}>
+                        <strong>{t.ai_query}:</strong> "{mentionResult.query}"
+                      </div>
+                      <button onClick={() => setShowFullResponse(!showFullResponse)} style={{ background: "none", border: `1px solid ${COLORS.lightGray}`, color: COLORS.navy, padding: "6px 14px", borderRadius: 8, fontSize: 12, cursor: "pointer", fontFamily: "'Outfit', sans-serif" }}>
+                        {showFullResponse ? '▲' : '▼'} {t.ai_full_response}
+                      </button>
+                      {showFullResponse && (
+                        <pre style={{ marginTop: 10, background: COLORS.offWhite, borderRadius: 10, padding: 14, fontSize: 12, lineHeight: 1.6, whiteSpace: "pre-wrap" as const, wordBreak: "break-word" as const, color: COLORS.navy, maxHeight: 300, overflow: "auto", border: `1px solid ${COLORS.lightGray}` }}>
+                          {mentionResult.aiResponse}
+                        </pre>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* COMPETITOR ANALYSIS */}
+                <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 4 }}>📊 {t.competitor_title}</h3>
+                  <p style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: 20 }}>{t.competitor_desc}</p>
+                  <div style={{ marginBottom: 12 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{t.ai_mention_domain}</div>
+                    <select value={competitorDomain} onChange={e => setCompetitorDomain(e.target.value)} style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", background: COLORS.white }}>
+                      <option value="">{t.competitor_domain_ph}</option>
+                      {lockedDomains.map(d => <option key={d.domain} value={d.domain}>{d.domain}</option>)}
+                    </select>
+                  </div>
+                  {competitorDomain && !lockedDomains.find(d => d.domain === competitorDomain)?.answers?.q4 && (
+                    <div style={{ background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: 8, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#92400e" }}>
+                      {locale === 'en' ? '⚠️ Please fill in competitors in your business profile first (Profile → Business profiles → Fill in).' : '⚠️ Моля попълни конкурентите в бизнес профила (Профил → Бизнес профили → Попълни).'}
+                    </div>
+                  )}
+                  <button onClick={handleCompetitorScan} disabled={competitorLoading || !competitorDomain} style={{ width: "100%", background: COLORS.navy, color: COLORS.white, padding: "12px", borderRadius: 10, border: "none", fontWeight: 700, fontSize: 14, cursor: competitorLoading || !competitorDomain ? "not-allowed" : "pointer", opacity: competitorLoading || !competitorDomain ? 0.6 : 1, fontFamily: "'Outfit', sans-serif" }}>
+                    {competitorLoading ? t.competitor_running : t.competitor_run}
+                  </button>
+
+                  {competitorResult && !competitorResult.error && competitorResult.main && (
+                    <div style={{ marginTop: 20 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 12 }}>{t.competitor_score}</div>
+                      {/* Score bars */}
+                      {[competitorResult.main, ...competitorResult.competitors].filter(Boolean).map((d: any, i: number) => (
+                        <div key={d.domain} style={{ marginBottom: 14 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              {i === 0 && <span style={{ background: COLORS.orange, color: COLORS.navy, fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 10 }}>{t.competitor_your}</span>}
+                              <span style={{ fontWeight: i === 0 ? 700 : 500, color: COLORS.navy, fontSize: 14 }}>{d.domain}</span>
+                              {!d.reachable && <span style={{ fontSize: 10, color: COLORS.textMuted }}>(unreachable)</span>}
+                            </div>
+                            <span style={{ fontWeight: 800, color: d.totalScore > 60 ? "#22c55e" : d.totalScore > 35 ? "#f59e0b" : "#ef4444", fontSize: 16 }}>{d.totalScore}%</span>
+                          </div>
+                          <div style={{ height: 8, background: COLORS.lightGray, borderRadius: 4, overflow: "hidden" }}>
+                            <div style={{ height: 8, borderRadius: 4, background: i === 0 ? COLORS.orange : d.totalScore > 60 ? "#22c55e" : d.totalScore > 35 ? "#f59e0b" : "#ef4444", width: `${d.totalScore}%`, transition: "width 0.8s ease" }} />
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Criteria comparison */}
+                      <div style={{ marginTop: 20 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 12 }}>{t.competitor_criteria}</div>
+                        <div style={{ overflowX: "auto" as const }}>
+                          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 12 }}>
+                            <thead>
+                              <tr style={{ background: COLORS.offWhite }}>
+                                <th style={{ padding: "8px 10px", textAlign: "left" as const, color: COLORS.textMuted, fontWeight: 600 }}>Criteria</th>
+                                <th style={{ padding: "8px 10px", textAlign: "center" as const, color: COLORS.orange, fontWeight: 700 }}>{t.competitor_your}</th>
+                                {competitorResult.competitors.map((c: any) => (
+                                  <th key={c?.domain} style={{ padding: "8px 10px", textAlign: "center" as const, color: COLORS.textMuted, fontWeight: 600 }}>{c?.domain?.split('.')[0]}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {Object.keys(competitorResult.main.scores || {}).map(key => (
+                                <tr key={key} style={{ borderBottom: `1px solid ${COLORS.lightGray}` }}>
+                                  <td style={{ padding: "8px 10px", color: COLORS.navy, fontWeight: 500, textTransform: "capitalize" as const }}>{key}</td>
+                                  <td style={{ padding: "8px 10px", textAlign: "center" as const }}>
+                                    <span style={{ color: (competitorResult.main.scores[key] || 0) >= 80 ? "#22c55e" : (competitorResult.main.scores[key] || 0) >= 50 ? "#f59e0b" : "#ef4444", fontWeight: 700 }}>
+                                      {competitorResult.main.scores[key] || 0 > 0 ? "✓" : "✗"}
+                                    </span>
+                                  </td>
+                                  {competitorResult.competitors.map((c: any) => (
+                                    <td key={c?.domain} style={{ padding: "8px 10px", textAlign: "center" as const }}>
+                                      <span style={{ color: (c?.scores?.[key] || 0) >= 80 ? "#22c55e" : (c?.scores?.[key] || 0) >= 50 ? "#f59e0b" : "#ef4444", fontWeight: 700 }}>
+                                        {(c?.scores?.[key] || 0) > 0 ? "✓" : "✗"}
+                                      </span>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {competitorResult?.error && (
+                    <div style={{ marginTop: 12, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "12px 14px", color: "#991b1b", fontSize: 13 }}>
+                      {competitorResult.message || (locale === 'en' ? 'Error scanning competitors.' : 'Грешка при сканиране на конкурентите.')}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* SCAN HISTORY */}
             {scanHistory.length > 1 && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.scan_history}</h2>
