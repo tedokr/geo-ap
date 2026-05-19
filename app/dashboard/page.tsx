@@ -451,10 +451,6 @@ export default function Dashboard() {
                         <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "10px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>Upgrade към SMART</a>
                       </div>
                     )}
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* DOMAIN CARDS */}
             {plan !== 'free' && lockedDomains.length > 0 && (
