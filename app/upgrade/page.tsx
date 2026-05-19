@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 
 const COLORS = {
   navy: "#1B2A4A",
@@ -13,7 +13,7 @@ const COLORS = {
 }
 
 export default function UpgradePage() {
-  const supabase = createClientComponentClient()
+ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
   const [period, setPeriod] = useState<'monthly' | 'yearly'>('yearly')
   const [loading, setLoading] = useState<string | null>(null)
   const [agreed, setAgreed] = useState(false)
