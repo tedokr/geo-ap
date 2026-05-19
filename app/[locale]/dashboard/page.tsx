@@ -2,18 +2,11 @@
 import { useState, useEffect, useRef } from 'react'
 
 const COLORS = {
-  navy: "#1B2A4A",
-  blue: "#2E6BAD",
-  orange: "#F5A623",
-  white: "#FFFFFF",
-  offWhite: "#F8FAFD",
-  lightGray: "#E8EDF4",
-  textMuted: "#5A6B84",
+  navy: "#1B2A4A", blue: "#2E6BAD", orange: "#F5A623",
+  white: "#FFFFFF", offWhite: "#F8FAFD", lightGray: "#E8EDF4", textMuted: "#5A6B84",
 }
 
-const DOMAIN_LIMITS: Record<string, number> = {
-  free: 0, lite: 1, smart: 3, pro: 5,
-}
+const DOMAIN_LIMITS: Record<string, number> = { free: 0, lite: 1, smart: 3, pro: 5 }
 
 async function fetchUserPlan(email: string): Promise<string> {
   try {
@@ -33,24 +26,22 @@ const allTabs = [
   { id: 'robots', label: 'robots.txt' },
   { id: 'schema', label: 'Schema.org' },
   { id: 'metadesc', label: 'Meta Description' },
-  { id: 'blog', label: 'Blog идеи' },
+  { id: 'blog', label: 'Blog' },
 ]
 
 function formatResult(type: string, text: string) {
   if (!text) return ''
   try {
     if (type === 'faqs') { const clean = text.replace(/```json|```/g, '').trim(); const data = JSON.parse(clean); return data.map((f: any, i: number) => `Q${i+1}: ${f.question}\nA: ${f.answer}`).join('\n\n') }
-    if (type === 'metadesc') { const clean = text.replace(/```json|```/g, '').trim(); const data = JSON.parse(clean); return data.map((d: any) => `Вариант ${d.variant} (${d.length || d.text?.length} символа):\n${d.text}`).join('\n\n') }
-    if (type === 'blog') { const clean = text.replace(/```json|```/g, '').trim(); const data = JSON.parse(clean); const titles = data.titles?.map((t: string, i: number) => `${i+1}. ${t}`).join('\n'); return `ЗАГЛАВИЯ:\n${titles}\n\nСТРУКТУРА НА ПЪРВИЯ ПОСТ:\n${JSON.stringify(data.outline, null, 2)}` }
+    if (type === 'metadesc') { const clean = text.replace(/```json|```/g, '').trim(); const data = JSON.parse(clean); return data.map((d: any) => `Option ${d.variant} (${d.length || d.text?.length} chars):\n${d.text}`).join('\n\n') }
+    if (type === 'blog') { const clean = text.replace(/```json|```/g, '').trim(); const data = JSON.parse(clean); const titles = data.titles?.map((t: string, i: number) => `${i+1}. ${t}`).join('\n'); return `TITLES:\n${titles}\n\nOUTLINE:\n${JSON.stringify(data.outline, null, 2)}` }
   } catch {}
   return text.replace(/```json|```/g, '').trim()
 }
 
 function ScoreRing({ score }: { score: number }) {
   const color = score > 60 ? "#22c55e" : score > 35 ? "#f59e0b" : "#ef4444"
-  const r = 28
-  const circ = 2 * Math.PI * r
-  const dash = (score / 100) * circ
+  const r = 28; const circ = 2 * Math.PI * r; const dash = (score / 100) * circ
   return (
     <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
       <svg viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
@@ -65,7 +56,89 @@ function ScoreRing({ score }: { score: number }) {
   )
 }
 
+function getLocaleFromPath() {
+  if (typeof window === 'undefined') return 'en'
+  const parts = window.location.pathname.split('/')
+  return parts[1] === 'bg' ? 'bg' : 'en'
+}
+
+const T = {
+  en: {
+    generator: 'Generator', upgrade: '⬆ Upgrade', profile: 'Profile', logout: 'Logout',
+    payment_ok: 'Payment successful!', payment_sub: 'Welcome! Your plan activates automatically.',
+    my_profile: 'My Profile', to_scan: 'To scanning',
+    account: 'Account', email: 'Email', active_plan: 'Active plan', upgrade_plan: '⬆ Upgrade plan',
+    change_password: 'Change password', new_password: 'New password', min_chars: 'Minimum 6 characters',
+    save_password: 'Change password', saving: 'Saving...', password_ok: 'Password changed successfully!',
+    payment_method: 'Payment method & subscription', payment_desc: 'Manage your card, cancel or change subscription in Stripe.',
+    manage_stripe: 'Manage subscription in Stripe', business_profiles: 'Business profiles',
+    no_domains: 'No scanned domains yet.', close: 'Close', edit: 'Edit', fill: 'Fill in', save: 'Save',
+    dashboard_title: 'GEO Dashboard',
+    sub_free: 'Free plan — see your domain score',
+    sub_lite: 'LITE plan — 1 domain',
+    sub_smart: 'SMART plan — up to 3 domains + content generator',
+    sub_pro: 'PRO plan — up to 5 domains + full picture',
+    upgrade_tag: 'UPGRADE', upgrade_title: 'See exactly what to fix',
+    upgrade_desc: 'With LITE plan you get specific improvement steps',
+    see_plans: 'See plans',
+    smart_tag: 'SMART PLAN', smart_title: 'Want step-by-step instructions + ready files?', upgrade_smart: 'Upgrade to SMART',
+    pro_tag: 'PRO PLAN', pro_title: '5 domains · AI mention check · Priority support',
+    pro_desc: 'See everything included in Pro before upgrading.', upgrade_pro: 'Upgrade to PRO',
+    check_domain: 'Check domain', domains_count: 'domains',
+    analyze: 'Analyze', scanning: 'Scanning...', checking: 'Checking 11 criteria...',
+    scan_error_upgrade: 'Upgrade for more.',
+    locked_title: 'Details are locked', locked_sub: 'Get LITE plan to see exactly what to fix',
+    recommendations: 'Recommendations', generate_fix: 'Generate fix',
+    upgrade_instructions: 'Want step-by-step instructions?',
+    my_domains: 'My domains', profile_filled: 'Profile filled', last: 'Last:',
+    gen_fix: 'Generate fix', setup_gen: 'Setup & generate', history: 'History', hide: 'Hide',
+    scan_history: 'Scan history', generated_content: 'Generated content', back: 'Back', copy: 'Copy',
+    good: 'Good AI presence', needs_work: 'Needs improvement', weak: 'Weak AI presence',
+    planLabel: { free: 'Free', lite: 'LITE', smart: 'SMART', pro: 'PRO' },
+    questionLabels: ['Business name', 'Platform (WordPress, Webflow, Wix...)', 'Describe your business in 20 words', 'Where is your business located', '3 of your competitors'],
+    password_error: 'Password must be at least 6 characters.',
+    gens: 'generations',
+  },
+  bg: {
+    generator: 'Генератор', upgrade: '⬆ Upgrade', profile: 'Профил', logout: 'Изход',
+    payment_ok: 'Плащането е успешно!', payment_sub: 'Добре дошъл! Планът се активира автоматично.',
+    my_profile: 'Моят профил', to_scan: 'Към сканирането',
+    account: 'Акаунт', email: 'Имейл', active_plan: 'Активен план', upgrade_plan: '⬆ Upgrade план',
+    change_password: 'Смяна на парола', new_password: 'Нова парола', min_chars: 'Минимум 6 символа',
+    save_password: 'Смени паролата', saving: 'Запазва...', password_ok: 'Паролата е сменена успешно!',
+    payment_method: 'Метод на плащане и абонамент', payment_desc: 'Управлявай картата си, спри или промени абонамента директно в Stripe.',
+    manage_stripe: 'Управлявай абонамента в Stripe', business_profiles: 'Бизнес профили',
+    no_domains: 'Все още нямаш сканирани домейни.', close: 'Затвори', edit: 'Редактирай', fill: 'Попълни', save: 'Запази',
+    dashboard_title: 'GEO Dashboard',
+    sub_free: 'Безплатен план — виж общия скор на домейна си',
+    sub_lite: 'LITE план — 1 домейн',
+    sub_smart: 'SMART план — до 3 домейна + генератор на съдържание',
+    sub_pro: 'PRO план — до 5 домейна + пълна картина',
+    upgrade_tag: 'UPGRADE', upgrade_title: 'Виж точно какво да оправиш',
+    upgrade_desc: 'С LITE план получаваш конкретни стъпки за подобрение',
+    see_plans: 'Виж плановете',
+    smart_tag: 'SMART ПЛАН', smart_title: 'Искаш стъпка по стъпка инструкции + готови файлове?', upgrade_smart: 'Upgrade към SMART',
+    pro_tag: 'PRO ПЛАН', pro_title: '5 домейна · AI mention check · Priority support',
+    pro_desc: 'Разгледай всичко включено в Pro преди да надградиш.', upgrade_pro: 'Upgrade към PRO',
+    check_domain: 'Провери домейн', domains_count: 'домейна',
+    analyze: 'Анализирай', scanning: 'Сканирам...', checking: 'Проверяваме 11 критерия...',
+    scan_error_upgrade: 'Upgrade за повече.',
+    locked_title: 'Детайлите са заключени', locked_sub: 'Вземи LITE план за да видиш какво точно трябва да оправиш',
+    recommendations: 'Препоръки за подобрение', generate_fix: 'Генерирай fix',
+    upgrade_instructions: 'Искаш стъпка по стъпка инструкции?',
+    my_domains: 'Моите домейни', profile_filled: 'Профил попълнен', last: 'Последна:',
+    gen_fix: 'Генерирай фикс', setup_gen: 'Настрой и генерирай', history: 'История', hide: 'Скрий',
+    scan_history: 'История на сканиранията', generated_content: 'Генерирано съдържание', back: 'Назад', copy: 'Копирай',
+    good: 'Добро AI присъствие', needs_work: 'Нужни подобрения', weak: 'Слабо AI присъствие',
+    planLabel: { free: 'Безплатен', lite: 'LITE', smart: 'SMART', pro: 'PRO' },
+    questionLabels: ['Име на бизнеса', 'На каква платформа е сайтът? (WordPress, Webflow, Wix...)', 'Опиши бизнеса си с 20 думи', 'Където се намира бизнесът ти', '3 твои конкуренти'],
+    password_error: 'Паролата трябва да е поне 6 символа.',
+    gens: 'генерации',
+  }
+}
+
 export default function Dashboard() {
+  const [locale, setLocale] = useState<'en' | 'bg'>('en')
   const [url, setUrl] = useState("")
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState<any>(null)
@@ -88,10 +161,11 @@ export default function Dashboard() {
   const planCheckInterval = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
+    setLocale(getLocaleFromPath())
     const params = new URLSearchParams(window.location.search)
     if (params.get('success') === 'true') {
       setSuccess(true)
-      window.history.replaceState({}, '', '/dashboard')
+      window.history.replaceState({}, '', window.location.pathname)
     }
     const init = async () => {
       try {
@@ -120,10 +194,7 @@ export default function Dashboard() {
           const genData = await genRes.json()
           if (Array.isArray(genData)) {
             const grouped: Record<string, any[]> = {}
-            genData.forEach((g: any) => {
-              if (!grouped[g.domain]) grouped[g.domain] = []
-              grouped[g.domain].push(g)
-            })
+            genData.forEach((g: any) => { if (!grouped[g.domain]) grouped[g.domain] = []; grouped[g.domain].push(g) })
             setDomainGenerations(grouped)
           }
         }
@@ -132,6 +203,8 @@ export default function Dashboard() {
     init()
     return () => { if (planCheckInterval.current) clearInterval(planCheckInterval.current) }
   }, [])
+
+  const t = T[locale]
 
   const saveLockedDomains = (domains: { domain: string, answers: any }[], email: string) => {
     localStorage.setItem(`geo_domains_${email}`, JSON.stringify(domains))
@@ -144,14 +217,14 @@ export default function Dashboard() {
     const cleanDomain = url.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase()
     const alreadyLocked = lockedDomains.find(d => d.domain === cleanDomain)
     if (!alreadyLocked && lockedDomains.length >= limit) {
-      setError(`С ${plan.toUpperCase()} план можеш да добавиш максимум ${limit} домейн${limit > 1 ? 'а' : ''}. Upgrade за повече.`)
+      setError(`${plan.toUpperCase()} — max ${limit}. ${t.scan_error_upgrade}`)
       return
     }
     setScanning(true); setResult(null); setError("")
     try {
       const res = await fetch(`/api/scan?domain=${encodeURIComponent(url)}`)
       const data = await res.json()
-      if (data.error) { setError(data.message || "Грешка при сканиране.") }
+      if (data.error) { setError(data.message || "Error.") }
       else {
         setResult(data)
         setScanHistory((prev: any[]) => [data, ...prev].slice(0, 5))
@@ -160,7 +233,7 @@ export default function Dashboard() {
           saveLockedDomains(updated, userEmail)
         }
       }
-    } catch { setError("Грешка при сканиране. Опитай пак.") }
+    } catch { setError("Error. Try again.") }
     setScanning(false)
   }
 
@@ -170,15 +243,15 @@ export default function Dashboard() {
   }
 
   const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) { setPasswordMsg("Паролата трябва да е поне 6 символа."); return }
+    if (!newPassword || newPassword.length < 6) { setPasswordMsg(t.password_error); return }
     setSavingPassword(true)
     try {
       const { createClient } = await import('@supabase/supabase-js')
       const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
       const { error } = await supabase.auth.updateUser({ password: newPassword })
-      if (error) setPasswordMsg("Грешка: " + error.message)
-      else { setPasswordMsg("Паролата е сменена успешно!"); setNewPassword("") }
-    } catch { setPasswordMsg("Грешка при смяна на паролата.") }
+      if (error) setPasswordMsg("Error: " + error.message)
+      else { setPasswordMsg(t.password_ok); setNewPassword("") }
+    } catch { setPasswordMsg("Error.") }
     setSavingPassword(false)
   }
 
@@ -194,45 +267,36 @@ export default function Dashboard() {
       const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
       await supabase.auth.signOut()
     } catch {}
-   window.location.href = '/en'
+    window.location.href = `/${locale}`
   }
 
-  const planLabel: Record<string, string> = { free: 'Безплатен', lite: 'LITE', smart: 'SMART', pro: 'PRO' }
-  const questionLabels = ["Име на бизнеса", "На каква платформа е сайтът? (WordPress, Webflow, Wix...)", "Опиши бизнеса си с 20 думи", "Където се намира бизнесът ти", "3 твои конкуренти"]
-  const genLink = (domain: string) => "/onboarding?domain=" + encodeURIComponent(domain) + "&prefill=true"
+  const switchLocale = (l: string) => { window.location.href = `/${l}/dashboard` }
+  const genLink = (domain: string) => `/${locale}/onboarding?domain=${encodeURIComponent(domain)}&prefill=true`
 
   if (viewingGeneration) {
     const content = viewingGeneration.gen.content || {}
-    const tabs = allTabs.filter(t => content[t.id])
+    const tabs = allTabs.filter(tab => content[tab.id])
     const currentTab = viewingTab || tabs[0]?.id || ''
     return (
       <div style={{ minHeight: '100vh', background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <header style={{ background: COLORS.navy, padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-          <a href="/" style={{ textDecoration: "none" }}><span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span></a>
-          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Назад</button>
+          <a href={`/${locale}`} style={{ textDecoration: "none" }}><span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span></a>
+          <button onClick={() => setViewingGeneration(null)} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>{t.back}</button>
         </header>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px 16px" }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>Генерирано съдържание</h1>
-          <p style={{ color: COLORS.textMuted, marginBottom: 24, fontSize: 14 }}>
-            {viewingGeneration.domain} — {new Date(viewingGeneration.gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}
-          </p>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>{t.generated_content}</h1>
+          <p style={{ color: COLORS.textMuted, marginBottom: 24, fontSize: 14 }}>{viewingGeneration.domain} — {new Date(viewingGeneration.gen.generated_at).toLocaleDateString(locale === 'bg' ? 'bg-BG' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
           <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" as const }}>
-            {tabs.map(tab => (
-              <button key={tab.id} onClick={() => setViewingTab(tab.id)} style={{ padding: "8px 14px", borderRadius: 8, border: `2px solid ${currentTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: currentTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: currentTab === tab.id ? 700 : 400, cursor: "pointer" }}>
-                {tab.label}
-              </button>
-            ))}
+            {tabs.map(tab => (<button key={tab.id} onClick={() => setViewingTab(tab.id)} style={{ padding: "8px 14px", borderRadius: 8, border: `2px solid ${currentTab === tab.id ? COLORS.orange : COLORS.lightGray}`, background: currentTab === tab.id ? "rgba(245,166,35,0.1)" : COLORS.white, color: COLORS.navy, fontSize: 13, fontWeight: currentTab === tab.id ? 700 : 400, cursor: "pointer" }}>{tab.label}</button>))}
           </div>
           {currentTab && (
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{tabs.find(t => t.id === currentTab)?.label}</h2>
-                <button onClick={() => navigator.clipboard.writeText(formatResult(currentTab, content[currentTab] || ''))} style={{ background: COLORS.navy, color: COLORS.white, padding: "6px 16px", borderRadius: 8, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Копирай</button>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{tabs.find(tab => tab.id === currentTab)?.label}</h2>
+                <button onClick={() => navigator.clipboard.writeText(formatResult(currentTab, content[currentTab] || ''))} style={{ background: COLORS.navy, color: COLORS.white, padding: "6px 16px", borderRadius: 8, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{t.copy}</button>
               </div>
-              <pre style={{ background: COLORS.offWhite, borderRadius: 10, padding: 16, fontSize: 12, lineHeight: 1.6, overflow: "auto", whiteSpace: "pre-wrap" as const, wordBreak: "break-word" as const, color: COLORS.navy, maxHeight: 500, border: `1px solid ${COLORS.lightGray}` }}>
-                {formatResult(currentTab, content[currentTab] || '')}
-              </pre>
+              <pre style={{ background: COLORS.offWhite, borderRadius: 10, padding: 16, fontSize: 12, lineHeight: 1.6, overflow: "auto", whiteSpace: "pre-wrap" as const, wordBreak: "break-word" as const, color: COLORS.navy, maxHeight: 500, border: `1px solid ${COLORS.lightGray}` }}>{formatResult(currentTab, content[currentTab] || '')}</pre>
             </div>
           )}
         </div>
@@ -243,114 +307,104 @@ export default function Dashboard() {
   return (
     <div style={{ minHeight: "100vh", background: COLORS.offWhite, fontFamily: "'Outfit', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-      {/* HEADER */}
       <header style={{ background: COLORS.navy, padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-        <a href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
+        <a href={`/${locale}`} style={{ textDecoration: "none", flexShrink: 0 }}>
           <span style={{ fontSize: 20, fontWeight: 800, color: COLORS.white }}>GEO<span style={{ color: COLORS.orange }}>.app</span></span>
         </a>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {(plan === 'smart' || plan === 'pro') && (
-            <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>Генератор</a>
+            <a href={`/${locale}/onboarding`} style={{ background: COLORS.orange, color: COLORS.navy, padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>{t.generator}</a>
           )}
           {plan !== 'pro' && (
-            <a href="/upgrade" style={{ background: "rgba(245,166,35,0.15)", color: COLORS.orange, border: "1px solid rgba(245,166,35,0.4)", padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>⬆ Upgrade</a>
+            <a href={`/${locale}/upgrade`} style={{ background: "rgba(245,166,35,0.15)", color: COLORS.orange, border: "1px solid rgba(245,166,35,0.4)", padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>{t.upgrade}</a>
           )}
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: 20, whiteSpace: "nowrap" as const }}>{planLabel[plan]}</div>
-          <button onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')} style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" as const }}>Профил</button>
-          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" as const }}>Изход</button>
+          <div style={{ display: "flex", gap: 3, background: "rgba(255,255,255,0.1)", borderRadius: 8, padding: 3 }}>
+            {(['en', 'bg'] as const).map(l => (
+              <button key={l} onClick={() => switchLocale(l)} style={{ padding: "3px 8px", borderRadius: 5, border: "none", cursor: "pointer", background: locale === l ? "rgba(255,255,255,0.2)" : "transparent", color: locale === l ? COLORS.white : "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const, fontFamily: "'Outfit', sans-serif" }}>{l}</button>
+            ))}
+          </div>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: 20, whiteSpace: "nowrap" as const }}>{t.planLabel[plan as keyof typeof t.planLabel]}</div>
+          <button onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')} style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" as const }}>{t.profile}</button>
+          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" as const }}>{t.logout}</button>
         </div>
       </header>
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 16px" }}>
-
         {success && (
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
-            <div style={{ fontWeight: 700, color: "#166534", fontSize: 16 }}>Плащането е успешно!</div>
-            <div style={{ color: "#166534", fontSize: 13 }}>Добре дошъл! Планът се активира автоматично.</div>
+            <div style={{ fontWeight: 700, color: "#166534", fontSize: 16 }}>{t.payment_ok}</div>
+            <div style={{ color: "#166534", fontSize: 13 }}>{t.payment_sub}</div>
           </div>
         )}
 
-        {/* PROFILE TAB */}
         {activeTab === 'profile' && (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" as const }}>
-              <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, margin: 0 }}>Моят профил</h1>
-              <button onClick={() => setActiveTab('scan')} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Към сканирането</button>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, margin: 0 }}>{t.my_profile}</h1>
+              <button onClick={() => setActiveTab('scan')} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "8px 16px", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>{t.to_scan}</button>
             </div>
-
-            {/* Account */}
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Акаунт</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.account}</h2>
               <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>Имейл</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>{t.email}</div>
                   <div style={{ fontSize: 14, color: COLORS.navy, fontWeight: 600, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{userEmail || "—"}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>Активен план</div>
-                  <div style={{ fontSize: 14, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{planLabel[plan]}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>{t.active_plan}</div>
+                  <div style={{ fontSize: 14, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{t.planLabel[plan as keyof typeof t.planLabel]}</div>
                 </div>
                 {plan !== 'pro' && (
-                  <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>
-                    ⬆ Upgrade план
-                  </a>
+                  <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>{t.upgrade_plan}</a>
                 )}
               </div>
             </div>
-
-            {/* Password */}
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Смяна на парола</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.change_password}</h2>
               <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>Нова парола</div>
-                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Минимум 6 символа" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
+                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6 }}>{t.new_password}</div>
+                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder={t.min_chars} style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 14, outline: "none", boxSizing: "border-box" as const }} />
                 </div>
                 <button onClick={handleChangePassword} disabled={savingPassword} style={{ background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, border: "none", fontWeight: 700, cursor: savingPassword ? "not-allowed" : "pointer", fontSize: 14, opacity: savingPassword ? 0.7 : 1 }}>
-                  {savingPassword ? "Запазва..." : "Смени паролата"}
+                  {savingPassword ? t.saving : t.save_password}
                 </button>
               </div>
-              {passwordMsg && <div style={{ marginTop: 10, fontSize: 13, color: passwordMsg.includes("успешно") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>}
+              {passwordMsg && <div style={{ marginTop: 10, fontSize: 13, color: passwordMsg.includes(locale === 'bg' ? "успешно" : "successfully") ? "#166534" : "#991b1b" }}>{passwordMsg}</div>}
             </div>
-
-            {/* Stripe */}
             {plan !== 'free' && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 16 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Метод на плащане и абонамент</h2>
-                <p style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: 16 }}>Управлявай картата си, спри или промени абонамента директно в Stripe.</p>
-                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "block", background: COLORS.navy, color: COLORS.white, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Управлявай абонамента в Stripe</a>
-                <div style={{ marginTop: 10, fontSize: 11, color: COLORS.textMuted }}>Stripe Billing Portal — смени карта, спри или промени плана.</div>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>{t.payment_method}</h2>
+                <p style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: 16 }}>{t.payment_desc}</p>
+                <a href="https://billing.stripe.com/p/login/test_bpc_1TY3X0EvptFljOFhttCjP2zW" target="_blank" rel="noopener noreferrer" style={{ display: "block", background: COLORS.navy, color: COLORS.white, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>{t.manage_stripe}</a>
               </div>
             )}
-
-            {/* Business profiles */}
             {plan !== 'free' && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Бизнес профили</h2>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{t.business_profiles}</h2>
                   <span style={{ fontSize: 12, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 10px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]}</span>
                 </div>
                 {lockedDomains.length === 0 ? (
-                  <div style={{ color: COLORS.textMuted, fontSize: 13, textAlign: "center" as const, padding: "20px 0" }}>Все още нямаш сканирани домейни.</div>
+                  <div style={{ color: COLORS.textMuted, fontSize: 13, textAlign: "center" as const, padding: "20px 0" }}>{t.no_domains}</div>
                 ) : (
                   lockedDomains.map((d, idx) => (
                     <div key={d.domain} style={{ marginBottom: 10, border: `1px solid ${COLORS.lightGray}`, borderRadius: 12, overflow: "hidden" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: COLORS.offWhite }}>
                         <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 14 }}>{d.domain}</span>
                         <button onClick={() => { setEditingDomainIdx(editingDomainIdx === idx ? null : idx); setEditAnswers(d.answers || {}) }} style={{ background: COLORS.orange, color: COLORS.navy, border: "none", padding: "5px 12px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>
-                          {editingDomainIdx === idx ? "Затвори" : d.answers ? "Редактирай" : "Попълни"}
+                          {editingDomainIdx === idx ? t.close : d.answers ? t.edit : t.fill}
                         </button>
                       </div>
                       {editingDomainIdx === idx && (
                         <div style={{ padding: "14px", background: COLORS.white }}>
-                          {questionLabels.map((q, qi) => (
+                          {t.questionLabels.map((q, qi) => (
                             <div key={qi} style={{ marginBottom: 12 }}>
                               <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.navy, marginBottom: 5 }}>{q}</div>
                               <input type="text" value={editAnswers[`q${qi}`] || ""} onChange={e => setEditAnswers((prev: any) => ({ ...prev, [`q${qi}`]: e.target.value }))} style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: `1.5px solid ${COLORS.lightGray}`, fontSize: 13, outline: "none", boxSizing: "border-box" as const }} />
                             </div>
                           ))}
-                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "9px 20px", borderRadius: 8, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>Запази</button>
+                          <button onClick={() => handleSaveAnswers(idx)} style={{ background: COLORS.navy, color: COLORS.white, padding: "9px 20px", borderRadius: 8, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>{t.save}</button>
                         </div>
                       )}
                     </div>
@@ -361,85 +415,80 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* SCAN TAB */}
         {activeTab === 'scan' && (
           <>
             <div style={{ marginBottom: 24 }}>
-              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 6 }}>GEO Dashboard</h1>
+              <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 6 }}>{t.dashboard_title}</h1>
               <p style={{ color: COLORS.textMuted, fontSize: 15 }}>
-                {plan === 'free' && 'Безплатен план — виж общия скор на домейна си'}
-                {plan === 'lite' && 'LITE план — 1 домейн'}
-                {plan === 'smart' && 'SMART план — до 3 домейна + генератор на съдържание'}
-                {plan === 'pro' && 'PRO план — до 5 домейна + пълна картина'}
+                {plan === 'free' && t.sub_free}
+                {plan === 'lite' && t.sub_lite}
+                {plan === 'smart' && t.sub_smart}
+                {plan === 'pro' && t.sub_pro}
               </p>
             </div>
 
             {plan === 'free' && (
               <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 6 }}>UPGRADE</div>
-                <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Виж точно какво да оправиш</div>
-                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginBottom: 16 }}>С LITE план получаваш конкретни стъпки за подобрение</div>
-                <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Виж плановете</a>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 6 }}>{t.upgrade_tag}</div>
+                <div style={{ color: COLORS.white, fontSize: 16, fontWeight: 700, marginBottom: 6 }}>{t.upgrade_title}</div>
+                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginBottom: 16 }}>{t.upgrade_desc}</div>
+                <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>{t.see_plans}</a>
               </div>
             )}
-
             {plan === 'lite' && (
               <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
-                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
-                <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към SMART</a>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>{t.smart_tag}</div>
+                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 12 }}>{t.smart_title}</div>
+                <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>{t.upgrade_smart}</a>
               </div>
             )}
-
             {plan === 'smart' && (
               <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>PRO ПЛАН</div>
-                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 4 }}>5 домейна · AI mention check · Priority support</div>
-                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>Разгледай всичко включено в Pro преди да надградиш.</div>
-                <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към PRO</a>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>{t.pro_tag}</div>
+                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{t.pro_title}</div>
+                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>{t.pro_desc}</div>
+                <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>{t.upgrade_pro}</a>
               </div>
             )}
 
-            {/* SCAN BOX */}
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>Провери домейн</h2>
-                {plan !== 'free' && <span style={{ fontSize: 12, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 10px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} домейна</span>}
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: 0 }}>{t.check_domain}</h2>
+                {plan !== 'free' && <span style={{ fontSize: 12, color: COLORS.textMuted, background: COLORS.offWhite, padding: "4px 10px", borderRadius: 20 }}>{lockedDomains.length}/{DOMAIN_LIMITS[plan]} {t.domains_count}</span>}
               </div>
               <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 12 }}>
                 <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === "Enter" && handleScan()} placeholder="example.com" style={{ width: "100%", padding: "14px 16px", borderRadius: 10, border: `2px solid ${COLORS.lightGray}`, fontSize: 16, outline: "none", boxSizing: "border-box" as const }} />
-                <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1 }}>
-                  {scanning ? "Сканирам..." : "Анализирай"}
+                <button onClick={handleScan} disabled={scanning} style={{ background: COLORS.orange, color: COLORS.navy, padding: "14px", borderRadius: 10, border: "none", fontSize: 16, fontWeight: 700, cursor: scanning ? "not-allowed" : "pointer", opacity: scanning ? 0.7 : 1, fontFamily: "'Outfit', sans-serif" }}>
+                  {scanning ? t.scanning : t.analyze}
                 </button>
               </div>
-              {scanning && <div style={{ color: COLORS.blue, fontSize: 13, padding: "10px 14px", background: COLORS.offWhite, borderRadius: 8 }}>Проверяваме 11 критерия...</div>}
+              {scanning && <div style={{ color: COLORS.blue, fontSize: 13, padding: "10px 14px", background: COLORS.offWhite, borderRadius: 8 }}>{t.checking}</div>}
               {error && (
                 <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "12px 14px", color: "#991b1b", fontSize: 13 }}>
                   {error}
-                  {error.includes('Upgrade') && <a href="/upgrade" style={{ display: "block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const }}>Upgrade</a>}
+                  {error.includes('Upgrade') && <a href={`/${locale}/upgrade`} style={{ display: "block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const }}>{t.upgrade}</a>}
                 </div>
               )}
             </div>
 
-            {/* SCAN RESULT */}
             {result && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
                 <div style={{ textAlign: "center" as const, marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${COLORS.lightGray}` }}>
                   <div style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, color: result.totalScore > 60 ? "#22c55e" : result.totalScore > 35 ? "#f59e0b" : "#ef4444" }}>{result.totalScore}%</div>
-                  <div style={{ color: COLORS.textMuted, fontSize: 15, marginTop: 8 }}>GEO скор за <strong style={{ color: COLORS.navy }}>{result.domain}</strong></div>
+                  <div style={{ color: COLORS.textMuted, fontSize: 15, marginTop: 8 }}>GEO score for <strong style={{ color: COLORS.navy }}>{result.domain}</strong></div>
                   <div style={{ display: "inline-block", marginTop: 10, padding: "6px 14px", borderRadius: 20, background: result.totalScore > 60 ? "#f0fdf4" : result.totalScore > 35 ? "#fffbeb" : "#fef2f2", color: result.totalScore > 60 ? "#166534" : result.totalScore > 35 ? "#92400e" : "#991b1b", fontSize: 13, fontWeight: 600 }}>
-                    {result.totalScore > 60 ? "Добро AI присъствие" : result.totalScore > 35 ? "Нужни подобрения" : "Слабо AI присъствие"}
+                    {result.totalScore > 60 ? t.good : result.totalScore > 35 ? t.needs_work : t.weak}
                   </div>
                 </div>
                 {plan === 'free' ? (
                   <div style={{ textAlign: "center" as const, padding: "24px", background: COLORS.offWhite, borderRadius: 14 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Детайлите са заключени</div>
-                    <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Вземи LITE план за да видиш какво точно трябва да оправиш</div>
-                    <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15 }}>Виж плановете</a>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>{t.locked_title}</div>
+                    <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>{t.locked_sub}</div>
+                    <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15 }}>{t.see_plans}</a>
                   </div>
                 ) : (
                   <div>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 14 }}>Препоръки за подобрение</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 14 }}>{t.recommendations}</h3>
                     {getTopIssues(result.results, result.totalScore).map((r: any) => (
                       <div key={r.label} style={{ marginBottom: 14, padding: "16px", borderRadius: 12, border: `2px solid ${COLORS.orange}`, background: "rgba(245,166,35,0.05)" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
@@ -449,12 +498,12 @@ export default function Dashboard() {
                         </div>
                         <div style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: (plan === 'smart' || plan === 'pro') ? 10 : 0 }}>{r.message}</div>
                         {(plan === 'smart' || plan === 'pro') && (
-                          <a href="/onboarding" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const, marginTop: 4 }}>Генерирай fix</a>
+                          <a href={`/${locale}/onboarding`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const, marginTop: 4 }}>{t.generate_fix}</a>
                         )}
                         {plan === 'lite' && (
                           <div style={{ marginTop: 12, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 10, padding: "12px" }}>
-                            <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 8 }}>Искаш стъпка по стъпка инструкции?</div>
-                            <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>Upgrade към SMART</a>
+                            <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 8 }}>{t.upgrade_instructions}</div>
+                            <a href={`/${locale}/upgrade`} style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>{t.upgrade_smart}</a>
                           </div>
                         )}
                       </div>
@@ -464,10 +513,9 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* DOMAIN CARDS */}
             {plan !== 'free' && lockedDomains.length > 0 && (
               <div style={{ marginBottom: 24 }}>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>Моите домейни</h2>
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.my_domains}</h2>
                 <div style={{ display: "flex", flexDirection: "column" as const, gap: 14 }}>
                   {lockedDomains.map((d) => {
                     const gens = domainGenerations[d.domain] || []
@@ -480,34 +528,34 @@ export default function Dashboard() {
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontWeight: 800, color: COLORS.navy, fontSize: 15, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{d.domain}</div>
                             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const }}>
-                              {d.answers && <span style={{ fontSize: 10, background: "#f0fdf4", color: "#166534", padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>Профил попълнен</span>}
-                              {gens.length > 0 && <span style={{ fontSize: 10, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>{gens.length} генерации</span>}
-                              {lastGen && <span style={{ fontSize: 10, color: COLORS.textMuted }}>Последна: {new Date(lastGen.generated_at).toLocaleDateString('bg-BG')}</span>}
+                              {d.answers && <span style={{ fontSize: 10, background: "#f0fdf4", color: "#166534", padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>{t.profile_filled}</span>}
+                              {gens.length > 0 && <span style={{ fontSize: 10, background: "rgba(46,107,173,0.1)", color: COLORS.blue, padding: "2px 7px", borderRadius: 6, fontWeight: 600 }}>{gens.length} {t.gens}</span>}
+                              {lastGen && <span style={{ fontSize: 10, color: COLORS.textMuted }}>{t.last} {new Date(lastGen.generated_at).toLocaleDateString(locale === 'bg' ? 'bg-BG' : 'en-GB')}</span>}
                             </div>
                           </div>
                         </div>
                         <div style={{ padding: "0 16px 16px", display: "flex", gap: 8 }}>
                           {(plan === 'smart' || plan === 'pro') && (
                             <a href={genLink(d.domain)} style={{ flex: 1, background: COLORS.orange, color: COLORS.navy, padding: "9px", borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: "none", textAlign: "center" as const, display: "block" }}>
-                              {d.answers ? "Генерирай фикс" : "Настрой и генерирай"}
+                              {d.answers ? t.gen_fix : t.setup_gen}
                             </a>
                           )}
                           {gens.length > 0 && (
                             <button onClick={() => setExpandedDomain(isExpanded ? null : d.domain)} style={{ flex: 1, background: COLORS.offWhite, color: COLORS.navy, border: `1px solid ${COLORS.lightGray}`, padding: "9px", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 13 }}>
-                              {isExpanded ? "Скрий" : "История"}
+                              {isExpanded ? t.hide : t.history}
                             </button>
                           )}
                         </div>
                         {isExpanded && gens.length > 0 && (
                           <div style={{ borderTop: `1px solid ${COLORS.lightGray}`, padding: "14px 16px" }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 10 }}>История</div>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 10 }}>{t.history}</div>
                             {gens.map((gen: any, gi: number) => (
                               <div key={gi} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: COLORS.offWhite, borderRadius: 10, marginBottom: 8 }}>
                                 <div>
-                                  <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy }}>{new Date(gen.generated_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-                                  <div style={{ fontSize: 11, color: COLORS.textMuted }}>{new Date(gen.generated_at).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}</div>
+                                  <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.navy }}>{new Date(gen.generated_at).toLocaleDateString(locale === 'bg' ? 'bg-BG' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                                  <div style={{ fontSize: 11, color: COLORS.textMuted }}>{new Date(gen.generated_at).toLocaleTimeString(locale === 'bg' ? 'bg-BG' : 'en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
                                 </div>
-                                <button onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 14px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Виж</button>
+                                <button onClick={() => { setViewingGeneration({ domain: d.domain, gen }); setViewingTab('') }} style={{ background: COLORS.navy, color: COLORS.white, border: "none", padding: "6px 14px", borderRadius: 8, fontWeight: 700, cursor: "pointer", fontSize: 12 }}>{t.history}</button>
                               </div>
                             ))}
                           </div>
@@ -519,16 +567,15 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* SCAN HISTORY */}
             {scanHistory.length > 1 && (
               <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}` }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>История на сканиранията</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>{t.scan_history}</h2>
                 {scanHistory.map((h: any, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderBottom: i < scanHistory.length - 1 ? `1px solid ${COLORS.lightGray}` : "none" }}>
                     <ScoreRing score={h.totalScore} />
                     <div>
                       <div style={{ fontWeight: 600, color: COLORS.navy, fontSize: 14 }}>{h.domain}</div>
-                      <div style={{ color: COLORS.textMuted, fontSize: 12 }}>{new Date(h.scannedAt).toLocaleString('bg-BG')}</div>
+                      <div style={{ color: COLORS.textMuted, fontSize: 12 }}>{new Date(h.scannedAt).toLocaleString(locale === 'bg' ? 'bg-BG' : 'en-GB')}</div>
                     </div>
                   </div>
                 ))}
