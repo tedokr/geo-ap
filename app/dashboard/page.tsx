@@ -253,6 +253,9 @@ export default function Dashboard() {
           {(plan === 'smart' || plan === 'pro') && (
             <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>Генератор</a>
           )}
+          {plan !== 'pro' && (
+            <a href="/upgrade" style={{ background: "rgba(245,166,35,0.15)", color: COLORS.orange, border: "1px solid rgba(245,166,35,0.4)", padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>⬆ Upgrade</a>
+          )}
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: 20, whiteSpace: "nowrap" as const }}>{planLabel[plan]}</div>
           <button onClick={() => setActiveTab(activeTab === 'profile' ? 'scan' : 'profile')} style={{ background: activeTab === 'profile' ? COLORS.orange : "rgba(255,255,255,0.12)", color: activeTab === 'profile' ? COLORS.navy : "rgba(255,255,255,0.8)", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" as const }}>Профил</button>
           <button onClick={handleLogout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" as const }}>Изход</button>
@@ -288,6 +291,11 @@ export default function Dashboard() {
                   <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: 1 }}>Активен план</div>
                   <div style={{ fontSize: 14, color: COLORS.orange, fontWeight: 700, background: COLORS.offWhite, padding: "10px 14px", borderRadius: 8 }}>{planLabel[plan]}</div>
                 </div>
+                {plan !== 'pro' && (
+                  <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>
+                    ⬆ Upgrade план
+                  </a>
+                )}
               </div>
             </div>
 
@@ -376,20 +384,21 @@ export default function Dashboard() {
             )}
 
             {plan === 'lite' && (
-  <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-    <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
-    <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
-    <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към SMART</a>
-  </div>
-)}
-{plan === 'smart' && (
-  <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-    <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>PRO ПЛАН</div>
-    <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 4 }}>5 домейна · AI mention check · Priority support</div>
-    <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>Разгледай всичко включено в Pro преди да надградиш.</div>
-    <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към PRO</a>
-  </div>
-)}
+              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>SMART ПЛАН</div>
+                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Искаш стъпка по стъпка инструкции + готови файлове?</div>
+                <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към SMART</a>
+              </div>
+            )}
+
+            {plan === 'smart' && (
+              <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
+                <div style={{ color: COLORS.orange, fontSize: 12, fontWeight: 600, marginBottom: 4 }}>PRO ПЛАН</div>
+                <div style={{ color: COLORS.white, fontSize: 15, fontWeight: 700, marginBottom: 4 }}>5 домейна · AI mention check · Priority support</div>
+                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>Разгледай всичко включено в Pro преди да надградиш.</div>
+                <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center" as const }}>Upgrade към PRO</a>
+              </div>
+            )}
 
             {/* SCAN BOX */}
             <div style={{ background: COLORS.white, borderRadius: 16, padding: 24, border: `1px solid ${COLORS.lightGray}`, marginBottom: 24 }}>
@@ -407,7 +416,7 @@ export default function Dashboard() {
               {error && (
                 <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "12px 14px", color: "#991b1b", fontSize: 13 }}>
                   {error}
-                  {error.includes('Upgrade') && <a href="/#pricing" style={{ display: "block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const }}>Upgrade</a>}
+                  {error.includes('Upgrade') && <a href="/upgrade" style={{ display: "block", marginTop: 8, background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const }}>Upgrade</a>}
                 </div>
               )}
             </div>
@@ -426,7 +435,7 @@ export default function Dashboard() {
                   <div style={{ textAlign: "center" as const, padding: "24px", background: COLORS.offWhite, borderRadius: 14 }}>
                     <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>Детайлите са заключени</div>
                     <div style={{ color: COLORS.textMuted, fontSize: 14, marginBottom: 20 }}>Вземи LITE план за да видиш какво точно трябва да оправиш</div>
-                    <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15 }}>Виж плановете</a>
+                    <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "12px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 15 }}>Виж плановете</a>
                   </div>
                 ) : (
                   <div>
@@ -438,19 +447,22 @@ export default function Dashboard() {
                           <span style={{ fontWeight: 700, color: COLORS.navy, fontSize: 14 }}>{r.label}</span>
                           <span style={{ fontWeight: 800, color: "#ef4444", fontSize: 13 }}>{r.score}%</span>
                         </div>
-                        <div style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: plan === 'smart' || plan === 'pro' ? 10 : 0 }}>{r.message}</div>
-                      {(plan === 'smart' || plan === 'pro') && (
-  <a href="/onboarding" style={{ background: COLORS.orange, color: COLORS.navy, padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>Генератор</a>
-)}
-{plan !== 'pro' && (
-  <a href="/upgrade" style={{ background: "rgba(245,166,35,0.15)", color: COLORS.orange, border: "1px solid rgba(245,166,35,0.4)", padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>⬆ Upgrade</a>
-)}
-                    {plan === 'lite' && (
-                      <div style={{ marginTop: 16, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 14, padding: "16px" }}>
-                        <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 10 }}>Искаш стъпка по стъпка инструкции?</div>
-                        <a href="/#pricing" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "10px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>Upgrade към SMART</a>
+                        <div style={{ color: COLORS.textMuted, fontSize: 13, marginBottom: (plan === 'smart' || plan === 'pro') ? 10 : 0 }}>{r.message}</div>
+                        {(plan === 'smart' || plan === 'pro') && (
+                          <a href="/onboarding" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700, textAlign: "center" as const, marginTop: 4 }}>Генерирай fix</a>
+                        )}
+                        {plan === 'lite' && (
+                          <div style={{ marginTop: 12, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 10, padding: "12px" }}>
+                            <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 8 }}>Искаш стъпка по стъпка инструкции?</div>
+                            <a href="/upgrade" style={{ display: "block", background: COLORS.orange, color: COLORS.navy, padding: "8px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 13, textAlign: "center" as const }}>Upgrade към SMART</a>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* DOMAIN CARDS */}
             {plan !== 'free' && lockedDomains.length > 0 && (
@@ -486,7 +498,6 @@ export default function Dashboard() {
                             </button>
                           )}
                         </div>
-
                         {isExpanded && gens.length > 0 && (
                           <div style={{ borderTop: `1px solid ${COLORS.lightGray}`, padding: "14px 16px" }}>
                             <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 10 }}>История</div>
