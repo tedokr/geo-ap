@@ -445,7 +445,6 @@ export default function Dashboard() {
 {plan !== 'pro' && (
   <a href="/upgrade" style={{ background: "rgba(245,166,35,0.15)", color: COLORS.orange, border: "1px solid rgba(245,166,35,0.4)", padding: "6px 12px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" as const }}>⬆ Upgrade</a>
 )}
-                    ))}
                     {plan === 'lite' && (
                       <div style={{ marginTop: 16, background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.blue})`, borderRadius: 14, padding: "16px" }}>
                         <div style={{ color: COLORS.white, fontSize: 13, marginBottom: 10 }}>Искаш стъпка по стъпка инструкции?</div>
