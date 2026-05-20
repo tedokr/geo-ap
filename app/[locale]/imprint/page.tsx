@@ -18,7 +18,7 @@ export default function Imprint() {
         <a href={`/${locale}`} style={{ textDecoration: "none" }}>
           <span style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>GEO<span style={{ color: "#F5A623" }}>.app</span></span>
         </a>
-        <a href={`/${locale}`} style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none" }}>{backLabel}</a>
+       <a href={`/${locale}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.7)", fontSize: 13, textDecoration: "none", background: "rgba(255,255,255,0.1)", padding: "8px 16px", borderRadius: 20, fontWeight: 600, transition: "all 0.2s" }}>← {backLabel}</a>
       </header>
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "60px 32px" }}>
