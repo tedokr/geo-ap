@@ -25,7 +25,7 @@ function Logo({ size = 22 }: { size?: number }) {
         <polygon points="22,40 16,27 28,27" fill={C.coral} />
       </svg>
       <span style={{ fontSize: size, fontWeight: 800, color: C.white, fontFamily: "'Outfit', sans-serif" }}>
-        findable<span style={{ color: C.coral }}>.app</span>
+        faindable<span style={{ color: C.coral }}>.app</span>
       </span>
     </span>
   )
