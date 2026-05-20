@@ -464,7 +464,7 @@ export default function Home() {
                       </div>
                     ))}
                     <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
-                      <span>⚡</span> Tailored for your platform — no tech skills needed
+                  {"⚡ Tailored for your platform — no tech skills needed"}
                     </div>
                   </div>
                 )
@@ -533,7 +533,7 @@ export default function Home() {
                       </div>
                     ))}
                     <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
-                      <span>⚡</span> Адаптирано за твоята платформа — без технически познания
+                    {"⚡ Адаптирано за твоята платформа — без технически познания"}
                     </div>
                 )
               }
