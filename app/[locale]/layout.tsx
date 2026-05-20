@@ -2,9 +2,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '../../i18n/routing'
-import dynamic from 'next/dynamic'
-
-const CookieBanner = dynamic(() => import('../../components/CookieBanner'), { ssr: false })
+import CookieBanner from '../../components/CookieBanner'
 
 export default async function LocaleLayout({
   children,
