@@ -14,12 +14,12 @@ export default function Privacy() {
   return (
     <div style={{ minHeight: "100vh", background: "#F8FAFD", fontFamily: "'Outfit', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-      <header style={{ background: "#1B2A4A", padding: "0 32px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-       <a href={`/${locale}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.7)", fontSize: 13, textDecoration: "none", background: "rgba(255,255,255,0.1)", padding: "8px 16px", borderRadius: 20, fontWeight: 600, transition: "all 0.2s" }}>← {backLabel}</a>
-          <span style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>GEO<span style={{ color: "#F5A623" }}>.app</span></span>
-        </a>
-        <a href={`/${locale}`} style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none" }}>{backLabel}</a>
-      </header>
+    <header style={{ background: "#1B2A4A", padding: "0 32px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+  <a href={`/${locale}`} style={{ textDecoration: "none" }}>
+    <span style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>GEO<span style={{ color: "#F5A623" }}>.app</span></span>
+  </a>
+  <a href={`/${locale}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.7)", fontSize: 13, textDecoration: "none", background: "rgba(255,255,255,0.1)", padding: "8px 16px", borderRadius: 20, fontWeight: 600 }}>← {backLabel}</a>
+</header>
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "60px 32px" }}>
         <div style={{ marginBottom: 48 }}>
