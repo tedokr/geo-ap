@@ -307,6 +307,196 @@ function PricingSection() {
   );
 }
 
+function HowItWorksSection() {
+  const locale = useLocale();
+
+  const enSteps = [
+    {
+      step: "01", icon: "🔍", color: COLORS.orange,
+      title: "Get your free AI score",
+      desc: "Enter your domain and we instantly scan 14 AI visibility metrics. See exactly where you stand — for free, in under 2 minutes.",
+      tag: "Free · No registration",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>Scanning...</div>
+          {[92, 67, 45, 23, 78].map((w, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444", flexShrink: 0 }} />
+              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div style={{ width: `${w}%`, height: "100%", borderRadius: 3, background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444" }} />
+              </div>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", width: 28, textAlign: "right" as const }}>{w}%</div>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, color: COLORS.orange }}>AI Score: 42% - Needs work</div>
+        </div>
+      )
+    },
+    {
+      step: "02", icon: "📋", color: COLORS.blue,
+      title: "See exactly what's missing",
+      desc: "Register for free and unlock your full report. We show you precisely which optimizations are keeping you invisible to AI.",
+      tag: "From €9.90/mo · No limits",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: COLORS.orange, fontWeight: 700, marginBottom: 10 }}>YOUR ACTION PLAN</div>
+          {["Improve AI discoverability", "Strengthen content signals", "Boost authority markers"].map((item, i) => (
+            <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(245,166,35,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: COLORS.orange, flexShrink: 0 }}>{i + 1}</div>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{item}</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, fontSize: 10, color: "rgba(255,255,255,0.4)" }}>+ 3 more improvements unlocked</div>
+        </div>
+      )
+    },
+    {
+      step: "03", icon: "🚀", color: "#22c55e",
+      title: "Upload & boost your visibility",
+      desc: "Get ready-to-use files with step-by-step instructions tailored to your platform. Upload in under 5 minutes. No agency. No code. No hassle.",
+      tag: "From €39.90/mo · Any platform",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>FILES READY TO UPLOAD</div>
+          {[
+            { icon: "📄", name: "AI Optimization Guide", desc: "Step-by-step implementation" },
+            { icon: "⚙️", name: "Technical Config File", desc: "Ready to upload" },
+            { icon: "📝", name: "Content Enhancement Doc", desc: "Tailored to your business" },
+            { icon: "🎯", name: "Quick Win Checklist", desc: "Do it yourself in 5 min" },
+          ].map((file) => (
+            <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
+              </div>
+              <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>READY</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange }}>
+            {"⚡ Tailored for your platform - no tech skills needed"}
+          </div>
+        </div>
+      )
+    }
+  ];
+
+  const bgSteps = [
+    {
+      step: "01", icon: "🔍", color: COLORS.orange,
+      title: "Вземи безплатния си AI скор",
+      desc: "Въведи домейна си и ние веднага сканираме 14 показателя за AI видимост. Виж точно къде стоиш — безплатно, за под 2 минути.",
+      tag: "Безплатно · Без регистрация",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>Сканирам...</div>
+          {[92, 67, 45, 23, 78].map((w, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444", flexShrink: 0 }} />
+              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div style={{ width: `${w}%`, height: "100%", borderRadius: 3, background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444" }} />
+              </div>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", width: 28, textAlign: "right" as const }}>{w}%</div>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, color: COLORS.orange }}>AI Скор: 42% - Нужни подобрения</div>
+        </div>
+      )
+    },
+    {
+      step: "02", icon: "📋", color: COLORS.blue,
+      title: "Виж точно какво липсва",
+      desc: "Регистрирай се безплатно и отключи пълния доклад. Показваме ти точно кои оптимизации те правят невидим за AI.",
+      tag: "От €9.90/мес · Без ограничения",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: COLORS.orange, fontWeight: 700, marginBottom: 10 }}>ТВОЯТ ПЛАН ЗА ДЕЙСТВИЕ</div>
+          {["Подобри AI откриваемостта", "Засили контент сигналите", "Укрепи авторитетните маркери"].map((item, i) => (
+            <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(245,166,35,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: COLORS.orange, flexShrink: 0 }}>{i + 1}</div>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{item}</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, fontSize: 10, color: "rgba(255,255,255,0.4)" }}>+ 3 допълнителни подобрения отключени</div>
+        </div>
+      )
+    },
+    {
+      step: "03", icon: "🚀", color: "#22c55e",
+      title: "Качи и подобри видимостта си",
+      desc: "Получи готови за качване файлове с инструкции стъпка по стъпка за твоята платформа. Качи за под 5 минути. Без агенция. Без код.",
+      tag: "От €39.90/мес · Всяка платформа",
+      mock: (
+        <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>ФАЙЛОВЕТЕ СА ГОТОВИ</div>
+          {[
+            { icon: "📄", name: "Ръководство за AI оптимизация", desc: "Стъпка по стъпка" },
+            { icon: "⚙️", name: "Технически конфигурационен файл", desc: "Готов за качване" },
+            { icon: "📝", name: "Документ за подобряване на съдържанието", desc: "Адаптиран за твоя бизнес" },
+            { icon: "🎯", name: "Чеклист за бързи резултати", desc: "Направи го сам за 5 мин" },
+          ].map((file) => (
+            <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
+              </div>
+              <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>ГОТОВ</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange }}>
+            {"⚡ Адаптирано за твоята платформа - без технически познания"}
+          </div>
+        </div>
+      )
+    }
+  ];
+
+  const steps = locale === 'en' ? enSteps : bgSteps;
+
+  return (
+    <section id="howitworks" style={{ padding: "80px 24px", background: COLORS.white }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <SectionTitle
+          tag={locale === 'en' ? "How it works" : "Как работи"}
+          title={locale === 'en' ? "From invisible to AI-recommended in 3 steps" : "От невидим до препоръчан от AI в 3 стъпки"}
+          subtitle={locale === 'en' ? "No technical knowledge needed. No agency required. Just results." : "Без технически познания. Без агенция. Само резултати."}
+        />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, position: "relative" }} className="grid-3">
+          <div className="connector-line" style={{ position: "absolute", top: 52, left: "16.5%", right: "16.5%", height: 2, background: `linear-gradient(90deg, ${COLORS.orange}, ${COLORS.blue})`, zIndex: 0 }} />
+          {steps.map((s) => (
+            <div key={s.step} style={{ position: "relative", zIndex: 1, padding: "0 16px" }}>
+              <div style={{ width: 56, height: 56, borderRadius: "50%", background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, margin: "0 auto 24px", boxShadow: `0 0 0 6px white, 0 0 0 8px ${s.color}33`, position: "relative", zIndex: 2 }}>
+                {s.icon}
+              </div>
+              <div style={{ background: COLORS.white, borderRadius: 20, padding: 24, border: "1px solid rgba(27,42,74,0.08)", boxShadow: "0 4px 24px rgba(27,42,74,0.06)" }}>
+                <div style={{ display: "inline-block", background: `${s.color}18`, border: `1px solid ${s.color}33`, borderRadius: 20, padding: "3px 10px", marginBottom: 12 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: s.color, letterSpacing: 1 }}>STEP {s.step}</span>
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 800, color: COLORS.navy, margin: "0 0 10px", lineHeight: 1.3 }}>{s.title}</h3>
+                <p style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.7, margin: "0 0 12px" }}>{s.desc}</p>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: COLORS.offWhite, borderRadius: 20, padding: "4px 12px" }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: s.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted }}>{s.tag}</span>
+                </div>
+                {s.mock}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 56 }}>
+          <p style={{ fontSize: 16, color: COLORS.textMuted, marginBottom: 20 }}>
+            {locale === 'en' ? "Ready to become visible to AI?" : "Готов ли си да станеш видим за AI?"}
+          </p>
+          <a href="#scan" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 4px 24px rgba(245,166,35,0.3)" }}>
+            {locale === 'en' ? "Get your free AI score →" : "Вземи безплатния си AI скор →"}
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const locale = useLocale();
   return (
@@ -323,7 +513,8 @@ export default function Home() {
           .grid-3 { grid-template-columns: 1fr !important; }
           .grid-2 { grid-template-columns: 1fr !important; }
           .pricing-grid { grid-template-columns: 1fr !important; max-width: 400px; margin: 0 auto; }
-         .connector-line { display: none !important; }
+          .scan-row { flex-direction: column !important; }
+          .connector-line { display: none !important; }
         }
         @media (max-width: 480px) {
           .grid-4 { grid-template-columns: 1fr !important; }
@@ -389,187 +580,9 @@ export default function Home() {
           </div>
         </div>
       </section>
-{/* HOW IT WORKS */}
-      <section id="howitworks" style={{ padding: "80px 24px", background: COLORS.white }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <SectionTitle
-            tag={locale === 'en' ? "How it works" : "Как работи"}
-            title={locale === 'en' ? "From invisible to AI-recommended in 3 steps" : "От невидим до препоръчан от AI в 3 стъпки"}
-            subtitle={locale === 'en' ? "No technical knowledge needed. No agency required. Just results." : "Без технически познания. Без агенция. Само резултати."}
-          />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, position: "relative" }} className="grid-3">
-            <div className="connector-line" style={{ position: "absolute", top: 52, left: "16.5%", right: "16.5%", height: 2, background: `linear-gradient(90deg, ${COLORS.orange}, ${COLORS.blue})`, zIndex: 0 }} />
 
-            {(locale === 'en' ? [
-              {
-                step: "01", icon: "🔍", color: COLORS.orange,
-                title: "Get your free AI score",
-                desc: "Enter your domain and we instantly scan 14 AI visibility metrics. See exactly where you stand — for free, in under 2 minutes.",
-                tag: "Free · No registration",
-                mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>Scanning...</div>
-                    {[92, 67, 45, 23, 78].map((w, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444", flexShrink: 0 }} />
-                        <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                          <div style={{ width: `${w}%`, height: "100%", borderRadius: 3, background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444" }} />
-                        </div>
-                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", width: 28, textAlign: "right" as const }}>{w}%</div>
-                      </div>
-                    ))}
-                    <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, color: COLORS.orange }}>AI Score: 42% — Needs work</div>
-                  </div>
-                )
-              },
-              {
-                step: "02", icon: "📋", color: COLORS.blue,
-                title: "See exactly what's missing",
-                desc: "Register for free and unlock your full report. We show you precisely which optimizations are keeping you invisible to AI.",
-                tag: "Instant · Clear",
-                mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: COLORS.orange, fontWeight: 700, marginBottom: 10 }}>YOUR ACTION PLAN</div>
-                    {["Improve AI discoverability", "Strengthen content signals", "Boost authority markers"].map((item, i) => (
-                      <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(245,166,35,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: COLORS.orange, flexShrink: 0 }}>{i + 1}</div>
-                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{item}</span>
-                      </div>
-                    ))}
-                    <div style={{ marginTop: 10, fontSize: 10, color: "rgba(255,255,255,0.4)" }}>+ 3 more improvements unlocked</div>
-                  </div>
-                )
-              },
-              {
-                step: "03", icon: "🚀", color: "#22c55e",
-                title: "Upload & boost your visibility",
-                desc: "Get ready-to-use files with step-by-step instructions tailored to your platform. Upload in under 5 minutes. No agency. No code. No hassle.",
-                tag: "From €9.90/mo · Any platform",
-                mock: (
-                 <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>FILES READY TO UPLOAD</div>
-                    {[
-                      { icon: "📄", name: "AI Optimization Guide", desc: "Step-by-step implementation" },
-                      { icon: "⚙️", name: "Technical Config File", desc: "Ready to upload" },
-                      { icon: "📝", name: "Content Enhancement Doc", desc: "Tailored to your business" },
-                      { icon: "🎯", name: "Quick Win Checklist", desc: "Do it yourself in 5 min" },
-                    ].map((file) => (
-                      <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
-                          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
-                        </div>
-                        <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>READY</span>
-                      </div>
-                    ))}
-                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
-                {"⚡ Tailored for your platform - no tech skills needed"}
-                    </div>
-                  </div>
-                )
-              }
-            ] : [
-              {
-                step: "01", icon: "🔍", color: COLORS.orange,
-                title: "Вземи безплатния си AI скор",
-                desc: "Въведи домейна си и ние веднага сканираме 14 показателя за AI видимост. Виж точно къде стоиш — безплатно, за под 2 минути.",
-                tag: "Безплатно · Без регистрация",
-                mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>Сканирам...</div>
-                    {[92, 67, 45, 23, 78].map((w, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444", flexShrink: 0 }} />
-                        <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                          <div style={{ width: `${w}%`, height: "100%", borderRadius: 3, background: w > 70 ? "#22c55e" : w > 50 ? COLORS.orange : "#ef4444" }} />
-                        </div>
-                        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", width: 28, textAlign: "right" as const }}>{w}%</div>
-                      </div>
-                    ))}
-                    <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, color: COLORS.orange }}>AI Скор: 42% — Нужни подобрения</div>
-                  </div>
-                )
-              },
-              {
-                step: "02", icon: "📋", color: COLORS.blue,
-                title: "Виж точно какво липсва",
-                desc: "Регистрирай се безплатно и отключи пълния доклад. Показваме ти точно кои оптимизации те правят невидим за AI.",
-                tag: "Незабавно · Ясно",
-                mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: COLORS.orange, fontWeight: 700, marginBottom: 10 }}>ТВОЯТ ПЛАН ЗА ДЕЙСТВИЕ</div>
-                    {["Подобри AI откриваемостта", "Засили контент сигналите", "Укрепи авторитетните маркери"].map((item, i) => (
-                      <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(245,166,35,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: COLORS.orange, flexShrink: 0 }}>{i + 1}</div>
-                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{item}</span>
-                      </div>
-                    ))}
-                    <div style={{ marginTop: 10, fontSize: 10, color: "rgba(255,255,255,0.4)" }}>+ 3 допълнителни подобрения отключени</div>
-                  </div>
-                )
-              },
-              {
-                step: "03", icon: "🚀", color: "#22c55e",
-                title: "Качи и подобри видимостта си",
-                desc: "Получи готови за качване файлове с инструкции стъпка по стъпка за твоята платформа. Качи за под 5 минути. Без агенция. Без код.",
-                tag: "От €9.90/мес · Всяка платформа",
-                mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                  <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>ФАЙЛОВЕТЕ СА ГОТОВИ</div>
-                    {[
-                      { icon: "📄", name: "Ръководство за AI оптимизация", desc: "Стъпка по стъпка" },
-                      { icon: "⚙️", name: "Технически конфигурационен файл", desc: "Готов за качване" },
-                      { icon: "📝", name: "Документ за подобряване на съдържанието", desc: "Адаптиран за твоя бизнес" },
-                      { icon: "🎯", name: "Чеклист за бързи резултати", desc: "Направи го сам за 5 мин" },
-                    ].map((file) => (
-                      <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
-                          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
-                        </div>
-                        <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>ГОТОВ</span>
-                      </div>
-                    ))}
-                  <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
-                      {"⚡ Адаптирано за твоята платформа - без технически познания"}
-                    </div>
-                  </div>
-                )
-              }
-            ]).map((s) => (
-              <div key={s.step} style={{ position: "relative", zIndex: 1, padding: "0 16px" }}>
-                <div style={{ width: 56, height: 56, borderRadius: "50%", background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, margin: "0 auto 24px", boxShadow: `0 0 0 6px white, 0 0 0 8px ${s.color}33`, position: "relative", zIndex: 2 }}>
-                  {s.icon}
-                </div>
-                <div style={{ background: COLORS.white, borderRadius: 20, padding: 24, border: "1px solid rgba(27,42,74,0.08)", boxShadow: "0 4px 24px rgba(27,42,74,0.06)" }}>
-                  <div style={{ display: "inline-block", background: `${s.color}18`, border: `1px solid ${s.color}33`, borderRadius: 20, padding: "3px 10px", marginBottom: 12 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: s.color, letterSpacing: 1 }}>STEP {s.step}</span>
-                  </div>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: COLORS.navy, margin: "0 0 10px", lineHeight: 1.3 }}>{s.title}</h3>
-                  <p style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.7, margin: "0 0 12px" }}>{s.desc}</p>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: COLORS.offWhite, borderRadius: 20, padding: "4px 12px" }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: s.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 11, fontWeight: 600, color: COLORS.textMuted }}>{s.tag}</span>
-                  </div>
-                  {s.mock}
-                </div>
-              </div>
-            ))}
-          </div>
+      <HowItWorksSection />
 
-          <div style={{ textAlign: "center", marginTop: 56 }}>
-            <p style={{ fontSize: 16, color: COLORS.textMuted, marginBottom: 20 }}>
-              {locale === 'en' ? "Ready to become visible to AI?" : "Готов ли си да станеш видим за AI?"}
-            </p>
-            <a href="#scan" style={{ display: "inline-block", background: COLORS.orange, color: COLORS.navy, padding: "16px 40px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 4px 24px rgba(245,166,35,0.3)" }}>
-              {locale === 'en' ? "Get your free AI score →" : "Вземи безплатния си AI скор →"}
-            </a>
-          </div>
-        </div>
-      </section>
-      
       <ScanSection />
 
       <section id="whymonthly" style={{ padding: "80px 24px", background: COLORS.white }}>
