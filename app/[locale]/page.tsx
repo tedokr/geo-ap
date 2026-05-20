@@ -84,12 +84,11 @@ function LanguageSwitcher({ light = true }: { light?: boolean }) {
 // ─── NavBar ────────────────────────────────────────────────────────────────────
 function NavBar() {
   const locale   = useLocale();
+  const router   = useRouter();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const navLinks = locale === 'en'
-    ? [["How it works", "howitworks"], ["Pricing", "pricing"]]
-    : [["Как работи", "howitworks"], ["Цени", "pricing"]];
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 50);
@@ -97,90 +96,133 @@ function NavBar() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  const bg = scrolled || menuOpen
-    ? "rgba(10,22,40,0.96)"
-    : "transparent";
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const switchLocale = (l: string) => {
+    const segs = pathname.split('/'); segs[1] = l; router.push(segs.join('/'));
+  };
+
+  const navItems = locale === 'en'
+    ? [
+        { label: "Why it matters", href: "#why" },
+        { label: "How it works",   href: "#howitworks" },
+        { label: "Pricing",        href: "#pricing" },
+      ]
+    : [
+        { label: "Защо е важно", href: "#why" },
+        { label: "Как работи",   href: "#howitworks" },
+        { label: "Цени",         href: "#pricing" },
+      ];
+
+  const bg = scrolled ? "rgba(10,22,40,0.96)" : "transparent";
 
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
       background: bg,
-      backdropFilter: scrolled || menuOpen ? "blur(16px)" : "none",
+      backdropFilter: scrolled ? "blur(16px)" : "none",
       borderBottom: scrolled ? `1px solid ${C.border}` : "none",
       transition: "all 0.35s ease",
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Logo size={20} />
 
-        {/* Desktop */}
-        <div className="desktop-nav" style={{ display: "flex", gap: 28, alignItems: "center" }}>
-          {navLinks.map(([label, id]) => (
-            <a key={id} href={`#${id}`} style={{
-              color: "rgba(255,255,255,0.65)", textDecoration: "none",
-              fontSize: 14, fontWeight: 500, fontFamily: "'Outfit', sans-serif",
-              transition: "color 0.2s",
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = C.white)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
-            >{label}</a>
-          ))}
-          <LanguageSwitcher />
-          <a href={`/${locale}/login`} style={{
-            color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 14,
-            fontWeight: 500, border: "1px solid rgba(255,255,255,0.18)", padding: "8px 20px",
-            borderRadius: 8, fontFamily: "'Outfit', sans-serif", transition: "all 0.2s",
-          }}>{locale === 'en' ? 'Log in' : 'Вход'}</a>
-          <a href="#hero-scan" style={{
-            background: C.coral, color: C.white, padding: "9px 22px", borderRadius: 8,
-            textDecoration: "none", fontSize: 14, fontWeight: 700, fontFamily: "'Outfit', sans-serif",
-            transition: "background 0.2s",
-          }}
-            onMouseEnter={e => (e.currentTarget.style.background = C.coralDark)}
-            onMouseLeave={e => (e.currentTarget.style.background = C.coral)}
-          >{locale === 'en' ? 'Free check' : 'Безплатна проверка'}</a>
-        </div>
+        {/* Hamburger button — always visible */}
+        <div ref={menuRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{ background: menuOpen ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)", border: `1px solid ${C.border}`, borderRadius: 10, cursor: "pointer", padding: "10px 12px", display: "flex", flexDirection: "column" as const, gap: 5, transition: "background 0.2s" }}
+            aria-label="Menu"
+          >
+            {[0, 1, 2].map(i => (
+              <div key={i} style={{
+                width: 22, height: 2, background: C.white, borderRadius: 1,
+                transition: "all 0.3s",
+                transform: menuOpen
+                  ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
+                  : i === 2 ? "rotate(-45deg) translate(5px, -5px)" : "none"
+                  : "none",
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </button>
 
-        {/* Mobile hamburger */}
-        <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)} style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: 8 }}>
-          {[0, 1, 2].map(i => (
-            <div key={i} style={{
-              width: 24, height: 2, background: C.white, marginBottom: i < 2 ? 5 : 0,
-              transition: "all 0.3s",
-              transform: menuOpen
-                ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
-                : i === 2 ? "rotate(-45deg) translate(5px, -5px)" : "none"
-                : "none",
-              opacity: menuOpen && i === 1 ? 0 : 1,
-            }} />
-          ))}
-        </button>
+          {/* Dropdown panel */}
+          {menuOpen && (
+            <div style={{
+              position: "absolute", top: "calc(100% + 10px)", right: 0,
+              background: C.navyMid, border: `1px solid ${C.border}`,
+              borderRadius: 16, overflow: "hidden", minWidth: 240,
+              boxShadow: "0 20px 48px rgba(0,0,0,0.4)", zIndex: 200,
+            }}>
+              {/* Nav links */}
+              {navItems.map((item, i) => (
+                <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} style={{
+                  display: "block", padding: "13px 20px",
+                  borderBottom: `1px solid ${C.border}`,
+                  color: "rgba(255,255,255,0.8)", textDecoration: "none",
+                  fontSize: 15, fontWeight: 500, fontFamily: "'Outfit', sans-serif",
+                  transition: "background 0.15s",
+                }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >{item.label}</a>
+              ))}
+
+              {/* Log in */}
+              <a href={`/${locale}/login`} onClick={() => setMenuOpen(false)} style={{
+                display: "block", padding: "13px 20px",
+                borderBottom: `1px solid ${C.border}`,
+                color: "rgba(255,255,255,0.8)", textDecoration: "none",
+                fontSize: 15, fontWeight: 500, fontFamily: "'Outfit', sans-serif",
+                transition: "background 0.15s",
+              }}
+                onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                onMouseLeave={e => (e.currentTarget.style.background = "none")}
+              >
+                {locale === 'en' ? "🔑 Log in" : "🔑 Вход"}
+              </a>
+
+              {/* Language */}
+              <div style={{ padding: "12px 20px", borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 15 }}>🌐</span>
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", fontFamily: "'Outfit', sans-serif", flex: 1 }}>
+                  {locale === 'en' ? "Language" : "Език"}
+                </span>
+                <div style={{ display: "flex", gap: 4 }}>
+                  {(['en', 'bg'] as const).map(l => (
+                    <button key={l} onClick={() => { switchLocale(l); setMenuOpen(false); }} style={{
+                      padding: "4px 10px", borderRadius: 7, border: "none", cursor: "pointer",
+                      background: locale === l ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.06)",
+                      color: locale === l ? C.white : "rgba(255,255,255,0.4)",
+                      fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const,
+                      fontFamily: "'Outfit', sans-serif",
+                    }}>{l}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Free check CTA */}
+              <div style={{ padding: "14px 20px" }}>
+                <a href="#hero-scan" onClick={() => setMenuOpen(false)} style={{
+                  display: "block", background: C.coral, color: C.white,
+                  padding: "12px 20px", borderRadius: 10, textDecoration: "none",
+                  fontSize: 14, fontWeight: 700, textAlign: "center" as const,
+                  fontFamily: "'Outfit', sans-serif", transition: "background 0.2s",
+                }}>
+                  {locale === 'en' ? "Free AI check →" : "Безплатна AI проверка →"}
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div style={{ background: "rgba(10,22,40,0.98)", padding: "12px 28px 28px", borderTop: `1px solid ${C.border}` }}>
-          {navLinks.map(([label, id]) => (
-            <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)} style={{
-              display: "block", color: "rgba(255,255,255,0.8)", textDecoration: "none",
-              fontSize: 18, fontWeight: 500, padding: "14px 0", borderBottom: `1px solid ${C.border}`,
-              fontFamily: "'Outfit', sans-serif",
-            }}>{label}</a>
-          ))}
-          <div style={{ display: "flex", flexDirection: "column" as const, gap: 12, marginTop: 20 }}>
-            <LanguageSwitcher />
-            <a href={`/${locale}/login`} style={{
-              color: C.white, textDecoration: "none", fontSize: 16, fontWeight: 600,
-              padding: "13px 24px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.2)",
-              textAlign: "center" as const, fontFamily: "'Outfit', sans-serif",
-            }}>{locale === 'en' ? 'Log in' : 'Вход'}</a>
-            <a href="#hero-scan" onClick={() => setMenuOpen(false)} style={{
-              background: C.coral, color: C.white, padding: "13px 24px", borderRadius: 10,
-              textDecoration: "none", fontSize: 16, fontWeight: 700, textAlign: "center" as const,
-              fontFamily: "'Outfit', sans-serif",
-            }}>{locale === 'en' ? 'Free check' : 'Безплатна проверка'}</a>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
@@ -276,12 +318,6 @@ function HeroScanSection() {
 
           {/* Left — headline */}
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? "none" : "translateY(32px)", transition: "all 0.9s cubic-bezier(0.16,1,0.3,1)" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 28, background: "rgba(255,90,71,0.1)", border: "1px solid rgba(255,90,71,0.25)", borderRadius: 100, padding: "6px 16px" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.coral, flexShrink: 0 }} />
-              <span style={{ fontSize: 12, color: C.coral, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "'Outfit', sans-serif" }}>
-                {en ? "AI Visibility Platform" : "AI Видимост Платформа"}
-              </span>
-            </div>
 
             <h1 className="hero-h1" style={{
               fontFamily: "'Fraunces', 'Playfair Display', Georgia, serif",
@@ -296,23 +332,17 @@ function HeroScanSection() {
               )}
             </h1>
 
-            <p style={{ fontSize: 18, color: C.textLight, lineHeight: 1.7, margin: "0 0 40px", maxWidth: 440, fontFamily: "'Outfit', sans-serif" }}>
+            <p style={{ fontSize: 18, color: C.textLight, lineHeight: 1.7, margin: "0 0 36px", maxWidth: 440, fontFamily: "'Outfit', sans-serif" }}>
               {en
                 ? "We analyze many different AI criteria and generate ready-to-use files so ChatGPT, Claude, Gemini and others can find and recommend your business."
                 : "Анализираме множество AI критерия и генерираме готови файлове — за да те намерят и препоръчат ChatGPT, Claude, Gemini и другите."}
             </p>
 
-            <div style={{ display: "flex", gap: 36 }}>
-              {[
-                ["14", en ? "AI criteria" : "AI критерия"],
-                ["<1m", en ? "analysis" : "анализ"],
-                ["€0", en ? "to start" : "за начало"],
-              ].map(([n, l]) => (
-                <div key={l}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: C.coral, fontFamily: "'Outfit', sans-serif", lineHeight: 1 }}>{n}</div>
-                  <div style={{ fontSize: 12, color: C.textDim, marginTop: 4, fontFamily: "'Outfit', sans-serif" }}>{l}</div>
-                </div>
-              ))}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(255,90,71,0.1)", border: "1px solid rgba(255,90,71,0.25)", borderRadius: 100, padding: "10px 22px" }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0 }} />
+              <span style={{ fontSize: 15, color: C.coral, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" as const, fontFamily: "'Outfit', sans-serif" }}>
+                {en ? "AI Visibility Platform" : "AI Видимост Платформа"}
+              </span>
             </div>
           </div>
 
@@ -932,8 +962,7 @@ function FooterSection() {
             ))}
           </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif" }}>
-            © 2026 Business Solutions Consulting EOOD<br />
-            trading as faindable.app · VAT: BG200487371
+            © 2026 faindable.app
           </div>
         </div>
 
