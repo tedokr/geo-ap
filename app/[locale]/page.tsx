@@ -298,8 +298,8 @@ function HeroScanSection() {
 
             <p style={{ fontSize: 18, color: C.textLight, lineHeight: 1.7, margin: "0 0 40px", maxWidth: 440, fontFamily: "'Outfit', sans-serif" }}>
               {en
-                ? "We analyze 14 AI criteria and generate ready-to-use files so ChatGPT and Gemini can find and recommend your business."
-                : "Анализираме 14 AI критерия и генерираме готови файлове за оптимизация — за да те намерят ChatGPT и Gemini."}
+                ? "We analyze many different AI criteria and generate ready-to-use files so ChatGPT, Claude, Gemini and others can find and recommend your business."
+                : "Анализираме множество AI критерия и генерираме готови файлове — за да те намерят и препоръчат ChatGPT, Claude, Gemini и другите."}
             </p>
 
             <div style={{ display: "flex", gap: 36 }}>
@@ -456,8 +456,8 @@ function SocialProofStrip() {
   return (
     <div style={{ background: C.white, borderBottom: `1px solid ${C.borderCream}`, padding: "18px 28px" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 40, flexWrap: "wrap" as const }}>
-        <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Outfit', sans-serif" }}>
-          {en ? "Trusted by 1,200+ businesses" : "Над 1 200 бизнеса вече проверени"}
+        <span style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "'Outfit', sans-serif" }}>
+          {en ? "Trusted by" : "Използват го"}
         </span>
         <div style={{ width: 1, height: 18, background: C.borderCream, flexShrink: 0 }} className="strip-div" />
         {[
@@ -477,7 +477,150 @@ function SocialProofStrip() {
   );
 }
 
-// ─── SECTION 3: How it works (+ what we do) ────────────────────────────────────
+// ─── SECTION 3: Why it matters ────────────────────────────────────────────────
+function WhyItMattersSection() {
+  const locale = useLocale();
+  const en = locale === 'en';
+  const { ref, visible } = useVisible(0.08);
+
+  const stats = en ? [
+    { num: "9B",  color: "#F5A623", label: "AI interactions in 2025 alone" },
+    { num: "50%", color: C.mint,    label: "of searches go through AI assistants today" },
+    { num: "60%", color: "#7B8FF5", label: "of all searches will be AI-powered by 2028" },
+    { num: "90%", color: C.coral,   label: "of SMEs are not ready for the AI era" },
+  ] : [
+    { num: "9 млрд", color: "#F5A623", label: "AI взаимодействия само през 2025г." },
+    { num: "50%",    color: C.mint,    label: "пазарен дял на AI търсачките днес" },
+    { num: "60%",    color: "#7B8FF5", label: "на търсенията ще са през AI до 2028г." },
+    { num: "90%",    color: C.coral,   label: "от МСП не са готови за AI ерата" },
+  ];
+
+  return (
+    <section id="why" style={{ background: C.navy, padding: "100px 28px", position: "relative", overflow: "hidden" }}>
+      {/* Background texture */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)", backgroundSize: "80px 80px", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "-20%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: "rgba(255,90,71,0.03)", pointerEvents: "none" }} />
+
+      <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 2 }}>
+
+        {/* Header */}
+        <div ref={ref} style={{ textAlign: "center", marginBottom: 72, opacity: visible ? 1 : 0, transform: visible ? "none" : "translateY(24px)", transition: "all 0.7s ease" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 20, background: "rgba(255,90,71,0.1)", border: "1px solid rgba(255,90,71,0.25)", borderRadius: 100, padding: "6px 18px" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: C.coral, fontFamily: "'Outfit', sans-serif" }}>
+              {en ? "Why it matters" : "Защо е важно"}
+            </span>
+          </div>
+          <h2 style={{ fontFamily: "'Fraunces', 'Playfair Display', Georgia, serif", fontSize: 52, fontWeight: 900, color: C.white, letterSpacing: "-0.03em", margin: "0 0 20px", lineHeight: 1.05 }}>
+            {en
+              ? <>Online search has<br /><em style={{ color: C.coral, fontStyle: "italic" }}>changed forever</em></>
+              : <>Онлайн търсенето се<br /><em style={{ color: C.coral, fontStyle: "italic" }}>промени завинаги</em></>}
+          </h2>
+          <p style={{ fontSize: 17, color: C.textLight, maxWidth: 580, margin: "0 auto", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif" }}>
+            {en
+              ? "AI assistants now give answers, not results. If your business isn't optimized for AI — you simply don't exist for millions of users."
+              : "AI асистентите вече дават отговори, не просто резултати. Ако бизнесът ви не е оптимизиран за AI — просто не съществувате за милиони потребители."}
+          </p>
+        </div>
+
+        {/* Two-column layout */}
+        <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "start" }}>
+
+          {/* Left: stat rows */}
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
+            {stats.map((s, i) => (
+              <div key={s.label} style={{
+                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 14, padding: "20px 24px", display: "flex", alignItems: "center", gap: 20,
+                position: "relative", overflow: "hidden",
+                opacity: visible ? 1 : 0, transform: visible ? "none" : "translateX(-20px)",
+                transition: `all 0.6s ease ${0.1 + i * 0.1}s`,
+              }}>
+                <span style={{
+                  fontFamily: "'Fraunces', 'Playfair Display', Georgia, serif",
+                  fontSize: 36, fontWeight: 900, color: s.color, lineHeight: 1, flexShrink: 0, minWidth: 90,
+                }}>{s.num}</span>
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontFamily: "'Outfit', sans-serif" }}>{s.label}</span>
+                {/* Subtle left accent bar */}
+                <div style={{ position: "absolute", left: 0, top: "20%", bottom: "20%", width: 3, borderRadius: "0 3px 3px 0", background: s.color, opacity: 0.6 }} />
+              </div>
+            ))}
+          </div>
+
+          {/* Right: Google vs AI comparison card */}
+          <div style={{
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 20, padding: 28,
+            opacity: visible ? 1 : 0, transform: visible ? "none" : "translateX(20px)",
+            transition: "all 0.7s ease 0.2s",
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 22, fontFamily: "'Outfit', sans-serif" }}>
+              {en ? "Google vs AI: how search works today" : "Google vs AI: как се търси днес"}
+            </div>
+
+            {/* Google card */}
+            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: 18, marginBottom: 8 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.3)", letterSpacing: "0.12em", textTransform: "uppercase" as const, marginBottom: 10, fontFamily: "'Outfit', sans-serif" }}>
+                {en ? "Google search · before" : "Google търсене · преди"}
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.65, fontFamily: "'Outfit', sans-serif" }}>
+                {en
+                  ? <>"best matcha latte Sofia" → 10 blue links, ads, maps. <span style={{ color: "rgba(255,255,255,0.35)" }}>User decides which link to click.</span></>
+                  : <>"best matcha latte Sofia" → 10 сини линка, реклами, бутда. <span style={{ color: "rgba(255,255,255,0.35)" }}>Потребителят сам решава кой линк да натисне.</span></>}
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div style={{ textAlign: "center" as const, color: "rgba(255,255,255,0.2)", fontSize: 20, margin: "4px 0", lineHeight: 1 }}>↓</div>
+
+            {/* AI card — highlighted */}
+            <div style={{ background: "rgba(255,90,71,0.08)", border: "1px solid rgba(255,90,71,0.2)", borderRadius: 12, padding: 18, marginBottom: 20 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.coral, letterSpacing: "0.12em", textTransform: "uppercase" as const, marginBottom: 10, fontFamily: "'Outfit', sans-serif" }}>
+                {en ? "AI assistant · now" : "AI асистент · сега"}
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.65, fontFamily: "'Outfit', sans-serif" }}>
+                {en
+                  ? <>"where's the best matcha latte in Sofia?" → <strong style={{ color: C.white }}>One direct recommendation.</strong> You're in — or you're out. No middle ground.</>
+                  : <>"where's the best matcha latte in Sofia?" → <strong style={{ color: C.white }}>Конкретен отговор с препоръки.</strong> Или те споменава — или не те споменава. Няма среден вариант.</>}
+              </div>
+            </div>
+
+            {/* Urgency callout */}
+            <div style={{ background: "rgba(255,90,71,0.06)", border: "1px solid rgba(255,90,71,0.15)", borderRadius: 10, padding: "14px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>⚡</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.coral, marginBottom: 4, fontFamily: "'Outfit', sans-serif" }}>
+                  {en ? "The window is open — but closing fast" : "Прозорецът е отворен — но се затваря"}
+                </div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, fontFamily: "'Outfit', sans-serif" }}>
+                  {en
+                    ? "Early adopters are already building authority in AI systems. Every month you wait, competitors get harder to displace."
+                    : "Ранните последователи вече изграждат авторитет в AI системите. Всеки месец закъснение прави конкурентите по-трудни за изместване."}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{
+          textAlign: "center", marginTop: 56,
+          opacity: visible ? 1 : 0, transition: "all 0.7s ease 0.5s",
+        }}>
+          <a href="#hero-scan" style={{
+            display: "inline-flex", alignItems: "center", gap: 10,
+            background: C.coral, color: C.white, padding: "15px 36px",
+            borderRadius: 10, textDecoration: "none", fontSize: 15, fontWeight: 700,
+            fontFamily: "'Outfit', sans-serif",
+          }}>
+            {en ? "Check your AI visibility — free →" : "Провери AI видимостта си — безплатно →"}
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── SECTION 4: How it works (+ what we do) ────────────────────────────────────
 function HowItWorksSection() {
   const locale  = useLocale();
   const en      = locale === 'en';
@@ -592,28 +735,7 @@ function HowItWorksSection() {
           ))}
         </div>
 
-        {/* What we do — 4 pillars */}
-        <div style={{ marginTop: 72 }}>
-          <div className="grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-            {(en ? [
-              ["🔍", "Scan 14 AI criteria", "Every signal AI systems use to discover, understand and recommend businesses."],
-              ["📊", "Personalized plan", "A clear, prioritized list of exactly what to fix — no guesswork, no jargon."],
-              ["📁", "Ready-to-use files", "llms.txt, schema, FAQs — generated and ready to upload in minutes."],
-              ["📈", "Monthly tracking", "Re-scan every month, track improvement, stay ahead of competitors."],
-            ] : [
-              ["🔍", "Сканираме 14 критерия", "Всеки сигнал, който AI системите използват за да открият бизнеса ти."],
-              ["📊", "Персонализиран план", "Ясен, приоритизиран списък с точно това, което трябва да оправиш."],
-              ["📁", "Готови файлове", "llms.txt, schema, FAQs — генерирани и готови за качване за минути."],
-              ["📈", "Месечно следене", "Ново сканиране всеки месец, следене на напредъка, изпреварване на конкурентите."],
-            ]).map(([icon, title, desc]) => (
-              <div key={title as string} style={{ background: C.white, borderRadius: 14, padding: 24, border: `1px solid ${C.borderCream}` }}>
-                <div style={{ fontSize: 26, marginBottom: 14 }}>{icon}</div>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: C.navy, margin: "0 0 8px", fontFamily: "'Outfit', sans-serif" }}>{title as string}</h3>
-                <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: 0, fontFamily: "'Outfit', sans-serif" }}>{desc as string}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </div>
     </section>
   );
@@ -860,6 +982,7 @@ export default function Home() {
           .hero-h1         { font-size: 52px !important; }
           .grid-3          { grid-template-columns: 1fr !important; }
           .grid-4          { grid-template-columns: 1fr 1fr !important; }
+          .why-grid        { grid-template-columns: 1fr !important; }
           .pricing-grid    { grid-template-columns: 1fr !important; max-width: 420px; margin: 0 auto; }
           .footer-grid     { grid-template-columns: 1fr !important; gap: 40px !important; }
           .scan-row        { flex-direction: column !important; }
@@ -874,6 +997,7 @@ export default function Home() {
       <NavBar />
       <HeroScanSection />
       <SocialProofStrip />
+      <WhyItMattersSection />
       <HowItWorksSection />
       <PricingSection />
       <FooterSection />
