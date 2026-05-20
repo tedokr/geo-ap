@@ -118,10 +118,8 @@ function HeroSection() {
 
   return (
     <section style={{ minHeight: "100vh", background: C.teal, display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
-      {/* Decorative circles */}
       <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 600, height: 600, borderRadius: "50%", background: "rgba(62,207,181,0.08)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "-20%", left: "-10%", width: 500, height: 500, borderRadius: "50%", background: "rgba(255,90,71,0.06)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: "30%", right: "10%", width: 200, height: 200, borderRadius: "50%", background: "rgba(62,207,181,0.05)", pointerEvents: "none" }} />
 
       <div className="hero-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 24px 80px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative", zIndex: 2, width: "100%" }}>
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(40px)", transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)" }}>
@@ -132,53 +130,49 @@ function HeroSection() {
           <p style={{ fontSize: 19, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 40px", maxWidth: 500 }}>{t('subtitle')}</p>
           <a href="#scan" style={{ background: C.coral, color: C.white, padding: "16px 32px", borderRadius: 10, textDecoration: "none", fontSize: 16, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 8 }}>{t('cta')} →</a>
           <div style={{ display: "flex", gap: 32, marginTop: 40 }}>
-            {[["14", locale === 'en' ? "AI criteria" : "AI критерия"], ["2 min", locale === 'en' ? "analysis" : "за анализ"], ["100%", locale === 'en' ? "free" : "безплатно"]].map(([num, label]) => (
+            {[["14", locale === 'en' ? "AI criteria" : "AI критерия"], ["<1 min", locale === 'en' ? "analysis" : "анализ"], ["100%", locale === 'en' ? "free" : "безплатно"]].map(([num, label]) => (
               <div key={label}><div style={{ fontSize: 28, fontWeight: 800, color: C.coral }}>{num}</div><div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>{label}</div></div>
             ))}
           </div>
         </div>
 
-        {/* Hero card — new design: checklist style */}
+        {/* Hero card — clean, no metrics */}
         <div className="hero-card" style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(60px)", transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s" }}>
-          <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: 28 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: 32 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral }} />
               <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>findable.app — AI Visibility Report</span>
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>yourbusiness.com</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", marginBottom: 20 }}>yourbusiness.com</div>
 
-            {/* Score bar */}
-            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20, padding: "12px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 12 }}>
-              <div style={{ position: "relative", width: 52, height: 52, flexShrink: 0 }}>
-                <svg viewBox="0 0 52 52" style={{ transform: "rotate(-90deg)" }}>
-                  <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
-                  <circle cx="26" cy="26" r="22" fill="none" stroke={C.coral} strokeWidth="5" strokeDasharray={`${0.38 * 2 * Math.PI * 22} ${2 * Math.PI * 22}`} strokeLinecap="round" />
+            {/* Big score */}
+            <div style={{ textAlign: "center" as const, marginBottom: 28 }}>
+              <div style={{ position: "relative", width: 120, height: 120, margin: "0 auto 16px" }}>
+                <svg viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke={C.coral} strokeWidth="10" strokeDasharray={`${0.38 * 2 * Math.PI * 50} ${2 * Math.PI * 50}`} strokeLinecap="round" />
                 </svg>
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, color: C.white }}>38%</div>
+                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 32, fontWeight: 900, color: C.white, lineHeight: 1 }}>38%</span>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>AI Score</span>
+                </div>
               </div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: C.white }}>AI Score: 38%</div>
-                <div style={{ fontSize: 12, color: C.coral }}>Needs improvement</div>
-              </div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: C.white, marginBottom: 4 }}>{locale === 'en' ? "Needs improvement" : "Нужни подобрения"}</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>{locale === 'en' ? "3 critical issues found" : "3 критични проблема открити"}</div>
             </div>
 
-            {/* Criteria list */}
-            {[
-              { label: "llms.txt", status: "missing" },
-              { label: "Schema.org markup", status: "partial" },
-              { label: "FAQ section", status: "missing" },
-              { label: "robots.txt", status: "ok" },
-              { label: "SSL & canonical", status: "ok" },
-            ].map(item => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>{item.label}</span>
-                <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6, background: item.status === 'ok' ? "rgba(62,207,181,0.15)" : item.status === 'partial' ? "rgba(255,180,0,0.15)" : "rgba(255,90,71,0.15)", color: item.status === 'ok' ? C.mint : item.status === 'partial' ? "#F5A623" : C.coral }}>
-                  {item.status === 'ok' ? '✓ OK' : item.status === 'partial' ? '~ Partial' : '✗ Missing'}
-                </span>
+            {/* Blurred report rows */}
+            <div style={{ position: "relative" }}>
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 8, filter: "blur(4px)", userSelect: "none" as const }}>
+                {[1,2,3].map(i => (
+                  <div key={i} style={{ height: 36, background: "rgba(255,255,255,0.04)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }} />
+                ))}
               </div>
-            ))}
-            <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(255,90,71,0.12)", borderRadius: 10, border: "1px solid rgba(255,90,71,0.2)" }}>
-              <span style={{ fontSize: 12, color: C.coral, fontWeight: 600 }}>{locale === 'en' ? 'Sign up to see full report & fixes' : 'Регистрирай се за пълен доклад'}</span>
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <a href="#scan" style={{ background: C.coral, color: C.white, padding: "10px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
+                  {locale === 'en' ? 'See full report →' : 'Виж пълния доклад →'}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -237,7 +231,11 @@ function ScanSection() {
   return (
     <section id="scan" style={{ padding: "80px 24px", background: C.offWhite }}>
       <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-        <SectionTitle tag={locale === 'en' ? "Free Check" : "Безплатна проверка"} title={locale === 'en' ? "Check your AI visibility in 2 minutes" : "Провери AI видимостта си за 2 минути"} subtitle={locale === 'en' ? "Enter your domain and see how ready your business is for the AI era." : "Въведи домейна си и виж колко е подготвен бизнесът ти за AI ерата."} />
+        <SectionTitle
+          tag={locale === 'en' ? "Free Check" : "Безплатна проверка"}
+          title={locale === 'en' ? "Check your AI visibility in less than 1 minute" : "Провери AI видимостта си за под 1 минута"}
+          subtitle={locale === 'en' ? "Enter your domain and see how ready your business is for the AI era." : "Въведи домейна си и виж колко е подготвен бизнесът ти за AI ерата."}
+        />
         <div style={{ background: C.white, borderRadius: 20, padding: "32px 24px", border: "1px solid rgba(11,74,86,0.08)" }}>
           {!noWebsite ? (
             <div className="scan-row" style={{ display: "flex", gap: 12, marginBottom: 16 }}>
@@ -428,7 +426,7 @@ function HowItWorksSection() {
     {
       step: "01", icon: "🔍", color: C.coral,
       title: "Get your free AI score",
-      desc: "Enter your domain and we instantly scan 14 AI visibility metrics. See exactly where you stand — for free, in under 2 minutes.",
+      desc: "Enter your domain and we instantly scan 14 AI visibility metrics. See exactly where you stand — for free, in under 1 minute.",
       tag: "Free · No registration",
       mock: (
         <div style={{ background: "linear-gradient(135deg, #0B4A56, #083542)", borderRadius: 12, padding: 16, marginTop: 16 }}>
@@ -499,7 +497,7 @@ function HowItWorksSection() {
     {
       step: "01", icon: "🔍", color: C.coral,
       title: "Вземи безплатния си AI скор",
-      desc: "Въведи домейна си и ние веднага сканираме 14 показателя за AI видимост. Виж точно къде стоиш — безплатно, за под 2 минути.",
+      desc: "Въведи домейна си и ние веднага сканираме 14 показателя за AI видимост. Виж точно къде стоиш — безплатно, за под 1 минута.",
       tag: "Безплатно · Без регистрация",
       mock: (
         <div style={{ background: "linear-gradient(135deg, #0B4A56, #083542)", borderRadius: 12, padding: 16, marginTop: 16 }}>
@@ -598,14 +596,6 @@ function HowItWorksSection() {
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "center", marginTop: 56 }}>
-          <p style={{ fontSize: 16, color: C.textMuted, marginBottom: 20 }}>
-            {locale === 'en' ? "Ready to become findable by AI?" : "Готов ли си да станеш намираем от AI?"}
-          </p>
-          <a href="#scan" style={{ display: "inline-block", background: C.coral, color: C.white, padding: "16px 40px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 16 }}>
-            {locale === 'en' ? "Get your free AI score →" : "Вземи безплатния си AI скор →"}
-          </a>
-        </div>
       </div>
     </section>
   );
@@ -667,36 +657,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY IT MATTERS */}
+      {/* WHY IT MATTERS — new design with visual bars */}
       <section id="why" style={{ padding: "80px 24px", background: C.teal }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <SectionTitle light tag={locale === 'en' ? "Why it matters" : "Защо е важно"} title={locale === 'en' ? "AI search is not the future — it's now" : "AI търсенето не е бъдещето — то е настоящето"} subtitle={locale === 'en' ? "Millions of people already use AI to find products, services and local businesses. Are you showing up?" : "Милиони хора вече използват AI за да намерят продукти, услуги и местни бизнеси. Ти показваш ли се?"} />
-          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}>
-            <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
-              {([
-                ["9B+", locale === 'en' ? "AI interactions per month in 2025" : "AI взаимодействия на месец", C.coral],
-                ["50%", locale === 'en' ? "of online searches will be AI-powered by 2027" : "от търсенията ще са AI-базирани до 2027", C.mint],
-                ["90%", locale === 'en' ? "of SMEs have no AI optimization" : "от МСП нямат AI оптимизация", "#F5A623"],
-                ["3x", locale === 'en' ? "more conversions from AI recommendations" : "повече конверсии от AI препоръки", C.mint],
-              ] as [string,string,string][]).map(([num, label, color]) => (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: 20, background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "18px 22px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div style={{ fontSize: 32, fontWeight: 800, color, minWidth: 70 }}>{num}</div>
-                  <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)" }}>{label}</div>
+
+          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "stretch" }}>
+            {/* Left: visual stat bars */}
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: 20 }}>
+              {(locale === 'en' ? [
+                { label: "Businesses with no AI optimization", pct: 90, color: C.coral, note: "9 in 10 SMEs are invisible to AI search" },
+                { label: "Users who trust AI recommendations", pct: 74, color: C.mint, note: "vs. 46% who trust traditional search results" },
+                { label: "Search queries answered directly by AI", pct: 62, color: "#F5A623", note: "No click needed — AI gives the answer" },
+                { label: "Revenue increase after AI optimization", pct: 40, color: C.mint, note: "Average for businesses that implement GEO" },
+              ] : [
+                { label: "Бизнеси без AI оптимизация", pct: 90, color: C.coral, note: "9 от 10 МСП са невидими за AI търсенето" },
+                { label: "Потребители, доверяващи се на AI препоръки", pct: 74, color: C.mint, note: "спрямо 46% при традиционното търсене" },
+                { label: "Търсения с директен AI отговор", pct: 62, color: "#F5A623", note: "Без клик — AI дава директен отговор" },
+                { label: "Ръст на приходите след AI оптимизация", pct: 40, color: C.mint, note: "Средно за бизнеси, внедрили GEO" },
+              ]).map(({ label, pct, color, note }) => (
+                <div key={label} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "18px 20px", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 500, flex: 1, paddingRight: 12 }}>{label}</span>
+                    <span style={{ fontSize: 24, fontWeight: 900, color, flexShrink: 0 }}>{pct}%</span>
+                  </div>
+                  <div style={{ height: 6, background: "rgba(255,255,255,0.08)", borderRadius: 3, marginBottom: 8, overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 3, transition: "width 1s ease" }} />
+                  </div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{note}</div>
                 </div>
               ))}
             </div>
-            <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 20, padding: 32, border: "1px solid rgba(255,255,255,0.08)" }}>
-              <h3 style={{ fontSize: 20, fontWeight: 700, color: C.white, margin: "0 0 20px" }}>{locale === 'en' ? "The difference is simple" : "Разликата е проста"}</h3>
-              <div style={{ display: "flex", flexDirection: "column" as const, gap: 14 }}>
-                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 18 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.4)", marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>Google</div>
-                  <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>{locale === 'en' ? '"best dentist sofia" → 10 blue links → user chooses' : '"най-добър зъболекар софия" → 10 сини линка → потребителят избира'}</div>
+
+            {/* Right: Google vs AI comparison + context */}
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
+              <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 16, padding: 24, border: "1px solid rgba(255,255,255,0.08)", flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16 }}>{locale === 'en' ? "How search has changed" : "Как се промени търсенето"}</div>
+                <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
+                  <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)", marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>Google · {locale === 'en' ? 'before' : 'преди'}</div>
+                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>{locale === 'en' ? '"dentist near me" → list of results → user researches and picks' : '"зъболекар до мен" → списък резултати → потребителят проучва и избира'}</div>
+                  </div>
+                  <div style={{ textAlign: "center" as const, color: "rgba(255,255,255,0.25)", fontSize: 18 }}>↓</div>
+                  <div style={{ background: "rgba(255,90,71,0.1)", borderRadius: 10, padding: 16, border: "1px solid rgba(255,90,71,0.2)" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: C.coral, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>AI · {locale === 'en' ? 'now' : 'сега'}</div>
+                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>{locale === 'en' ? '"best dentist near me" → one direct recommendation. You\'re in — or you\'re out.' : '"най-добър зъболекар до мен" → една директна препоръка. Или си вътре — или не си.'}</div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "center" as const, fontSize: 20, color: "rgba(255,255,255,0.3)" }}>↓</div>
-                <div style={{ background: "rgba(255,90,71,0.1)", borderRadius: 12, padding: 18, border: "1px solid rgba(255,90,71,0.2)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.coral, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: 1 }}>AI</div>
-                  <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>{locale === 'en' ? '"best dentist in sofia?" → One specific answer. Either it\'s you — or it isn\'t.' : '"най-добър зъболекар в софия?" → Един конкретен отговор. Или си ти — или не си.'}</div>
-                </div>
+              </div>
+
+              <div style={{ background: "rgba(255,90,71,0.1)", borderRadius: 16, padding: 20, border: "1px solid rgba(255,90,71,0.2)" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.coral, marginBottom: 8 }}>{locale === 'en' ? '⚡ The window is open — but closing fast' : '⚡ Прозорецът е отворен — но се затваря'}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>{locale === 'en' ? 'Early adopters of GEO are already building authority in AI systems. Every month you wait, competitors get harder to displace.' : 'Ранните последователи на GEO вече изграждат авторитет в AI системите. Всеки месец закъснение прави конкурентите по-трудни за изместване.'}</div>
               </div>
             </div>
           </div>
@@ -745,12 +757,12 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
               {(locale === 'en' ? [
-                ["Month 1", "Baseline optimization - llms.txt, schema, robots.txt"],
+                ["Month 1", "Baseline optimization"],
                 ["Month 3", "AI visibility improves, first mentions appear"],
                 ["Month 6", "Stable presence across multiple AI platforms"],
                 ["Month 12", "Significant advantage over non-optimized competitors"]
               ] : [
-                ["Месец 1", "Базова оптимизация - llms.txt, schema, robots.txt"],
+                ["Месец 1", "Базова оптимизация"],
                 ["Месец 3", "AI видимостта се подобрява, появяват се споменавания"],
                 ["Месец 6", "Стабилно присъствие в множество AI платформи"],
                 ["Месец 12", "Значително предимство пред неоптимизираните конкуренти"]
