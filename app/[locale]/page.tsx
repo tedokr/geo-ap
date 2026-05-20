@@ -48,7 +48,7 @@ function Logo({ light = true, size = 20 }: { light?: boolean; size?: number }) {
         <polygon points="22,40 16,27 28,27" fill={C.coral} />
       </svg>
       <span style={{ fontSize: size, fontWeight: 800, color: light ? C.white : C.navy, fontFamily: "'Outfit', sans-serif" }}>
-        findable<span style={{ color: C.coral }}>.app</span>
+        faindable<span style={{ color: C.coral }}>.app</span>
       </span>
     </span>
   );
@@ -933,7 +933,7 @@ function FooterSection() {
           </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif" }}>
             © 2026 Business Solutions Consulting EOOD<br />
-            trading as findable.app · VAT: BG200487371
+            trading as faindable.app · VAT: BG200487371
           </div>
         </div>
 
