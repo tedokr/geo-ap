@@ -446,17 +446,25 @@ export default function Home() {
                 desc: "Get ready-to-use files with step-by-step instructions tailored to your platform. Upload in under 5 minutes. No agency. No code. No hassle.",
                 tag: "From €9.90/mo · Any platform",
                 mock: (
-                  <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
+                 <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
                     <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>FILES READY TO UPLOAD</div>
-                    {["llms.txt", "robots.txt", "schema.json", "faq-markup.html"].map((file) => (
-                      <div key={file} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0" }}>
-                        <span style={{ fontSize: 14 }}>📄</span>
-                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{file}</span>
-                        <span style={{ marginLeft: "auto", fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4 }}>READY</span>
+                    {[
+                      { icon: "📄", name: "AI Optimization Guide", desc: "Step-by-step implementation" },
+                      { icon: "⚙️", name: "Technical Config File", desc: "Ready to upload" },
+                      { icon: "📝", name: "Content Enhancement Doc", desc: "Tailored to your business" },
+                      { icon: "🎯", name: "Quick Win Checklist", desc: "Do it yourself in 5 min" },
+                    ].map((file) => (
+                      <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                        <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
+                          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
+                        </div>
+                        <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>READY</span>
                       </div>
                     ))}
-                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.15)", borderRadius: 8, fontSize: 10, color: COLORS.orange }}>
-                      📋 WordPress instructions included
+                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span>⚡</span> Tailored for your platform — no tech skills needed
                     </div>
                   </div>
                 )
@@ -508,18 +516,25 @@ export default function Home() {
                 tag: "От €9.90/мес · Всяка платформа",
                 mock: (
                   <div style={{ background: "linear-gradient(135deg, #1B2A4A, #2E6BAD)", borderRadius: 12, padding: 16, marginTop: 16 }}>
-                    <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>ФАЙЛОВЕТЕ СА ГОТОВИ</div>
-                    {["llms.txt", "robots.txt", "schema.json", "faq-markup.html"].map((file) => (
-                      <div key={file} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0" }}>
-                        <span style={{ fontSize: 14 }}>📄</span>
-                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>{file}</span>
-                        <span style={{ marginLeft: "auto", fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4 }}>ГОТОВ</span>
+                  <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>ФАЙЛОВЕТЕ СА ГОТОВИ</div>
+                    {[
+                      { icon: "📄", name: "Ръководство за AI оптимизация", desc: "Стъпка по стъпка" },
+                      { icon: "⚙️", name: "Технически конфигурационен файл", desc: "Готов за качване" },
+                      { icon: "📝", name: "Документ за подобряване на съдържанието", desc: "Адаптиран за твоя бизнес" },
+                      { icon: "🎯", name: "Чеклист за бързи резултати", desc: "Направи го сам за 5 мин" },
+                    ].map((file) => (
+                      <div key={file.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                        <span style={{ fontSize: 16, flexShrink: 0 }}>{file.icon}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{file.name}</div>
+                          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{file.desc}</div>
+                        </div>
+                        <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>ГОТОВ</span>
                       </div>
                     ))}
-                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.15)", borderRadius: 8, fontSize: 10, color: COLORS.orange }}>
-                      📋 Включени инструкции за WordPress
+                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span>⚡</span> Адаптирано за твоята платформа — без технически познания
                     </div>
-                  </div>
                 )
               }
             ]).map((s) => (
