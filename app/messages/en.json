@@ -1,6 +1,6 @@
 {
   "nav": {
-   "free_check": "Get your free AI score",
+    "free_check": "Get your free AI score",
     "login": "Login",
     "generator": "Generator",
     "profile": "Profile",
@@ -9,10 +9,10 @@
   },
   "hero": {
     "tag": "AI Search Visibility",
-    "title": "Is your business visible to AI?",
+    "title": "Is your business findable by AI?",
     "subtitle": "ChatGPT, Perplexity and Google AI are changing how people find businesses. Check if your website is optimized for AI search — for free.",
-  "cta": "Get your free AI score",
-    "placeholder": "example.com",
+    "cta": "Get your free AI score",
+    "placeholder": "yourdomain.com",
     "scanning": "Scanning...",
     "trust": "Free · No registration · Results in 30 seconds"
   },
@@ -22,7 +22,7 @@
     "subtitle": "Start for free, upgrade when ready.",
     "monthly": "Monthly",
     "annual": "Annual",
-    "save": "SAVE 30%",
+    "save": "SAVE UP TO 50%",
     "lite": {
       "name": "Lite",
       "domains": "1 domain",
@@ -49,16 +49,16 @@
     "agree_suffix": ". Services start immediately. EU withdrawal right waived."
   },
   "dashboard": {
-    "title": "GEO Dashboard",
+    "title": "findable Dashboard",
     "subtitle_free": "Free plan — see your domain score",
     "subtitle_lite": "LITE plan — 1 domain",
     "subtitle_smart": "SMART plan — up to 3 domains + content generator",
     "subtitle_pro": "PRO plan — up to 5 domains + full picture",
     "check_domain": "Check domain",
-    "placeholder": "example.com",
+    "placeholder": "yourdomain.com",
     "analyze": "Analyze",
     "scanning": "Scanning...",
-    "checking": "Checking 11 criteria...",
+    "checking": "Checking 14 criteria...",
     "good": "Good AI presence",
     "needs_work": "Needs improvement",
     "weak": "Weak AI presence",
