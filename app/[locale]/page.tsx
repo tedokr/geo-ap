@@ -532,9 +532,10 @@ export default function Home() {
                         <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.15)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>ГОТОВ</span>
                       </div>
                     ))}
-                    <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
-                   {"⚡ Адаптирано за твоята платформа - без технически познания"}
+                  <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(245,166,35,0.12)", borderRadius: 8, fontSize: 10, color: COLORS.orange, display: "flex", alignItems: "center", gap: 6 }}>
+                      {"⚡ Адаптирано за твоята платформа - без технически познания"}
                     </div>
+                  </div>
                 )
               }
             ]).map((s) => (
