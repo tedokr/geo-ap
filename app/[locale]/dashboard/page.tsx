@@ -842,8 +842,19 @@ export default function Dashboard() {
                 ))}
               </div>
             )}
-          </>
+         </>
         )}
+
+        {/* FOOTER */}
+        <div style={{ marginTop: 48, paddingTop: 24, borderTop: `1px solid ${COLORS.lightGray}`, textAlign: "center" as const }}>
+          <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+            <a href={`/${locale}/privacy`} style={{ color: COLORS.textMuted, textDecoration: "none", marginRight: 16 }}>Privacy Policy</a>
+            <a href={`/${locale}/terms`} style={{ color: COLORS.textMuted, textDecoration: "none", marginRight: 16 }}>Terms of Service</a>
+            <a href={`/${locale}/imprint`} style={{ color: COLORS.textMuted, textDecoration: "none" }}>Imprint</a>
+          </div>
+          <div style={{ fontSize: 11, color: COLORS.lightGray, marginTop: 8 }}>© 2026 GEO.app</div>
+        </div>
+
       </div>
     </div>
   )
