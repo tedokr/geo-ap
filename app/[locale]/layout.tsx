@@ -2,16 +2,18 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '../../i18n/routing'
-import CookieBanner from '../../components/CookieBanner'
+import dynamic from 'next/dynamic'
+
+const CookieBanner = dynamic(() => import('../../components/CookieBanner'), { ssr: false })
 
 export default async function LocaleLayout({
   children,
   params
 }: {
   children: React.ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }) {
-  const { locale } = await Promise.resolve(params)
+  const { locale } = await params
   if (!routing.locales.includes(locale as any)) notFound()
   const messages = await getMessages()
   return (
