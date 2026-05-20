@@ -1,6 +1,6 @@
 {
   "nav": {
-    "free_check": "Free Check",
+   "free_check": "Get your free AI score",
     "login": "Login",
     "generator": "Generator",
     "profile": "Profile",
@@ -11,7 +11,7 @@
     "tag": "AI Search Visibility",
     "title": "Is your business visible to AI?",
     "subtitle": "ChatGPT, Perplexity and Google AI are changing how people find businesses. Check if your website is optimized for AI search — for free.",
-    "cta": "Check your website",
+  "cta": "Get your free AI score",
     "placeholder": "example.com",
     "scanning": "Scanning...",
     "trust": "Free · No registration · Results in 30 seconds"
