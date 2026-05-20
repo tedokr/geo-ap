@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -116,6 +116,92 @@ const allTabs = [
   { id: 'metadesc', label: 'Meta Description', icon: '📝' },
   { id: 'blog', label: 'Blog', icon: '✍️' },
 ]
+
+// ─── Dropdown menu ────────────────────────────────────────────────────────────
+function DropdownMenu({ locale, onDashboard, onSwitchLocale }: {
+  locale: string
+  onDashboard: () => void
+  onSwitchLocale: (l: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const items = [
+    { icon: "📊", label: locale === 'en' ? "Dashboard" : "Dashboard", action: onDashboard },
+  ]
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(!open)} style={{
+        display: "flex", alignItems: "center", gap: 8,
+        background: open ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.09)", borderRadius: 10,
+        padding: "7px 14px", cursor: "pointer", transition: "background 0.15s",
+      }}>
+        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+          ✨
+        </div>
+        <span style={{ fontSize: 13, color: C.white, fontWeight: 600, fontFamily: "'Outfit', sans-serif" }}>
+          {locale === 'en' ? "Generator" : "Генератор"}
+        </span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "none" }}>
+          <path d="M2 4l4 4 4-4" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 8px)", right: 0,
+          background: "#0D1E35", border: "1px solid rgba(255,255,255,0.09)",
+          borderRadius: 14, overflow: "hidden", minWidth: 210,
+          boxShadow: "0 16px 40px rgba(0,0,0,0.35)", zIndex: 200,
+        }}>
+          {items.map((item, i) => (
+            <button key={item.label} onClick={() => { item.action(); setOpen(false) }} style={{
+              width: "100%", display: "flex", alignItems: "center", gap: 10,
+              padding: "12px 16px", background: "none", border: "none",
+              borderTop: i > 0 ? "1px solid rgba(255,255,255,0.09)" : "none",
+              cursor: "pointer", textAlign: "left" as const,
+              color: "rgba(255,255,255,0.8)", fontSize: 14,
+              fontFamily: "'Outfit', sans-serif", fontWeight: 500, transition: "background 0.15s",
+            }}
+              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "none")}
+            >
+              <span style={{ fontSize: 16 }}>{item.icon}</span>
+              {item.label}
+            </button>
+          ))}
+
+          {/* Language row */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.09)", padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 16 }}>🌐</span>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Outfit', sans-serif", flex: 1 }}>
+              {locale === 'en' ? "Language" : "Език"}
+            </span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {(['en', 'bg'] as const).map(l => (
+                <button key={l} onClick={() => { onSwitchLocale(l); setOpen(false) }} style={{
+                  padding: "4px 10px", borderRadius: 7, border: "none", cursor: "pointer",
+                  background: locale === l ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.06)",
+                  color: locale === l ? C.white : "rgba(255,255,255,0.4)",
+                  fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const,
+                  fontFamily: "'Outfit', sans-serif",
+                }}>{l}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // ─── Step indicator ─────────────────────────────────────────────────────────────
 function StepBar({ step, labels }: { step: number; labels: string[] }) {
@@ -302,7 +388,11 @@ export default function Onboarding() {
         {/* Header */}
         <header style={{ borderBottom: `1px solid ${C.border}`, padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, position: "relative", zIndex: 10, backdropFilter: "blur(8px)" }}>
           <a href={`/${locale}`} style={{ textDecoration: "none" }}><Logo size={18} /></a>
-          <a href={`/${locale}/dashboard`} style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, textDecoration: "none", fontFamily: "'Outfit', sans-serif" }}>Dashboard</a>
+          <DropdownMenu
+            locale={locale}
+            onDashboard={() => window.location.href = `/${locale}/dashboard`}
+            onSwitchLocale={(l) => window.location.href = `/${l}/onboarding`}
+          />
         </header>
 
         {/* Content */}
