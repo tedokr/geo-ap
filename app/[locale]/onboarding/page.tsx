@@ -37,7 +37,7 @@ function Logo({ size = 20 }: { size?: number }) {
         <polygon points="22,40 16,27 28,27" fill={C.coral} />
       </svg>
       <span style={{ fontSize: size, fontWeight: 800, color: C.white, fontFamily: "'Outfit', sans-serif" }}>
-        findable<span style={{ color: C.coral }}>.app</span>
+        faindable<span style={{ color: C.coral }}>.app</span>
       </span>
     </span>
   )
@@ -66,8 +66,8 @@ const T = {
     ready: 'Ready to generate!',
     ready_sub: 'Personalized AI content for',
     done_title: 'Content generated!',
-    done_sub: 'Here's your personalized content for',
-    done_sub2: 'Access it anytime from Dashboard → My domains.',
+    done_sub: "Here's your personalized content for",
+    done_sub2: 'Access it anytime from Dashboard - My domains.',
     copy: 'Copy', how_to: 'How to add to',
     step_by_step: '— step by step',
     dashboard: '← Dashboard', generate_again: 'Generate again',
@@ -98,7 +98,7 @@ const T = {
     ready_sub: 'AI съдържание за',
     done_title: 'Съдържанието е готово!',
     done_sub: 'Ето персонализираното ти съдържание за',
-    done_sub2: 'Виж го отново от Dashboard → Моите домейни.',
+    done_sub2: 'Виж го отново от Dashboard - Моите домейни.',
     copy: 'Копирай', how_to: 'Как да го добавиш към',
     step_by_step: '— стъпка по стъпка',
     dashboard: '← Dashboard', generate_again: 'Генерирай отново',
